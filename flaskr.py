@@ -22,6 +22,7 @@ def registration():
 def registrationPost():
     firstName = request.form['firstName']
     lastName = request.form['lastName']
+    user = request.form['user']
     verify = request.form['verificationKey']
     pswrd = request.form['password']
     confirm = request.form['re-enter']
@@ -32,7 +33,7 @@ def registrationPost():
         # match
         return (render_template('registration.html') + "<h1>PAss mis</h1>")
 
-    return ("<h1>" + firstName + " " + lastName + " " + verify + " " + pswrd + " " + confirm + " " + email + "</h1>")
+    return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + pswrd + " " + confirm + " " + email + "</h1>")
 
 
 if (__name__ == "__main__"):
