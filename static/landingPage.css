@@ -53,8 +53,8 @@ body{
     left: 75%;
     top: 20%;
     z-index: 15;
-    width: 20%;
-    height: 35%;
+    padding-top: .9%;
+    padding-bottom: .9%;
     font-size: 30px;
     color: white;
 }

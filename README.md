@@ -27,9 +27,11 @@ This repo will house our project and all files associated with it.
     
 # Getting the repo on local machine  
     1) Open up the command line  
-    2) cd into the folder you want to store this repo  
-    3) Type "git clone https://github.com/Conlonc2/CSC-330-GearGrinders.git"  
-    4) Make sure the folder is now on your computer and start hacking away!  
+    2) cd into the folder you want to store this repo
+    3) On Github go to https://github.com/Conlonc2/CSC-330-GearGrinders and fork this repository  
+    4) Next, go to your newly forked repository and click on "clone or download" and copy the clone link  
+    5) Now in the open command line type "git clone "Paste the repo link you just copied in step 4 here!". Press enter  
+    6) Make sure the folder is now on your computer and start hacking away!  
     
  # Adding changes to github  
     1) Make edits to the project  
