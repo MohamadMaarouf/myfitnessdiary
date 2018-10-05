@@ -22,7 +22,7 @@ def registration():
 def registrationPost():
     firstName = request.form['firstName']
     lastName = request.form['lastName']
-    user = request.form['user']
+    user = request.form['User']
     verify = request.form['verificationKey']
     pswrd = request.form['password']
     confirm = request.form['re-enter']
