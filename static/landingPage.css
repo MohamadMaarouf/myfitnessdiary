@@ -65,6 +65,11 @@ a{
     color: white;
 }
 
+a:hover{
+    color:blue;
+    cursor: pointer;
+}
+
 .login{
     margin-top: 10%;
     margin-right: 25px;
@@ -74,10 +79,6 @@ a{
     background-color: #103C5F;
 }
 
-div.login:hover{
-    color: blue;
-    cursor: pointer;
-}
 
 .regis{
     margin-bottom: 15px;
@@ -95,20 +96,11 @@ div.login:hover{
     background-color: #103C5F;
 }
 
-div.faculty:hover{
-    color: blue;
-    cursor: pointer;
-}
 .student{
     text-align: center;
     margin-right: 25px;
     margin-left: 25px;
     background-color: #103C5F;
-}
-
-div.student:hover{
-    color: blue;
-    cursor: pointer;
 }
 
 .employer{
@@ -117,9 +109,3 @@ div.student:hover{
     margin-left: 25px;
     background-color: #103C5F;
 }
-
-div.employer:hover{
-    color: blue;
-    cursor: pointer;
-}
-
