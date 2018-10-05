@@ -42,7 +42,8 @@ This repo will house our project and all files associated with it.
   # Pulling/Pushing new changes  
     For this step you need to understand one thing, this is that you will be pulling from this exact address:  
       -->"https://github.com/Conlonc2/CSC-330-GearGrinders.git"  
-    To do thsi you will use the command "git pull https://github.com/Conlonc2/CSC-330-GearGrinders.git" exactly as written.  
+    To do this you will use the command: 
+        -->"git pull https://github.com/Conlonc2/CSC-330-GearGrinders.git" exactly as written  
       
     However to push changes to your repo you will use "git push <REMOTE NAME> <BRANCH NAME>  
     --> Remote name will be origin if you used "git clone <YOUR REPO>"  
