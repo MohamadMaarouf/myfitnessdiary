@@ -37,7 +37,16 @@ This repo will house our project and all files associated with it.
     1) Make edits to the project  
     2) git add < enter files that have been updated and need to be staged >  
     3) git commit -m "Enter message that tells us what you did"  
-    4) git push <REMOTE NAME> <BRANCH NAME>  
+    4) git push <REMOTE NAME> <BRANCH NAME>   
+  
+  # Pulling/Pushing new changes  
+    For this step you need to understand one thing, this is that you will be pulling from this exact address:  
+      -->"https://github.com/Conlonc2/CSC-330-GearGrinders.git"  
+    To do thsi you will use the command "git pull https://github.com/Conlonc2/CSC-330-GearGrinders.git" exactly as written.  
+      
+    However to push changes to your repo you will use "git push <REMOTE NAME> <BRANCH NAME>  
+    --> Remote name will be origin if you used "git clone <YOUR REPO>"  
+    --> Branch name will most likely be <master> if you havent set up new branches.  
       
 # Wrapping it up  
   After following these steps you should have a local version of this project and be able to create pull requests so we can merge your   edits with the main project. If you have any questions still please feel free to ask.  
