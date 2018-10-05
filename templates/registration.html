@@ -16,9 +16,12 @@
         <form action="" method="POST" class="regiForm">
             <input name='firstName' type="text" placeholder="First Name" required>
             <input name='lastName' type="text" placeholder="Last Name" required>
-            <label>Student <input type="radio" name="user" value="Student" onclick="javascirpt:keyHide()"></label>
-            <label>Faculty: <input type="radio" name="user" value="Faculty" onclick="javascirpt:keydisp()"></label>
-            <label>Employer: <input type="radio" name="user" value="Sponsor" onclick="javascirpt:keydisp()"></label>
+            <select name="User" id="user_type" onchange="javascript:getSelected()" required>
+                <option value="">Select an Account Type</option>
+                <option value="Student">Student</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Sponsor">Sponsor</option>
+            </select>
             <input type="text" name="verificationKey" placeholder="Enter Your Verification Key" id="vKey">
             <input type="text" name="Email" placeholder="Enter Your Email Address" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -30,14 +33,28 @@
         const key = document.getElementById('vKey')
         key.style.display = 'none';
 
-        function keydisp() {
-            key.style.display = 'block';
-            key.required = true;
+        function getSelected() {
+            let user = document.getElementById("user_type").value
+
+            switch (user) {
+                case 'Student':
+                    key.style.display = 'none';
+                    key.required = false;
+                    break;
+                case 'Faculty':
+                    key.style.display = 'block';
+                    key.required = true;
+                    break;
+                case 'Sponsor':
+                    key.style.display = 'block';
+                    key.required = true;
+                    break;
+                default:
+                    return;
+            }
+            console.log(user);
         }
-        function keyHide() {
-            key.style.display = 'none';
-            key.required = false;
-        }
+
         function escapeRegExp(str) {
             return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         }

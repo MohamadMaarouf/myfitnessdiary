@@ -13,10 +13,17 @@
 
 .regiForm{
     border: 2px solid black;
+    text-align: center;
     display: grid;
     row-gap: 10px;
     margin-top:15%;
     margin-left: 35%;
+    padding: 1%;
     width: 25%;
     height: 45%;
+}
+.regiForm button{
+    position: relative;
+    width: 15%;
+    left: 45%;
 }
