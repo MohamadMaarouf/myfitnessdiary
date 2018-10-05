@@ -55,11 +55,13 @@
     width: 100%;
     position: absolute;
     bottom: 0;
-    margin-bottom: 5%;
+    margin-bottom: 2.5%;
     text-align: center;
 }
 
 .bottomBar a{
+    border: 1px solid black;
+    padding: .5%;
     margin-left: 5%;
 }
 
@@ -67,6 +69,6 @@ a{
     color: white;
 }
 a:hover{
-    color: blue;
+    color: rgb(150, 142, 142);
     cursor: pointer;
 }
