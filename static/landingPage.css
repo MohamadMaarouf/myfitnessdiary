@@ -1,111 +1,72 @@
-div{
-    left: 0;
-    margin: 5px;
-    
-}
-body{
-    background-color: #103C5F;
-}
-
-.navBar{
-    position: fixed;
-    z-index: -1;
-    overflow: hidden;
+.logoBar{
+    position: absolute;
     background-color: #103C5F;
     top: 0;
-    width: 99%;
-    height: 98%;
-}
-
-.logo{
-    position: relative;
     left: 0;
-    height: 75px;
-    width: 225px; 
-    background-image: url("./logo.svg");
-    background-repeat: no-repeat;
-}
-
-.backing{
-    border: 1px solid white;
-    background-image: url("./Students.jpg");
-    background-size: 100%;
-    background-repeat: no-repeat;
-    z-index: 1;
-    position: fixed;
-    margin-top: 0;
-    width: 99%;
-    height: 82%;
-}
-
-.bottomBar{
-    background-color: #103C5F;
     width: 100%;
-    position: fixed;
-    bottom: 0;
-    margin-bottom: .9%;
-    text-align: center;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    margin-top: 0;
+}
+.logo{
+    width: 225px;
+    height: 75px;
+    background-image: url("./logo.svg");
+}
+.backing{
+    position: relative;
+    border: 1px solid white;
+    width: 100%;
+    height: 80%;
+    background-image: url('./Students.jpg');
+    background-size: 100%;
+    max-width: 100%;
+    background-repeat: no-repeat; 
 }
 
 .regi{
     background-color:rgba(255, 255, 255, 0.7);
-    position: fixed;
-    left: 85%;
-    top: 20%;
-    z-index: 15;
+    width: 15%;
+    text-align: center;
+    position: absolute;
+    left: 80%;
+    top: 15%;
     margin-right: 50px;
     padding-top: .9%;
     padding-bottom: .9%;
     font-size: 30px;
     color: white;
 }
+.regi div{
+    margin-top: 10%;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-bottom: 15px;
+    text-align: center;
+    background-color: #103C5F;
+}
+.regi span{
+    color: black;
+}
+
+.bottomBar{
+    background-color: #103C5F;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 5%;
+    text-align: center;
+}
+
+.bottomBar a{
+    margin-left: 5%;
+}
 
 a{
-    margin-left: 5%;
     color: white;
 }
-
 a:hover{
-    color:blue;
+    color: blue;
     cursor: pointer;
-}
-
-.login{
-    margin-top: 10%;
-    margin-right: 25px;
-    margin-left: 25px;
-    margin-bottom: 15px;
-    text-align: center;
-    background-color: #103C5F;
-}
-
-
-.regis{
-    margin-bottom: 15px;
-    margin-right: 25px;
-    margin-left: 25px;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.0);
-    color: Black;
-}
-
-.faculty{
-    text-align: center;
-    margin-right: 25px;
-    margin-left: 25px;
-    background-color: #103C5F;
-}
-
-.student{
-    text-align: center;
-    margin-right: 25px;
-    margin-left: 25px;
-    background-color: #103C5F;
-}
-
-.employer{
-    text-align: center;
-    margin-right: 25px;
-    margin-left: 25px;
-    background-color: #103C5F;
 }
