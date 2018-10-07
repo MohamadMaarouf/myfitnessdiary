@@ -1,3 +1,6 @@
+div{
+    overflow: hidden;
+}
 .logoBar{
     position: absolute;
     background-color: #103C5F;
@@ -39,6 +42,7 @@
     color: white;
 }
 .regi div{
+    border-radius: 25px;
     margin-top: 10%;
     margin-right: 5%;
     margin-left: 5%;
@@ -67,6 +71,7 @@
 
 a{
     color: white;
+    text-decoration: none;
 }
 a:hover{
     color: rgb(150, 142, 142);

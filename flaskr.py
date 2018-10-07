@@ -30,7 +30,6 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_foward():
-    pswrd = request.form['Password']
     return (request.form['Username'])
 
 
@@ -41,6 +40,7 @@ def registration():
 
 @app.route('/registration', methods=['POST'])
 def registrationPost():
+    # All variables must be checked against database and be INSERT'ed into...
     firstName = request.form['firstName']
     lastName = request.form['lastName']
     user = request.form['User']
@@ -52,7 +52,7 @@ def registrationPost():
     if(pswrd != confirm):
         return (render_template('registration.html') + "<script>alert('Passwords do not match');</script>")
 
-    return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + pswrd + " " + confirm + " " + email + "</h1>")
+    return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + email + " " + pswrd + " " + confirm + " " + "</h1>")
 
 
 # START: Temporary code for testing how to foward based on user input
