@@ -7,14 +7,27 @@ a:visited{
 }
 
 .logger{
-    margin-top: 17%;
-    margin-left: 43%;
-    display: grid;
-    grid-template-rows: 25px 15px 20px 20px 20px;
-    gap: 10px;
-    width: 15%;
+    border: 2px solid black;
     text-align: center;
+    display: grid;
+    row-gap: 10px;
+    margin-top:15%;
+    margin-left: 35%;
+    padding: 1%;
+    width: 25%;
+    height: 45%;
 }
+
+#creds{
+    display: grid;
+    row-gap: 5%;
+    grid-row: 50% 50%;
+}
+ #creds button{
+    position: relative;
+    width: 15%;
+    left: 45%;
+ }
 .logoBar{
     position: absolute;
     background-color: #103C5F;

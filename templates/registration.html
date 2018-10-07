@@ -14,7 +14,7 @@
     </div>
     <div class="registrationFrom">
         <form action="" method="POST" class="regiForm">
-            <input name='firstName' type="text" placeholder="First Name" required>
+            <input name='firstName' type="text" placeholder="First Name" required id="start">
             <input name='lastName' type="text" placeholder="Last Name" required>
             <select name="User" id="user_type" onchange="javascript:getSelected()" required>
                 <option value="">Select an Account Type</option>
@@ -25,13 +25,16 @@
             <input type="text" name="verificationKey" placeholder="Enter Your Verification Key" id="vKey">
             <input type="text" name="Email" placeholder="Enter Your Email Address" required>
             <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="re-enter" placeholder="Retype Password" required>
+            <input type="password" name="re-enter" placeholder="Retype Password" required id="pas">
             <button type="submit">Submit</button>
         </form>
     </div>
     <script>
         const key = document.getElementById('vKey')
+        const intial = document.getElementById('start');
+
         key.style.display = 'none';
+        intial.focus();
 
         function getSelected() {
             let user = document.getElementById("user_type").value

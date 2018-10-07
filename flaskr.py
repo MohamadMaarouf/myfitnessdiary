@@ -1,3 +1,14 @@
+'''Flask server to handle routing for InternREQ.com. '''
+
+'''
+Authors:
+    Tom Birmingham
+    Christopher Conlon
+    Daniel G.
+    Davis Jaekle
+    Mohamad M.
+'''
+
 from flask import Flask, render_template, redirect, url_for, request
 
 app = Flask(__name__)
@@ -11,6 +22,16 @@ def landing():
 @app.route('/login')
 def login():
     return render_template('login.html')
+
+# This method will eventually post credentials to databse
+# -->Credential's fail: push error message
+# -->Credential's pass: push user's dash
+
+
+@app.route('/login', methods=['POST'])
+def login_foward():
+    pswrd = request.form['Password']
+    return (request.form['Username'])
 
 
 @app.route('/registration')
@@ -29,9 +50,7 @@ def registrationPost():
     email = request.form['Email']
 
     if(pswrd != confirm):
-        # from the plus sign on we need to append a <style> tag to target the form and make sure specific things
-        # match
-        return (render_template('registration.html') + "<h1>Password missmatch</h1>")
+        return (render_template('registration.html') + "<script>alert('Passwords do not match');</script>")
 
     return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + pswrd + " " + confirm + " " + email + "</h1>")
 
@@ -54,6 +73,11 @@ def foward_dash():
 
 
 # END: Temporary code for testing how to foward based on user input
+
+'''
+Based on the user_type returned from database query:
+ foward user to appropriate dashboard
+'''
 
 
 @app.route('/dashboard', methods=['POST'])
