@@ -30,7 +30,8 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_foward():
-    return (request.form['Username'])
+    user_type = 'Faculty'
+    return render_template('dashboard.html', user=user_type)
 
 
 @app.route('/registration')
@@ -91,6 +92,11 @@ def dashboard():
 
     elif(user_type == 'Student'):
         return '<h1>Student dashboard</h1>'
+
+
+@app.route('/test')
+def test():
+    return render_template('dashboard.html')
 
 
 if (__name__ == "__main__"):

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>InternREQ</title>
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .navBar {
+            background-color: #103C5F;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 75px;
+            z-index: 50;
+        }
+
+        .logo {
+            width: 225px;
+            height: 75px;
+            background-image: url("./logo.svg");
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navBar">
+        <div class="logo">
+            <a href="/"><img src="../static/logo.svg"></a>
+        </div>
+    </div>
+
+    <div class='content'>
+        {% block content %}
+        {% endblock %}
+
+    </div>
+</body>
+
+</html>

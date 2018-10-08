@@ -10,8 +10,9 @@
 </head>
 
 <body>
+    {% extends "template.html" %}
+    {% block content %}
     <div class="container">
-        {% include 'includes/_navbar.html' %}
         <div class="backing" height="500px"></div>
         <div class="regi">
             <div class="login"><a href="/login">Login</a></div>
@@ -27,6 +28,7 @@
             <a href="mailto:chris.conlon1993@gmail.com">Contact Us</a>
         </div>
     </div>
+    {% endblock %}
 </body>
 
 </html>

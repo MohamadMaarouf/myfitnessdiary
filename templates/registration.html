@@ -7,7 +7,8 @@
 </head>
 
 <body>
-    {% include 'includes/_navbar.html' %}
+    {% extends "template.html" %}
+    {% block content %}
     <div class="registrationFrom">
         <form action="" method="POST" class="regiForm">
             <input name='firstName' type="text" placeholder="First Name" required id="start">
@@ -25,6 +26,9 @@
             <button type="submit">Submit</button>
         </form>
     </div>
+    {% endblock %}
+
+    <!--Scripts here-->
     <script>
         const key = document.getElementById('vKey')
         const intial = document.getElementById('start');
