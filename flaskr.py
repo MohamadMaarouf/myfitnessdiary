@@ -16,12 +16,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def landing():
-    return render_template('landingPage.html')
+    return render_template('landingPage.html', title='InternREQ')
 
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', title="Login")
 
 # This method will eventually post credentials to databse
 # -->Credential's fail: push error message
@@ -31,12 +31,12 @@ def login():
 @app.route('/login', methods=['POST'])
 def login_foward():
     user_type = 'Faculty'
-    return render_template('dashboard.html', user=user_type)
+    return render_template('dashboard.html', user=user_type, title="Login")
 
 
 @app.route('/registration')
 def registration():
-    return render_template('registration.html')
+    return render_template('registration.html', title="Registration")
 
 
 @app.route('/registration', methods=['POST'])
@@ -51,7 +51,7 @@ def registrationPost():
     email = request.form['Email']
 
     if(pswrd != confirm):
-        return (render_template('registration.html') + "<script>alert('Passwords do not match');</script>")
+        return (render_template('registration.html', title='Login') + "<script>alert('Passwords do not match');</script>")
 
     return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + email + " " + pswrd + " " + confirm + " " + "</h1>")
 
@@ -92,11 +92,6 @@ def dashboard():
 
     elif(user_type == 'Student'):
         return '<h1>Student dashboard</h1>'
-
-
-@app.route('/test')
-def test():
-    return render_template('dashboard.html')
 
 
 if (__name__ == "__main__"):
