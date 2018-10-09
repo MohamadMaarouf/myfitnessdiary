@@ -12,16 +12,17 @@ Authors:
 from flask import Flask, render_template, redirect, url_for, request
 
 app = Flask(__name__)
+title = 'InternREQ'
 
 
 @app.route('/')
 def landing():
-    return render_template('landingPage.html', title='InternREQ')
+    return render_template('landingPage.html', title=title)
 
 
 @app.route('/login')
 def login():
-    return render_template('login.html', title="Login")
+    return render_template('login.html', title=(title + "-Login"))
 
 # This method will eventually post credentials to databse
 # -->Credential's fail: push error message
@@ -31,12 +32,12 @@ def login():
 @app.route('/login', methods=['POST'])
 def login_foward():
     user_type = 'Faculty'
-    return render_template('dashboard.html', user=user_type, title="Login")
+    return render_template('dashboard.html', user=user_type, title=(title+"-Login"))
 
 
 @app.route('/registration')
 def registration():
-    return render_template('registration.html', title="Registration")
+    return render_template('registration.html', title=(title+"-Registration"))
 
 
 @app.route('/registration', methods=['POST'])
@@ -51,7 +52,7 @@ def registrationPost():
     email = request.form['Email']
 
     if(pswrd != confirm):
-        return (render_template('registration.html', title='Login') + "<script>alert('Passwords do not match');</script>")
+        return (render_template('registration.html', title=(title+'-Login')) + "<script>alert('Passwords do not match');</script>")
 
     return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + email + " " + pswrd + " " + confirm + " " + "</h1>")
 
@@ -92,6 +93,15 @@ def dashboard():
 
     elif(user_type == 'Student'):
         return '<h1>Student dashboard</h1>'
+
+# START: Test route will be removed at time of product release
+
+
+@app.route('/test')
+def test():
+    return render_template('dashboard.html', title=(title+'Dashboard'))
+
+# End: Test route will be removed at time of product release
 
 
 if (__name__ == "__main__"):

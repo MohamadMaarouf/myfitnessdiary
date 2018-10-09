@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "template.html" %}
 
-<head>
-    <link rel="stylesheet" href="../static/dashboard.css">
-    <title>{{title}}</title>
-</head>
+{% block title %}
+{{title}}
+{% endblock %}
 
-<body>
-    {% extends "template.html" %}
+{% block style%}
+<link rel="stylesheet" href="../static/dashboard.css">
+{% endblock %}
 
-    {% block content %}
-    {% endblock %}
-</body>
-
-</html>
+{% block content %}
+<h1>here</h1>
+{% endblock %}
