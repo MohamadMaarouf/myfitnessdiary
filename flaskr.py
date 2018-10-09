@@ -97,9 +97,10 @@ def dashboard():
 # START: Test route will be removed at time of product release
 
 
-@app.route('/test')
-def test():
-    return render_template('dashboard.html', title=(title+'Dashboard'))
+@app.route('/test/', defaults={'name': 'No Profile'})
+@app.route('/test/<name>')
+def test(name):
+    return render_template('dashboard.html', title=(title+'Dashboard'), name=name)
 
 # End: Test route will be removed at time of product release
 
