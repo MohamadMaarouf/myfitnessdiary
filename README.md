@@ -50,4 +50,4 @@ This repo will house our project and all coding files associated with it.
     --> Branch name will most likely be <master> if you havent set up new branches.  
       
 # Wrapping it up  
-  After following these steps you should have a local version of this project and be able to create pull requests so we can merge your   edits with the main project. If you have any questions still please feel free to ask.  
+  After following these steps you should have a local version of this project and be able to create pull requests so we can merge your edits with the main project. If you have any questions still please feel free to ask.  
