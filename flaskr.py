@@ -33,7 +33,7 @@ def login():
 @app.route('/login', methods=['POST'])
 def login_foward():
     user = request.form['Username']
-    route = '/dashboard/' + user
+    route = '/profile/' + user
     return redirect(route)
 
 
@@ -68,9 +68,9 @@ def registrationPost():
 '''
 
 
-@app.route('/dashboard/<user>')
+@app.route('/profile/<user>')
 def foward_dash(user):
-    return (render_template('dashboard.html', username=user, title=(title+"-Profile")))
+    return (render_template('profile.html', username=user, title=(title+"-Profile")))
 
 
 # END: Temporary code for testing how to foward based on user input
@@ -99,7 +99,7 @@ def dashboard():
 @app.route('/test/', defaults={'name': 'No Profile'})
 @app.route('/test/<name>')
 def test(name):
-    return render_template('dashboard.html', title=(title+'Dashboard'), name=name)
+    return render_template('profile.html', title=(title+'Profile'), name=name)
 
 # End: Test route will be removed at time of product release
 
