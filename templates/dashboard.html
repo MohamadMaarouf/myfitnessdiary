@@ -87,6 +87,38 @@
             blanditiis,
             aliquid minima adipisci optio debitis!</p>
     </div>
-    <span><a href="#">Resume</a></span>
+    <span><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+            Resume
+        </button></span>
+
+    <!-- Resume pop up -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">{{username}}'s resume</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Put Resume here
+                    <hr>
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni ea reiciendis placeat saepe facilis
+                    a rerum dolores dignissimos ad nemo, eos architecto dolore, est dicta. Dolorum eaque consequatur
+                    mollitia dolore! Blanditiis soluta fugit quasi pariatur, sint molestias necessitatibus modi optio
+                    eveniet doloremque numquam quos, similique repellat iste ipsa quae vero. Deserunt quaerat rerum
+                    iusto doloribus perspiciatis blanditiis corrupti officia vero labore quos sunt maiores quidem,
+                    molestiae, natus assumenda? Id quas consequatur culpa facere recusandae, atque qui in laudantium
+                    vel nobis temporibus, omnis debitis, explicabo totam dolorum porro. Porro quas minus libero rem
+                    illo deleniti dignissimos. Quas quos consequatur maiores perspiciatis.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
