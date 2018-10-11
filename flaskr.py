@@ -8,16 +8,17 @@ Authors:
     Davis Jaekle
     Mohamad M.
 '''
-
+# Import's
 from flask import Flask, render_template, redirect, url_for, request
+# End Import's
 
 app = Flask(__name__)
-title = 'InternREQ'
+title = 'InternREQ-'
 
 
 @app.route('/')
 def landing():
-    return render_template('landingPage.html', title=title)
+    return render_template('landingPage.html', title=title+"-Home")
 
 
 @app.route('/login')
@@ -31,8 +32,9 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_foward():
-    user_type = 'Faculty'
-    return render_template('dashboard.html', user=user_type, title=(title+"-Login"))
+    user = request.form['Username']
+    route = '/dashboard/' + user
+    return redirect(route)
 
 
 @app.route('/registration')
@@ -66,12 +68,9 @@ def registrationPost():
 '''
 
 
-@app.route('/dashboard')
-def foward_dash():
-    return ('<form action="" method="POST"><input<label>Student <input type="radio" name="user" value="Student"></label></br>'
-            '<label>Faculty: <input type="radio" name="user" value="Faculty"></label></br>'
-            '<label>Employer: <input type="radio" name="user" value="Sponsor"></label></form></br>'
-            '<button type="submit">Submit</button>')
+@app.route('/dashboard/<user>')
+def foward_dash(user):
+    return (render_template('dashboard.html', username=user, title=(title+"-Profile")))
 
 
 # END: Temporary code for testing how to foward based on user input
