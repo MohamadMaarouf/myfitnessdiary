@@ -1,11 +1,21 @@
 {% extends 'template.html'%}
 {%block title%} {{title}}{%endblock%}
+
+{%block style%}
+<style>
+    #profile-button{
+        position: relative;
+        margin-left: 10%;
+    }
+</style>
+{% endblock %}
 {%block content%}
 <div class="content-wrapper">
     <div class="container-fluid">
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">{{Username}}'s Dashboard</li>
+            <li id="profile-button"><a href="/profile/{{Username}}"> Profile Page</a></li>
         </ol>
         <!-- Icon Cards-->
         <div class="row">
