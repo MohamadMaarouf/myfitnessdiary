@@ -33,7 +33,7 @@ def login():
 @app.route('/login', methods=['POST'])
 def login_foward():
     user = request.form['Username']
-    route = '/profile/' + user
+    route = '/dashboard/' + user
     return redirect(route)
 
 
@@ -81,25 +81,17 @@ Based on the user_type returned from database query:
 '''
 
 
-@app.route('/dashboard', methods=['POST'])
-def dashboard():
-    user_type = request.form['user']
-    if(user_type == 'Faculty'):
-        return ('<h1>Admin dashboard</h1>')
-
-    elif(user_type == 'Sponsor'):
-        return ('<h1>Sponsor dashboard</h1>')
-
-    elif(user_type == 'Student'):
-        return '<h1>Student dashboard</h1>'
+@app.route('/dashboard/<name>')
+def dashboard(name):
+    user = name
+    return render_template('dashboard.html', title=(title+'Dashboard'), Username=user)
 
 # START: Test route will be removed at time of product release
 
 
-@app.route('/test/', defaults={'name': 'No Profile'})
-@app.route('/test/<name>')
-def test(name):
-    return render_template('profile.html', title=(title+'Profile'), name=name)
+@app.route('/test')
+def test():
+    return render_template('dashboard.html', title=(title+'Dash'))
 
 # End: Test route will be removed at time of product release
 
