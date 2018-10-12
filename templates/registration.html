@@ -15,9 +15,9 @@
         <input name='lastName' type="text" placeholder="Last Name" required>
         <select name="User" id="user_type" onchange="javascript:getSelected()" required>
             <option value="">Select an Account Type</option>
-            <option value="Student">Student</option>
-            <option value="Faculty">Faculty</option>
-            <option value="Sponsor">Sponsor</option>
+            <option value="Student" id="2">Student</option>
+            <option value="Faculty" id="1">Faculty</option>
+            <option value="Sponsor" id="3">Sponsor</option>
         </select>
         <input type="text" name="verificationKey" placeholder="Enter Your Verification Key" id="vKey">
         <input type="text" name="Email" placeholder="Enter Your Email Address" required>
@@ -54,11 +54,29 @@
             default:
                 return;
         }
-        console.log(user);
     }
 
     function escapeRegExp(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+    window.onload = () => {
+        const user = document.getElementById('user_type');
+        let id = window.location.search[4];
+        switch (id) {
+            case ('1'):
+                user.value = 'Faculty';
+                break;
+            case ('2'):
+                user.value = 'Student';
+                break;
+            case ('3'):
+                user.value = 'Sponsor';
+                break;
+
+        }
+        getSelected();
+
     }
 </script>
 
