@@ -19,12 +19,20 @@ a:visited{
 }
 
 #creds{
+    text-align: center;
     display: grid;
     row-gap: 5%;
     grid-row: 50% 50%;
 }
+#creds input{
+    position: relative;
+    width: 100%;
+}
  #creds button{
     position: relative;
+    overflow: hidden;
+    height: 100%;
     width: 25%;
     left: 37%;
  }
+ 
