@@ -70,7 +70,7 @@ def registrationPost():
 
 @app.route('/profile/<user>')
 def foward_dash(user):
-    return (render_template('profile.html', username=user, title=(title+"-Profile")))
+    return (render_template('profile.html', Username=user, title=(title+"-Profile")))
 
 
 # END: Temporary code for testing how to foward based on user input
