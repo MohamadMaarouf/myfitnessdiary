@@ -1,4 +1,5 @@
 .regiForm{
+    overflow: hidden;
     border: 2px solid black;
     text-align: center;
     display: grid;
@@ -10,6 +11,7 @@
     height: 45%;
 }
 .regiForm button{
+    overflow: hidden;
     position: relative;
     width: 25%;
     left: 40%;
