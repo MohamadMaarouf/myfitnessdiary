@@ -9,7 +9,7 @@ Authors:
     Mohamad M.
 '''
 # Import's
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session
 import pymysql
 import getpass
 # End Import's
@@ -17,6 +17,9 @@ import getpass
 app = Flask(__name__)
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
+
+# Temp
+IP = '35.196.126.63'
 
 
 @app.route('/')
@@ -33,11 +36,12 @@ def login_foward():
     if(request.method == 'POST'):
         session['Username'] = request.form['Username']
         pas = getpass.getpass('Enter Password: ')
-        db = pymysql.connect(host='35.196.126.63', user='root',
+        db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
         c = db.cursor()
         c.execute('Select * from users where email="'+session['Username']+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
+        print(l)
         db.close()
 
         route = '/dashboard/' + session['Username']
@@ -54,8 +58,8 @@ def registrationPost():
         #lastName = request.form['lastName']
         #user = request.form['User']
         #verify = request.form['verificationKey']
-        #pswrd = request.form['password']
-        #confirm = request.form['re-enter']
+        pswrd = request.form['password']
+        confirm = request.form['re-enter']
         #email = request.form['Email']
 
         if(pswrd != confirm):
@@ -75,7 +79,7 @@ def registrationPost():
 
 
 @app.route('/profile/<user>')
-def foward_dash(user):
+def profile(user):
     print(user)
     if(session['Username'] == user):
         return (render_template('profile.html', Username=user, title=(title+"-Profile")))
@@ -95,7 +99,6 @@ Based on the user_type returned from database query:
 def dashboard(name):
     if(session['Username'] == name):
         user = name
-        print(name)
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=user)
     session.pop('Username', None)
     return redirect('/')
