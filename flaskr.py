@@ -9,13 +9,13 @@ Authors:
     Mohamad M.
 '''
 # Import's
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, redirect, url_for, request, session, flash
 import pymysql
 import getpass
 # End Import's
 
 app = Flask(__name__)
-app.secret_key = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
 
 
@@ -23,51 +23,46 @@ title = 'InternREQ-'
 def landing():
     return render_template('landingPage.html', title=title+"-Home")
 
-
-@app.route('/login')
-def login():
-    return render_template('login.html', title=(title + "-Login"))
-
 # This method will eventually post credentials to databse
 # -->Credential's fail: push error message
 # -->Credential's pass: push user's dash
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login_foward():
-    session['Username'] = request.form['Username']
-    pas = getpass.getpass('Enter Password: ')
-    db = pymysql.connect(host='35.196.126.63', user='root',
-                         password=pas, db='internreq')
-    c = db.cursor()
-    c.execute('Select * from users where email="'+session['Username']+'"')
-    l = c.fetchall()  # With this tuple we can parse for information to assign each user
-    db.close()
+    if(request.method == 'POST'):
+        session['Username'] = request.form['Username']
+        pas = getpass.getpass('Enter Password: ')
+        db = pymysql.connect(host='35.196.126.63', user='root',
+                             password=pas, db='internreq')
+        c = db.cursor()
+        c.execute('Select * from users where email="'+session['Username']+'"')
+        l = c.fetchall()  # With this tuple we can parse for information to assign each user
+        db.close()
 
-    route = '/dashboard/' + session['Username']
-    return redirect(route)
-
-
-@app.route('/registration')
-def registration():
-    return render_template('registration.html', title=(title+"-Registration"))
+        route = '/dashboard/' + session['Username']
+        return redirect(route)
+    elif (request.method == 'GET'):
+        return render_template('login.html')
 
 
-@app.route('/registration', methods=['POST'])
+@app.route('/registration', methods=['Get', 'POST'])
 def registrationPost():
-    # All variables must be checked against database and be INSERT'ed into...
-    firstName = request.form['firstName']
-    lastName = request.form['lastName']
-    user = request.form['User']
-    verify = request.form['verificationKey']
-    pswrd = request.form['password']
-    confirm = request.form['re-enter']
-    email = request.form['Email']
+    if(request.method == ' Post'):
+        # All variables must be checked against database and be INSERT'ed into...
+        #firstName = request.form['firstName']
+        #lastName = request.form['lastName']
+        #user = request.form['User']
+        #verify = request.form['verificationKey']
+        #pswrd = request.form['password']
+        #confirm = request.form['re-enter']
+        #email = request.form['Email']
 
-    if(pswrd != confirm):
-        return (render_template('registration.html', title=(title+'-Login')) + "<script>alert('Passwords do not match');</script>")
+        if(pswrd != confirm):
+            return (render_template('registration.html', title=(title+'-Login')) + "<script>alert('Passwords do not match');</script>")
 
-    return ("<h1>" + firstName + " " + lastName + " " + user + " " + verify + " " + email + " " + pswrd + " " + confirm + " " + "</h1>")
+        return redirect('/login')
+    return render_template('registration.html', title=(title+"-Registration"))
 
 
 # START: Temporary code for testing how to foward based on user input
@@ -81,7 +76,11 @@ def registrationPost():
 
 @app.route('/profile/<user>')
 def foward_dash(user):
-    return (render_template('profile.html', Username=user, title=(title+"-Profile")))
+    print(user)
+    if(session['Username'] == user):
+        return (render_template('profile.html', Username=user, title=(title+"-Profile")))
+    session.pop('Username', None)
+    return redirect('/login')
 
 
 # END: Temporary code for testing how to foward based on user input
@@ -94,17 +93,12 @@ Based on the user_type returned from database query:
 
 @app.route('/dashboard/<name>')
 def dashboard(name):
-    user = name
-    return render_template('dashboard.html', title=(title+'Dashboard'), Username=user)
-
-# START: Test route will be removed at time of product release
-
-
-@app.route('/test')
-def test():
-    return render_template('dashboard.html', title=(title+'Dash'))
-
-# End: Test route will be removed at time of product release
+    if(session['Username'] == name):
+        user = name
+        print(name)
+        return render_template('dashboard.html', title=(title+'Dashboard'), Username=user)
+    session.pop('Username', None)
+    return redirect('/')
 
 
 if (__name__ == "__main__"):

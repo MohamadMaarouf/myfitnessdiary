@@ -3,9 +3,8 @@
 
 {%block style%}
 <style>
-    #profile-button{
-        position: relative;
-        margin-left: 10%;
+    li{
+        margin: 1%
     }
 </style>
 {% endblock %}
@@ -15,6 +14,7 @@
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">{{Username}}'s Dashboard</li>
+
             <li id="profile-button"><a href="/profile/{{Username}}">Profile</a></li>
         </ol>
         <!-- Icon Cards-->
