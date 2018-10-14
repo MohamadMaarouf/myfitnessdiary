@@ -9,10 +9,13 @@ Authors:
     Mohamad M.
 '''
 # Import's
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
+import pymysql
+import getpass
 # End Import's
 
 app = Flask(__name__)
+app.secret_key = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 title = 'InternREQ-'
 
 
@@ -32,8 +35,16 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_foward():
-    user = request.form['Username']
-    route = '/dashboard/' + user
+    session['Username'] = request.form['Username']
+    pas = getpass.getpass('Enter Password: ')
+    db = pymysql.connect(host='35.196.126.63', user='root',
+                         password=pas, db='internreq')
+    c = db.cursor()
+    c.execute('Select * from users where email="'+session['Username']+'"')
+    l = c.fetchall()  # With this tuple we can parse for information to assign each user
+    db.close()
+
+    route = '/dashboard/' + session['Username']
     return redirect(route)
 
 
