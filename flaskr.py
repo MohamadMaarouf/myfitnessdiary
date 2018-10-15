@@ -34,7 +34,6 @@ def landing():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if(request.method == 'POST'):
-        session['Username'] = request.form['Username']
         pas = getpass.getpass('Enter Password: ')
         db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
@@ -44,10 +43,11 @@ def login():
         print(l)
         db.close()
 
-        route = '/dashboard/' + session['Username']
-        return redirect(route)
-    elif (request.method == 'GET'):
-        return render_template('login.html')
+        if(l[0][1] == request.form['Username'] and l[0][2] == request.form['Password']):
+            session['Username'] = request.form['Username']
+            route = '/dashboard/' + session['Username']
+            return redirect(route)
+    return render_template('login.html', title = (title + 'Login'))
 
 
 @app.route('/registration', methods=['Get', 'POST'])
