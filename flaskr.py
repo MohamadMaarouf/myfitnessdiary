@@ -32,7 +32,7 @@ def landing():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login_foward():
+def login():
     if(request.method == 'POST'):
         session['Username'] = request.form['Username']
         pas = getpass.getpass('Enter Password: ')
@@ -51,7 +51,7 @@ def login_foward():
 
 
 @app.route('/registration', methods=['Get', 'POST'])
-def registrationPost():
+def registration():
     if(request.method == ' Post'):
         # All variables must be checked against database and be INSERT'ed into...
         #firstName = request.form['firstName']
