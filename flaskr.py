@@ -38,7 +38,8 @@ def login():
         db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
         c = db.cursor()
-        c.execute('Select * from users where email="'+session['Username']+'"')
+        c.execute('Select * from users where email="' +
+                  request.form['Username']+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
         print(l)
         db.close()
@@ -47,7 +48,7 @@ def login():
             session['Username'] = request.form['Username']
             route = '/dashboard/' + session['Username']
             return redirect(route)
-    return render_template('login.html', title = (title + 'Login'))
+    return render_template('login.html', title=(title + 'Login'))
 
 
 @app.route('/registration', methods=['Get', 'POST'])
