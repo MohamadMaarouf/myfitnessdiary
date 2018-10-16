@@ -1,4 +1,4 @@
-'''Flask server to handle routing for InternREQ.com. '''
+''' Flask server to handle routing for InternREQ.com. '''
 
 '''
 Authors:
@@ -9,7 +9,8 @@ Authors:
     Mohamad M.
 '''
 # Import's
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+from modules import forms
 import pymysql
 import getpass
 # End Import's
@@ -33,6 +34,7 @@ def landing():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    form = forms.Login()
     if(request.method == 'POST'):
         pas = getpass.getpass('Enter Password: ')
         db = pymysql.connect(host=IP, user='root',
@@ -41,33 +43,22 @@ def login():
         c.execute('Select * from users where email="' +
                   request.form['Username']+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
-        print(l)
         db.close()
 
-        if(l[0][1] == request.form['Username'] and l[0][2] == request.form['Password']):
+        if(len(l) != 0 and l[0][1] == request.form['Username'] and l[0][2] == request.form['Password']):
             session['Username'] = request.form['Username']
             route = '/dashboard/' + session['Username']
             return redirect(route)
-    return render_template('login.html', title=(title + 'Login'))
+    return render_template('login.html', title=(title + 'Login'), form=form)
 
 
-@app.route('/registration', methods=['Get', 'POST'])
+@app.route('/registration', methods=['GET', 'POST'])
 def registration():
-    if(request.method == ' Post'):
-        # All variables must be checked against database and be INSERT'ed into...
-        #firstName = request.form['firstName']
-        #lastName = request.form['lastName']
-        #user = request.form['User']
-        #verify = request.form['verificationKey']
-        pswrd = request.form['password']
-        confirm = request.form['re-enter']
-        #email = request.form['Email']
-
-        if(pswrd != confirm):
-            return (render_template('registration.html', title=(title+'-Login')) + "<script>alert('Passwords do not match');</script>")
-
+    form = forms.Registration()
+    if(form.validate_on_submit()):
+        flash('Account Creation Successful!', 'success')
         return redirect('/login')
-    return render_template('registration.html', title=(title+"-Registration"))
+    return render_template('registration.html', title=(title+"-Registration"), form=form)
 
 
 # START: Temporary code for testing how to foward based on user input
