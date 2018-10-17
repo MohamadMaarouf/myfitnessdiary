@@ -17,8 +17,8 @@ class Registration(FlaskForm):
                             ('stu', 'Student'), ('fac', 'Faculty'), ('spo', 'Sponsor')])
     v_key = StringField('Verification Key: ', validators=[DataRequired()])
     email = StringField('Email: ', validators=[DataRequired(), Email()])
-    password = StringField('Password: ', validators=[
-                           DataRequired(), Length(min=6)])
-    confirm = StringField('Confirm Password:  ', validators=[
-                          DataRequired(), EqualTo('password')])
+    password = PasswordField('Password: ', validators=[
+        DataRequired(), Length(min=6)])
+    confirm = PasswordField('Confirm Password:  ', validators=[
+        DataRequired(), EqualTo('password')])
     submit = SubmitField('Register ', validators=[DataRequired()])

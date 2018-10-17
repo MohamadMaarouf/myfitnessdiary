@@ -8,6 +8,8 @@
 <style>
     span {
         background-color: rgba(247, 97, 97, 0.555);
+        border-radius: 15px;
+        padding: .3%;
     }
 </style>
 {% endblock %}
@@ -18,6 +20,7 @@
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4 text-center">Registration</legend>
+            <hr>
             <div class="form-group">
                 <b>{{ form.first_name.label(class="form-control-label mr-4") }}</b>
 
