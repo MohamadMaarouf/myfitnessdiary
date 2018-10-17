@@ -19,7 +19,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4 text-center">Registration</legend>
             <div class="form-group">
-                <b>{{ form.first_name.label(class="form-control-label") }}</b>
+                <b>{{ form.first_name.label(class="form-control-label mr-4") }}</b>
 
                 {% if form.first_name.errors %}
                 <b>{{ form.first_name(class="form-control-sm is-invalid") }}</b>
@@ -34,7 +34,7 @@
 
             </div>
             <div class="form-group">
-                <b>{{ form.last_name.label(class="form-control-label") }}</b>
+                <b>{{ form.last_name.label(class="form-control-label mr-4") }}</b>
                 {% if form.last_name.errors %}
                 <b>{{ form.last_name(class="form-control-sm is-invalid") }}</b>
                 <div class="invalid-feedback">
@@ -47,7 +47,7 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                <b>{{ form.user_type.label(class="form-control-label mr-4") }}</b>
+                <b>{{ form.user_type.label(class="form-control-label mr-5") }}</b>
                 {% if form.user_type.errors %}
                 <b>{{ form.user_type(class="form-control-sm is-invalid") }}</b>
                 <div class="invalid-feedback">
@@ -56,11 +56,11 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <b>{{ form.user_type(class="form-control-sm") }}</b>
+                <b>{{ form.user_type(class="form-control-sm ml-5") }}</b>
                 {% endif %}
             </div>
             <div class="form-group">
-                <b>{{ form.v_key.label(class="form-control-label") }}</b>
+                <b>{{ form.v_key.label(class="form-control-label mr-1") }}</b>
                 {% if form.v_key.errors %}
                 <b>{{ form.v_key(class="form-control-sm is-invalid") }}</b>
                 <div class="invalid-feedback">
@@ -69,11 +69,11 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <b>{{ form.v_key(class="form-control-sm") }}</b>
+                <b>{{ form.v_key(class="form-control-sm mr-4") }}</b>
                 {% endif %}
             </div>
             <div class="form-group">
-                <b>{{ form.email.label(class="form-control-label") }}</b>
+                <b>{{ form.email.label(class="form-control-label mr-3 ml-5") }}</b>
                 {% if form.email.errors %}
                 <b>{{ form.email(class="form-control-sm is-invalid") }}</b>
                 <div class="invalid-feedback">
@@ -82,11 +82,11 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <b>{{ form.email(class="form-control-sm") }}</b>
+                <b>{{ form.email(class="form-control-sm mr-1") }}</b>
                 {% endif %}
             </div>
             <div class="form-group">
-                <b>{{ form.password.label(class="form-control-label") }}</b>
+                <b>{{ form.password.label(class="form-control-label mr-4") }}</b>
                 {% if form.password.errors %}
                 <b>{{ form.password(class="form-control-sm is-invalid") }}</b>
                 <div class="invalid-feedback">
@@ -95,7 +95,7 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <b>{{ form.password(class="form-control-sm") }}</b>
+                <b>{{ form.password(class="form-control-sm ml-1") }}</b>
                 {% endif %}
             </div>
             <div class="form-group">
@@ -108,7 +108,7 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <b>{{ form.confirm(class="form-control-sm") }}</b>
+                <b>{{ form.confirm(class="form-control-sm ml-2 mr-5") }}</b>
                 {% endif %}
             </div>
         </fieldset>
