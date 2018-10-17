@@ -46,7 +46,6 @@ def login():
                   email+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
         db.close()
-
         if(len(l) != 0 and l[0][1] == email and l[0][2] == pwrd):
             session['Username'] = email
             route = '/dashboard/' + email
@@ -59,7 +58,33 @@ def login():
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
     form = forms.Registration()
+
     if(form.validate_on_submit()):
+        # Retreive inputs
+        user_type = form.user_type.data
+        email = form.email.data
+        pswrd = form.confirm.data
+        # Pull from Database
+        pas = getpass.getpass('Password: ')
+        db = pymysql.connect(host=IP, user='root',
+                             password=pas, db='internreq')
+        c = db.cursor()
+        c.execute('Select * from users where email="' +
+                  email+'"')
+        l = c.fetchall()  # With this tuple we can parse for information to assign each user
+        # ((1, 'chris.conlon1993@gmail.com', 'password', 'faculty admin'),)
+
+        if(len(l) == 0):
+            sql = "INSERT INTO users(user_id, email, password, role) VALUES" \
+                "(%s,%s,%s,%s)"
+            c.execute(sql, (int(0), email, pswrd, user_type))
+            c.execute("Select * from users")
+            print(c.fetchall())
+            db.commit()
+        else:
+            flash("Email address already used! Please Login.", 'danger')
+            return redirect('/registration')
+        db.close()
         flash('Account Creation Successful!', 'success')
         return redirect('/login')
     return render_template('registration.html', title=(title+"-Registration"), form=form)
@@ -68,7 +93,6 @@ def registration():
 # START: Temporary code for testing how to foward based on user input
 '''
     This code will eventually turn into a connection to the database when a user presses login from login html.
-    
     When the login button is pushed and the form is submited the dashboard() function is called to route user to
         the appropriate page based on what WILL be returned from the user_type column in or database.
 '''
@@ -79,6 +103,7 @@ def profile(user):
     if(session['Username'] == user):
         return (render_template('profile.html', Username=user, title=(title+"-Profile")))
     session.pop('Username', None)
+
     return redirect('/login')
 
 
