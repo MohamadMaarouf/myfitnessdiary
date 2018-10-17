@@ -35,20 +35,24 @@ def landing():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = forms.Login()
-    if(request.method == 'POST'):
+    if(form.validate_on_submit()):
+        email = form.email.data
+        pwrd = form.password.data
         pas = getpass.getpass('Enter Password: ')
         db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
         c = db.cursor()
         c.execute('Select * from users where email="' +
-                  request.form['Username']+'"')
+                  email+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
         db.close()
 
-        if(len(l) != 0 and l[0][1] == request.form['Username'] and l[0][2] == request.form['Password']):
-            session['Username'] = request.form['Username']
-            route = '/dashboard/' + session['Username']
+        if(len(l) != 0 and l[0][1] == email and l[0][2] == pwrd):
+            session['Username'] = email
+            route = '/dashboard/' + email
             return redirect(route)
+        else:
+            flash('Username or Password Error', 'danger')
     return render_template('login.html', title=(title + 'Login'), form=form)
 
 
@@ -72,7 +76,6 @@ def registration():
 
 @app.route('/profile/<user>')
 def profile(user):
-    print(user)
     if(session['Username'] == user):
         return (render_template('profile.html', Username=user, title=(title+"-Profile")))
     session.pop('Username', None)
@@ -90,8 +93,7 @@ Based on the user_type returned from database query:
 @app.route('/dashboard/<name>')
 def dashboard(name):
     if(session['Username'] == name):
-        user = name
-        return render_template('dashboard.html', title=(title+'Dashboard'), Username=user)
+        return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/')
 
