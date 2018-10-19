@@ -26,14 +26,21 @@
 
 <body>
     <div>
+        {% block navbar %}
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="/"><img src="../static/assets/logo.svg"></a>
+            <a class="navbar-brand" href="{{url_for('landing')}}"><img src="../static/assets/logo.svg"></a>
+
+            <!-- This block will handle When a user loggs in we can add to the navigation bar diffrent routs-->
+            {% if logged %}
+
+            {% endif %}
+        </nav>
+        {% endblock %}
     </div>
-    </nav>
     <div class='content'>
         {% with messages= get_flashed_messages(with_categories=true) %}
         {% if messages %}
