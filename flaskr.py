@@ -1,3 +1,7 @@
+import getpass
+import pymysql
+from modules import forms
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 ''' Flask server to handle routing for InternREQ.com. '''
 
 '''
@@ -9,10 +13,6 @@ Authors:
     Mohamad M.
 '''
 # Import's
-from flask import Flask, flash, redirect, render_template, request, session, url_for
-from modules import forms
-import pymysql
-import getpass
 # End Import's
 
 app = Flask(__name__)
