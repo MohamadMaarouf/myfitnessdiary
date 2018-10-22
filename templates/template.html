@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{{title}}{% endblock %}</title>
+    <!--Link to hosted server for bootstrap 4 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
         integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
@@ -14,6 +15,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+    <!-- End Bootstrap 4 links -->
 
     {% block style %} {{style}} {% endblock %}
 
@@ -42,6 +44,12 @@
         {% endblock %}
     </div>
     <div class='content'>
+        <!-- 
+            If there is a one time message to be attached to a page flask uses 'flash'
+            this code checks everytime a page is loaded to see if there is a message.
+            if there is a message: append it to the top of the page.
+            else: skip this block
+        -->
         {% with messages= get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
@@ -51,6 +59,7 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
+        <!--End code for flashed messages-->
         {% block content %}
         {% endblock %}
 
