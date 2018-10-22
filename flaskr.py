@@ -1,9 +1,11 @@
+''' Flask server to handle routing for InternREQ.com. '''
+
+# Import's
 import getpass
 import pymysql
 from modules import forms
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-''' Flask server to handle routing for InternREQ.com. '''
-
+# end Import's
 '''
 Authors:
     Tom Birmingham
@@ -12,24 +14,29 @@ Authors:
     Davis Jaekle
     Mohamad M.
 '''
-# Import's
-# End Import's
 
+# Gloabls
 app = Flask(__name__)
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
+
 
 # Database Access
 IP = '35.221.39.35'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 
+
 @app.route('/')
 def landing():
     return render_template('landingPage.html', title=title+"-Home")
 
-# This method will eventually post credentials to databse
-# -->Credential's fail: push error message
-# -->Credential's pass: push user's dash
+
+'''
+This is the route for login page, when first opening the page it is opened 
+via a GET request and ONLY the last render template executes. 
+If the user clicks submit the POST method executes and server recives entered data and verifies 
+against the database
+'''
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,12 +46,13 @@ def login():
         # Retrieve Input from Form
         email = form.email.data
         pwrd = form.password.data
-        
+
         # Database Connect
         db = pymysql.connect(host=IP, user='root', password=pas, db='internreq')
         c = db.cursor()
         c.execute('SELECT * FROM  users WHERE  email="'+email+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
+
         db.close()
 
         if(len(l) != 0 and l[0][1] == email and l[0][2] == pwrd):
@@ -55,6 +63,13 @@ def login():
             flash('Username or Password Error', 'danger')
 
     return render_template('login.html', title=(title + 'Login'), form=form)
+
+
+'''
+Same as Login: only last line executes at first, upon submit the if statment executes and evaluates 
+against our database. If account not in database: create a new user
+                      Else: foward to login page and request user to login
+'''
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -93,11 +108,8 @@ def registration():
     return render_template('registration.html', title=(title+"-Registration"), form=form)
 
 
-# START: Temporary code for testing how to foward based on user input
 '''
-    This code will eventually turn into a connection to the database when a user presses login from login html.
-    When the login button is pushed and the form is submited the dashboard() function is called to route user to
-        the appropriate page based on what WILL be returned from the user_type column in or database.
+Skeleton code for user profile
 '''
 
 
@@ -110,11 +122,8 @@ def profile(user):
     return redirect('/login')
 
 
-# END: Temporary code for testing how to foward based on user input
-
 '''
-Based on the user_type returned from database query:
- foward user to appropriate dashboard
+Skeleton code for dashboard
 '''
 
 
@@ -123,7 +132,7 @@ def dashboard(name):
     if(session['Username'] == name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
-    return redirect('/')
+    return redirect('/login')
 
 
 if (__name__ == "__main__"):
