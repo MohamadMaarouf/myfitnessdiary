@@ -19,9 +19,9 @@ app = Flask(__name__)
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
 
-# Temp
-IP = '35.196.126.63'
-
+# Database Access
+IP = '35.221.39.35'
+pas = getpass.getpass('Enter Password for InternREQ DB: ')
 
 @app.route('/')
 def landing():
@@ -36,22 +36,24 @@ def landing():
 def login():
     form = forms.Login()
     if(form.validate_on_submit()):
+        # Retrieve Input from Form
         email = form.email.data
         pwrd = form.password.data
-        pas = getpass.getpass('Enter Password: ')
-        db = pymysql.connect(host=IP, user='root',
-                             password=pas, db='internreq')
+        
+        # Database Connect
+        db = pymysql.connect(host=IP, user='root', password=pas, db='internreq')
         c = db.cursor()
-        c.execute('Select * from users where email="' +
-                  email+'"')
+        c.execute('SELECT * FROM  users WHERE  email="'+email+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
         db.close()
+
         if(len(l) != 0 and l[0][1] == email and l[0][2] == pwrd):
             session['Username'] = email
             route = '/dashboard/' + email
             return redirect(route)
         else:
             flash('Username or Password Error', 'danger')
+
     return render_template('login.html', title=(title + 'Login'), form=form)
 
 
@@ -64,10 +66,9 @@ def registration():
         user_type = form.user_type.data
         email = form.email.data
         pswrd = form.confirm.data
+
         # Pull from Database
-        pas = getpass.getpass('Password: ')
-        db = pymysql.connect(host=IP, user='root',
-                             password=pas, db='internreq')
+        db = pymysql.connect(host=IP, user='root', password=pas, db='internreq')
         c = db.cursor()
         c.execute('Select * from users where email="' +
                   email+'"')
@@ -81,12 +82,14 @@ def registration():
             c.execute("Select * from users")
             print(c.fetchall())
             db.commit()
+            db.close()
         else:
             flash("Email address already used! Please Login.", 'danger')
+            db.close()
             return redirect('/registration')
-        db.close()
         flash('Account Creation Successful!', 'success')
         return redirect('/login')
+
     return render_template('registration.html', title=(title+"-Registration"), form=form)
 
 
