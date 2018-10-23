@@ -48,7 +48,8 @@ def login():
         pwrd = form.password.data
 
         # Database Connect
-        db = pymysql.connect(host=IP, user='root', password=pas, db='internreq')
+        db = pymysql.connect(host=IP, user='root',
+                             password=pas, db='internreq')
         c = db.cursor()
         c.execute('SELECT * FROM  users WHERE  email="'+email+'"')
         l = c.fetchall()  # With this tuple we can parse for information to assign each user
@@ -83,7 +84,8 @@ def registration():
         pswrd = form.confirm.data
 
         # Pull from Database
-        db = pymysql.connect(host=IP, user='root', password=pas, db='internreq')
+        db = pymysql.connect(host=IP, user='root',
+                             password=pas, db='internreq')
         c = db.cursor()
         c.execute('Select * from users where email="' +
                   email+'"')
