@@ -22,7 +22,7 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.196.126.63'
+IP = '35.221.39.35'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 
 
