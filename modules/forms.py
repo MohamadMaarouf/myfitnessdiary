@@ -14,7 +14,7 @@ class Registration(FlaskForm):
     first_name = StringField('First Name: ', validators=[DataRequired()])
     last_name = StringField('Last Name: ', validators=[DataRequired()])
     user_type = SelectField('Account Type: ', validators=[DataRequired()], choices=[
-                            ('stu', 'Student'), ('fac', 'Faculty'), ('spo', 'Sponsor')])
+                            ('Student', 'Student'), ('Faculty', 'Faculty'), ('Sponsor', 'Sponsor')])
     v_key = StringField('Verification Key: ', validators=[DataRequired()])
     email = StringField('Email: ', validators=[DataRequired(), Email()])
     password = PasswordField('Password: ', validators=[
