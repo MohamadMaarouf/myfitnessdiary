@@ -2,7 +2,6 @@
 
 # Import's
 import getpass
-import pymysql
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 # end Import's
