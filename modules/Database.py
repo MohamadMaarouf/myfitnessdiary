@@ -42,7 +42,9 @@ class Database():
     arguments:
         self: required for object construction
         qType: short for query type. This will tell the databse if you are pulling ("PULL") down data 
-            to work with, (i.e logging in) or pushing ("PUSH") data to the database (i.e registration) 
+            to work with, (i.e logging in) or pushing ("PUSH") data to the database (i.e registration)
+        statment: the SQL statment to be run
+        *args: variable amout of arguments to be appended to the statment (i.e.: when inserting via pymysql) 
 
     return:
         if pulling down data it returns a tuple that was gained via your query
