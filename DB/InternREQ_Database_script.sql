@@ -41,7 +41,15 @@ CREATE TABLE student(
        first_name VARCHAR(50),
        last_name VARCHAR(50),
        location VARCHAR(50),
-       major VARCHAR(50),        graduation_date DATE, 	# DATE type returns format 'YYY-MM-DD' without time        GPA FLOAT(3,2),		# 3 digits with 2 decimal place        PRIMARY KEY(user_id),        FOREIGN KEY(user_id) REFERENCES users(user_id) ); 
+       major VARCHAR(50),
+       graduation_date DATE,
+       # DATE type returns format 'YYY-MM-DD' without time        
+       GPA FLOAT(3,2),		
+       # 3 digits with 2 decimal place        
+       PRIMARY KEY(user_id),        
+       FOREIGN KEY(user_id) REFERENCES 
+       users(user_id)
+       );
 
 CREATE TABLE sponsor(
        user_id INT NOT NULL,

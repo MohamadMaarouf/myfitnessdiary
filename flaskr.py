@@ -21,7 +21,7 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.221.39.35'
+IP = '35.196.126.63'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
@@ -76,7 +76,6 @@ def registration():
         vKey = form.v_key.data
         email = form.email.data
         pswrd = form.confirm.data
- 
 
         # Pull from Database
 
@@ -86,18 +85,15 @@ def registration():
             db.register(first, last, user_type, vKey, email, pswrd)
             sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            sql = "INSERT INTO "+user_type + \
+                "(user_id, first_name, last_name) VALUES(%s,%s,%s)"
             db.query('PUSH', sql, (user_id, first, last))
 
-
-        
         else:
             flash("Email address already used! Please Login.", 'danger')
             return redirect('/registration')
-        
+
         flash('Account Creation Successful!', 'success')
-        db.commit()
-        db.close()
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
