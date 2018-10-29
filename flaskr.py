@@ -47,6 +47,7 @@ def login():
         email = form.email.data
         pwrd = form.password.data
 
+
         # Database Connect
         db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
@@ -82,6 +83,8 @@ def registration():
         user_type = form.user_type.data
         email = form.email.data
         pswrd = form.confirm.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
 
         # Pull from Database
         db = pymysql.connect(host=IP, user='root',
@@ -93,18 +96,26 @@ def registration():
         # ((1, 'chris.conlon1993@gmail.com', 'password', 'faculty admin'),)
 
         if(len(l) == 0):
-            sql = "INSERT INTO users(user_id, email, password, role) VALUES" \
-                "(%s,%s,%s,%s)"
+            sql = "INSERT INTO users (user_id, email, password, role) VALUES(%s,%s,%s,%s)"
             c.execute(sql, (int(0), email, pswrd, user_type))
             c.execute("Select * from users")
             print(c.fetchall())
-            db.commit()
-            db.close()
+
+            # insert to student, faculty, sponsor tables
+            sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
+            c.execute(sql)
+            user_id = c.fetchall()
+            sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            c.execute(sql, (user_id, first_name, last_name))
+
         else:
             flash("Email address already used! Please Login.", 'danger')
             db.close()
             return redirect('/registration')
+        
         flash('Account Creation Successful!', 'success')
+        db.commit()
+        db.close()
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
