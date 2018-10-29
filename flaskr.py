@@ -2,8 +2,7 @@
 
 # Import's
 import getpass
-import pymysql
-from modules import forms
+from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 # end Import's
 '''
@@ -24,6 +23,7 @@ title = 'InternREQ-'
 # Database Access
 IP = '35.221.39.35'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
+db = Database.Database(IP, 'root', pas, 'internreq')
 
 
 @app.route('/')
@@ -47,17 +47,7 @@ def login():
         email = form.email.data
         pwrd = form.password.data
 
-
-        # Database Connect
-        db = pymysql.connect(host=IP, user='root',
-                             password=pas, db='internreq')
-        c = db.cursor()
-        c.execute('SELECT * FROM  users WHERE  email="'+email+'"')
-        l = c.fetchall()  # With this tuple we can parse for information to assign each user
-
-        db.close()
-
-        if(len(l) != 0 and l[0][1] == email and l[0][2] == pwrd):
+        if(db.credntial_check(email, pwrd)):
             session['Username'] = email
             route = '/dashboard/' + email
             return redirect(route)
@@ -80,14 +70,24 @@ def registration():
 
     if(form.validate_on_submit()):
         # Retreive inputs
+        first = form.first_name.data
+        last = form.last_name.data
         user_type = form.user_type.data
+        vKey = form.v_key.data
         email = form.email.data
         pswrd = form.confirm.data
         first_name = form.first_name.data
         last_name = form.last_name.data
 
         # Pull from Database
-        db = pymysql.connect(host=IP, user='root',
+
+        sql = 'Select * from users where email="' + email+'"'
+
+        if(len(db.query('PULL', sql)) == 0):
+            db.register(first, last, user_type, vKey, email, pswrd)
+            print(db.query('PULL', "Select * from users"))
+          
+        '''db = pymysql.connect(host=IP, user='root',
                              password=pas, db='internreq')
         c = db.cursor()
         c.execute('Select * from users where email="' +
@@ -106,11 +106,10 @@ def registration():
             c.execute(sql)
             user_id = c.fetchall()
             sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
-            c.execute(sql, (user_id, first_name, last_name))
-
+            c.execute(sql, (user_id, first_name, last_name))'''
+        
         else:
             flash("Email address already used! Please Login.", 'danger')
-            db.close()
             return redirect('/registration')
         
         flash('Account Creation Successful!', 'success')
