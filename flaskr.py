@@ -21,7 +21,7 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.196.126.63'
+IP = '35.221.39.35'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
@@ -76,17 +76,45 @@ def registration():
         vKey = form.v_key.data
         email = form.email.data
         pswrd = form.confirm.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
 
         # Pull from Database
+
         sql = 'Select * from users where email="' + email+'"'
 
         if(len(db.query('PULL', sql)) == 0):
             db.register(first, last, user_type, vKey, email, pswrd)
             print(db.query('PULL', "Select * from users"))
+          
+        '''db = pymysql.connect(host=IP, user='root',
+                             password=pas, db='internreq')
+        c = db.cursor()
+        c.execute('Select * from users where email="' +
+                  email+'"')
+        l = c.fetchall()  # With this tuple we can parse for information to assign each user
+        # ((1, 'chris.conlon1993@gmail.com', 'password', 'faculty admin'),)
+
+        if(len(l) == 0):
+            sql = "INSERT INTO users (user_id, email, password, role) VALUES(%s,%s,%s,%s)"
+            c.execute(sql, (int(0), email, pswrd, user_type))
+            c.execute("Select * from users")
+            print(c.fetchall())
+
+            # insert to student, faculty, sponsor tables
+            sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
+            c.execute(sql)
+            user_id = c.fetchall()
+            sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            c.execute(sql, (user_id, first_name, last_name))'''
+        
         else:
             flash("Email address already used! Please Login.", 'danger')
             return redirect('/registration')
+        
         flash('Account Creation Successful!', 'success')
+        db.commit()
+        db.close()
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
