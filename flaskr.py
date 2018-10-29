@@ -9,7 +9,7 @@ Authors:
     Tom Birmingham
     Christopher Conlon
     Daniel G.
-    Davis Jaekle
+    Davis                    Jaekle
     Mohamad M.
 '''
 # Import's
