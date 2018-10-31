@@ -104,13 +104,12 @@ Skeleton code for user profile
 '''
 
 
-@app.route('/profile/<user>')
+@app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-    if(session['Username'] == user):
-        return (render_template('profile.html', Username=user, title=(title+"-Profile")))
-    session.pop('Username', None)
-
-    return redirect('/login')
+    if(session and session['Username'] == user):
+        # return (render_template('profile.html', Username=user, title=(title+"-Profile")))
+        return render_template('sponsorPage.html', Username=user, Edit=True)
+    return render_template('SponsorPAge.html', Username=user, edit=False)
 
 
 '''
