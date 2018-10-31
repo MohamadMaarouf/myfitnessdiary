@@ -49,7 +49,8 @@ def login():
 
         if(db.credntial_check(email, pwrd)):
             # set a session cookie with values role and ID that refrences our tables
-            session['Username'] = email
+            session['Role'] = db.query(
+                'PULL', "Select role from users where email='"+email+"'")[0][0]
             session['ID'] = db.query(
                 'PULL', "Select user_id from users where email='"+email+"'")[0][0]  # [0][0] gives us the integer rather then tuple
             route = '/dashboard/' + email
@@ -110,7 +111,12 @@ Skeleton code for user profile
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
     if(session and session['Username'] == user):
-        return render_template('profile.html', Username=user, Edit=True)
+        first = db.query("PULL", "Select first_name from " +
+                         (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        last = db.query("PULL", "Select last_name from " +
+                        (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        name = first + " "+ last
+        return render_template('profile.html', Username=name, Edit=True)
     return render_template('profile.html', Username=user)
 
 

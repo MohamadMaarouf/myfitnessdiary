@@ -14,7 +14,7 @@ class Registration(FlaskForm):
     first_name = StringField('First Name: ', validators=[DataRequired()])
     last_name = StringField('Last Name: ', validators=[DataRequired()])
     user_type = SelectField('Account Type: ', validators=[DataRequired()], choices=[
-      ('student', 'Student'), ('faculty', 'Faculty'), ('sponsor', 'Sponsor')])
+        ('student', 'Student'), ('faculty', 'Faculty'), ('sponsor', 'Sponsor')])
 
     v_key = StringField('Verification Key: ', validators=[DataRequired()])
     email = StringField('Email: ', validators=[DataRequired(), Email()])
@@ -23,3 +23,7 @@ class Registration(FlaskForm):
     confirm = PasswordField('Confirm Password:  ', validators=[
         DataRequired(), EqualTo('password')])
     submit = SubmitField('Register ', validators=[DataRequired()])
+
+
+class Posting(FlaskForm):
+    pass
