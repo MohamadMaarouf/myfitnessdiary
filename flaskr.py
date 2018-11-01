@@ -49,6 +49,7 @@ def login():
 
         if(db.credntial_check(email, pwrd)):
             # set a session cookie with values role and ID that refrences our tables
+            session['Username'] = email
             session['Role'] = db.query(
                 'PULL', "Select role from users where email='"+email+"'")[0][0]
             session['ID'] = db.query(
