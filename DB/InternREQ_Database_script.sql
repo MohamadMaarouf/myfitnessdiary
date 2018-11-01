@@ -15,11 +15,16 @@ CREATE TABLE users(
        PRIMARY KEY(user_id)
 );
 
-INSERT INTO users VALUES(0, 'tombirmingham91@gmail.com', 'password1', 'faculty admin');
-INSERT INTO users VALUES(0, 'chris.conlon1993@gmail.com', 'password1', 'faculty admin');
-INSERT INTO users VALUES(0, 'djaekle123@gmail.com', 'password1', 'faculty admin');
-INSERT INTO users VALUES(0, 'mmaarouf95@gmail.com', 'password1', 'faculty admin');
-INSERT INTO users VALUES(0, 'glinskid3@gmail.com', 'password1', 'faculty admin');
+INSERT INTO users VALUES(0, 'tombirmingham91@gmail.com',
+        '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO users VALUES(0, 'chris.conlon1993@gmail.com',
+        '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO users VALUES(0, 'djaekle123@gmail.com',
+        '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO users VALUES(0, 'mmaarouf95@gmail.com',
+        '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO users VALUES(0, 'glinskid3@gmail.com',
+        '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
 
 SELECT * FROM users;
 
@@ -41,7 +46,22 @@ CREATE TABLE student(
        first_name VARCHAR(50),
        last_name VARCHAR(50),
        location VARCHAR(50),
-       major VARCHAR(50),        graduation_date DATE, 	# DATE type returns format 'YYY-MM-DD' without time        GPA FLOAT(3,2),		# 3 digits with 2 decimal place        PRIMARY KEY(user_id),        FOREIGN KEY(user_id) REFERENCES users(user_id) ); 
+       major VARCHAR(50),
+       
+       # profiles
+       # profile picture
+       # banner image
+       # about
+       # skills and project
+       # resume
+
+
+       graduation_date DATE, 	# DATE type returns format 'YYY-MM-DD' without time
+       GPA FLOAT(3,2),		# 3 digits with 2 decimal place
+       image BLOB,
+       PRIMARY KEY(user_id),
+       FOREIGN KEY(user_id) REFERENCES users(user_id)
+); 
 
 CREATE TABLE sponsor(
        user_id INT NOT NULL,
@@ -68,6 +88,15 @@ CREATE TABLE internship(
 	internship_id INT AUTO_INCREMENT,
 	user_id INT NOT NULL,
 	about VARCHAR(1000),
+        image BLOB,
+        title VARCHAR(255),
+        location VARCHAR(255),
+        overview VARCHAR(1024),
+        responsiblities VARCHAR(1024)
+        # requirements 
+        # compensation BOOL
+        # type # full part or internship
+        # hours # text
 	PRIMARY KEY(internship_id),
 	FOREIGN KEY(user_id) REFERENCES sponsor(user_id)
 );

@@ -79,25 +79,26 @@ def registration():
  
 
         # Pull from Database
-
-        sql = 'Select * from users where email="' + email+'"'
+        sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
+            # add user to user table
             db.register(first, last, user_type, vKey, email, pswrd)
-            sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
+
+            # add user to student/faculty/sponsor table
+            sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
-            db.query('PUSH', sql, (user_id, first, last))
-
-
-        
+            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES (%s, %s, %s) " % user_type, user_id, first, last
+            db.query('PUSH', sql)
+ 
         else:
             flash("Email address already used! Please Login.", 'danger')
+            # TO-DO: CLOSE CONNECTION TO DATABASE
             return redirect('/registration')
         
         flash('Account Creation Successful!', 'success')
-        db.commit()
-        db.close()
+        # TO-DO: COMMIT CHANGES TO DB
+        # TO-DO: CLOSE CONNECTION TO DATABASE
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
