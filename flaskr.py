@@ -115,7 +115,7 @@ def profile(user):
                          (session['Role'])+" where user_id="+str(session['ID']))[0][0]
         last = db.query("PULL", "Select last_name from " +
                         (session['Role'])+" where user_id="+str(session['ID']))[0][0]
-        name = first + " "+ last
+        name = first + " " + last
         return render_template('profile.html', Username=name, Edit=True)
     return render_template('profile.html', Username=user)
 
@@ -131,6 +131,12 @@ def dashboard(name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/login')
+
+
+@app.route('/postings')
+def posting():
+    form = forms.Posting()
+    return render_template('posting.html', datePosted=1, form=form)
 
 
 if (__name__ == "__main__"):

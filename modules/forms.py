@@ -26,4 +26,9 @@ class Registration(FlaskForm):
 
 
 class Posting(FlaskForm):
-    pass
+    title = StringField('Title', validators=[DataRequired()])
+    '''
+    Put more fields here
+    '''
+
+    submit = SubmitField('Create Posting ', validators=[DataRequired()])
