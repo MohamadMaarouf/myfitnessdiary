@@ -21,7 +21,7 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.221.39.35'
+IP = '35.196.126.63'
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
@@ -76,7 +76,6 @@ def registration():
         vKey = form.v_key.data
         email = form.email.data
         pswrd = form.confirm.data
- 
 
         # Pull from Database
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
@@ -95,10 +94,12 @@ def registration():
             flash("Email address already used! Please Login.", 'danger')
             # TO-DO: CLOSE CONNECTION TO DATABASE
             return redirect('/registration')
-        
+
         flash('Account Creation Successful!', 'success')
+
         # TO-DO: COMMIT CHANGES TO DB
         # TO-DO: CLOSE CONNECTION TO DATABASE
+
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
@@ -109,13 +110,12 @@ Skeleton code for user profile
 '''
 
 
-@app.route('/profile/<user>')
+@app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-    if(session['Username'] == user):
-        return (render_template('profile.html', Username=user, title=(title+"-Profile")))
-    session.pop('Username', None)
-
-    return redirect('/login')
+    if(session and session['Username'] == user):
+        # return (render_template('profile.html', Username=user, title=(title+"-Profile")))
+        return render_template('sponsorPage.html', Username=user, Edit=True)
+    return render_template('SponsorPAge.html', Username=user, edit=False)
 
 
 '''

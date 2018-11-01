@@ -46,6 +46,7 @@ CREATE TABLE faculty(
         FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
 
+
 CREATE TABLE student(
        user_id INT NOT NULL,
        first_name VARCHAR(50),
@@ -58,10 +59,12 @@ CREATE TABLE student(
        skills VARCHAR(1024),
        resume BLOB,
        graduation_date DATE, 	# DATE type returns format 'YYY-MM-DD' without time
-       GPA FLOAT(3,2),		# 3 digits with 2 decimal place
-       PRIMARY KEY(user_id),
-       FOREIGN KEY(user_id) REFERENCES users(user_id)
-); 
+       GPA FLOAT(3,2),		# 3 digits with 2 decimal place      
+       PRIMARY KEY(user_id),        
+       FOREIGN KEY(user_id) REFERENCES 
+       users(user_id)
+       );
+
 
 CREATE TABLE sponsor(
         user_id INT NOT NULL,
@@ -77,6 +80,7 @@ CREATE TABLE sponsor(
         PRIMARY KEY(user_id),
         FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
+
 
 # Create PROFILE, INTERNSHIP, and APPLICATION tables
 
