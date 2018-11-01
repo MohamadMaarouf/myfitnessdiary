@@ -48,7 +48,11 @@ def login():
         pwrd = form.password.data
 
         if(db.credntial_check(email, pwrd)):
-            session['Username'] = email
+            # set a session cookie with values role and ID that refrences our tables
+            session['Role'] = db.query(
+                'PULL', "Select role from users where email='"+email+"'")[0][0]
+            session['ID'] = db.query(
+                'PULL', "Select user_id from users where email='"+email+"'")[0][0]  # [0][0] gives us the integer rather then tuple
             route = '/dashboard/' + email
             return redirect(route)
         else:
@@ -104,13 +108,16 @@ Skeleton code for user profile
 '''
 
 
-@app.route('/profile/<user>')
+@app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-    if(session['Username'] == user):
-        return (render_template('profile.html', Username=user, title=(title+"-Profile")))
-    session.pop('Username', None)
-
-    return redirect('/login')
+    if(session and session['Username'] == user):
+        first = db.query("PULL", "Select first_name from " +
+                         (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        last = db.query("PULL", "Select last_name from " +
+                        (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        name = first + " " + last
+        return render_template('profile.html', Username=name, Edit=True)
+    return render_template('profile.html', Username=user)
 
 
 '''
@@ -124,6 +131,12 @@ def dashboard(name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/login')
+
+
+@app.route('/postings')
+def posting():
+    form = forms.Posting()
+    return render_template('posting.html', datePosted=1, form=form)
 
 
 if (__name__ == "__main__"):
