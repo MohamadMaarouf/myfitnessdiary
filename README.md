@@ -1,26 +1,6 @@
 # CSC-330---GearGrinders
 # Authors of InternREQ  
-
-# Todays activity Instructions  
-1) Download either [vscode](https://code.visualstudio.com/Download) or [atom](https://atom.io/)  
-  --> I prefer vscode as it has a great setup but each will work   
-2) Clone our repo on your LOCAL machine not your vm, if you do not know how instructions are below  
-3) Create a branch, again instructions for branching is below   
-4) Add your name to the below Authors heading  
-5) stage and commit your changes to your branch  
-6) Push your branch to our github repo, instructions below  
-7) create a pull request on GitHub (i.e.: go to our github repo and click on your branch, click new pull request)  
-8) We require 2 approvals to merge changes so we need to communicate when our branch has been pushed.  
-
-If you have issues please contact me!
-  
-  When all this is done by everyone our names will be on this document and we should all be up on github. As well, we should   
-   also have some way to work on the project in a more productive way.
-   # Sprint 2 is DUE WEDNESDAY
-   so please get this done so we can work through the weekend to ontop 
-   the project!
-
-# Authors:  
+  Tom Birmingham    
   Christopher Conlon    
     ---> Insert your names here <----
 
