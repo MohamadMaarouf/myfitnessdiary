@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 
@@ -27,6 +27,18 @@ class Registration(FlaskForm):
 
 class Posting(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired()])
+    overview = TextAreaField('Overview', validators=[])
+    responsibilities = TextAreaField('Responsibilities', validators=[])
+    reqs = TextAreaField('Applicant Requirments', validators=[])
+    comp = SelectField('Compensation', validators=[DataRequired()], choices=[
+                       (True, 'Yes'), (False, "No")])
+    fullPart = SelectField('Internship/Part/Full time',
+                           validators=[DataRequired()],
+                           choices=[('intern', 'Internship'), ('part', 'Part-Time'), ('full', 'Full Time')])
+    hours = TextAreaField('Hours (Day: required hours)',
+                          validators=[DataRequired()])
+
     '''
     Put more fields here
     '''

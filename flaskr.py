@@ -5,14 +5,6 @@ import getpass
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 # end Import's
-'''
-Authors:
-    Tom Birmingham
-    Christopher Conlon
-    Daniel G.
-    Davis Jaekle
-    Mohamad M.
-'''
 
 # Gloabls
 app = Flask(__name__)
@@ -49,6 +41,7 @@ def login():
 
         if(db.credntial_check(email, pwrd)):
             # set a session cookie with values role and ID that refrences our tables
+            session['Username'] = email
             session['Role'] = db.query(
                 'PULL', "Select role from users where email='"+email+"'")[0][0]
             session['ID'] = db.query(
