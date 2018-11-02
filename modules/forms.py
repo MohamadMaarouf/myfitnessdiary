@@ -31,7 +31,8 @@ class Posting(FlaskForm):
     overview = TextAreaField('Overview', validators=[])
     responsibilities = TextAreaField('Responsibilities', validators=[])
     reqs = TextAreaField('Applicant Requirments', validators=[])
-    comp = BooleanField('Compensation', validators=[DataRequired()])
+    comp = SelectField('Compensation', validators=[DataRequired()], choices=[
+                       (True, 'Yes'), (False, "No")])
     fullPart = SelectField('Internship/Part/Full time',
                            validators=[DataRequired()],
                            choices=[('intern', 'Internship'), ('part', 'Part-Time'), ('full', 'Full Time')])
