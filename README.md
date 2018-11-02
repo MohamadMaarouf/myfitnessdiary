@@ -1,7 +1,7 @@
 # CSC-330---GearGrinders
 # Authors of InternREQ    
   Christopher Conlon    
-  Tom Birmingham
+  Tom Birmingham  
     ---> Insert your names here <----
 
     
