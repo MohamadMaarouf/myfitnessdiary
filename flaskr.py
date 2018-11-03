@@ -126,10 +126,17 @@ def dashboard(name):
     return redirect('/login')
 
 
-@app.route('/postings')
+@app.route('/posting')
 def posting():
+    return render_template('posting.html', datePosted=1)
+
+
+@app.route('/create/posting')
+def createPosting():
     form = forms.Posting()
-    return render_template('posting.html', datePosted=1, form=form)
+    if(form.validate_on_submit()):
+        return redirect('/profile/'+session['Username'])
+    return (render_template('posting.html', datePosted=1, form=form))
 
 
 if (__name__ == "__main__"):

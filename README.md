@@ -22,7 +22,7 @@
   # Steps for working with a repo  
     
     1) Make sure you have git installed on what ever machine you wish to use. 
-        If you do not have git go here: [https://git-scm.com] and download.  
+        If you do not have git go here: [git](https://git-scm.com) and download.  
 
     2) Set git up by typing the following commands in the command line:   
             git config --global user.name "Enter Username Here"  

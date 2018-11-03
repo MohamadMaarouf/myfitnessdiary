@@ -5,6 +5,25 @@
 {% endblock %}
 
 {% block style %}
+<style>
+    body{
+        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    }
+    #backing{
+        background: #fff;
+    }
+    div{
+        border-radius: 3%;
+    }
+    span{
+        border-radius: 1%;
+    }
+    #temp{
+        height: 350px;
+        width: 370px;
+        background-color: grey;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -136,12 +155,104 @@
     </form>
 </div>
 {% else %}
-<div>
+<div class="container h-90 w-90 pt-4 mt-4" id="backing">
     <!--If no form then someone is looking at the posting render this-->
-    <span><button type="button" class="btn btn-primary mr-4">Apply Now</button>
-        <p class="" style="display:inline">Posted {{datePosted}} day(s) ago</p>
-        <button type="button" class="btn btn-primary float-right">Print</button>
+    <span class="row-12"><button type="button" class="btn btn-primary mr-4">Apply Now</button>
+        <p style="display:inline">Posted {{datePosted}} day(s) ago</p>
+        <button type="button" class="btn btn-primary float-right mr-5">Print</button>
     </span><br>
+    <div class="pl-3 mt-5 row w-75">
+        <span class="col-10" style="border:1px solid black">
+            <b>Job Title{{jTitle}}</b>
+            <b class="float-right">Location{{location}}</b>
+            <br>
+            <br>
+            <h4>Overview:</h4>
+            <hr>
+
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, maxime, sint iure officiis labore
+                eius,
+                rem reprehenderit quod debitis molestias magnam consequuntur numquam? Optio dolore quae porro,
+                molestias
+                quod ullam, debitis numquam magni cupiditate obcaecati quos, aliquam sed at quaerat quibusdam doloribus
+                amet voluptatibus similique. Cum, corporis laboriosam aspernatur suscipit obcaecati exercitationem
+                amet,
+                minima modi pariatur delectus cumque ratione animi deleniti beatae. Dolorum deleniti, ducimus illo amet
+                dignissimos aspernatur error aut saepe modi nulla, soluta porro temporibus magnam nobis accusantium
+                quod
+                quas ad hic ab dolor optio alias odio perspiciatis cumque? Tempore, voluptates assumenda est esse et
+                exercitationem iusto nisi aperiam sunt eligendi! Facilis, consequuntur alias. Dolore exercitationem,
+                officia fugiat commodi cupiditate velit, magnam voluptas quae culpa ut iure! Aliquam id illum autem.
+                Alias
+                maxime minus dolor et, placeat facilis inventore porro quas corporis voluptate non eveniet, accusantium
+                quia quisquam repellat fugit harum. Accusantium, repellendus dolores architecto veritatis iusto
+                voluptatibus?</p>
+            <br>
+            <h4>Responsiblities:</h4>
+            <hr>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, maxime, sint iure officiis labore
+                eius,
+                rem reprehenderit quod debitis molestias magnam consequuntur numquam? Optio dolore quae porro,
+                molestias
+                quod ullam, debitis numquam magni cupiditate obcaecati quos, aliquam sed at quaerat quibusdam doloribus
+                amet voluptatibus similique. Cum, corporis laboriosam aspernatur suscipit obcaecati exercitationem
+                amet,
+                minima modi pariatur delectus cumque ratione animi deleniti beatae. Dolorum deleniti, ducimus illo amet
+                dignissimos aspernatur error aut saepe modi nulla, soluta porro temporibus magnam nobis accusantium
+                quod
+                quas ad hic ab dolor optio alias odio perspiciatis cumque? Tempore, voluptates assumenda est esse et
+                exercitationem iusto nisi aperiam sunt eligendi! Facilis, consequuntur alias. Dolore exercitationem,
+                officia fugiat commodi cupiditate velit, magnam voluptas quae culpa ut iure! Aliquam id illum autem.
+                Alias
+                maxime minus dolor et, placeat facilis inventore porro quas corporis voluptate non eveniet, accusantium
+                quia quisquam repellat fugit harum. Accusantium, repellendus dolores architecto veritatis iusto
+                voluptatibus?</p>
+            <br>
+            <h4>Requirments:</h4>
+            <hr>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, maxime, sint iure officiis labore
+                eius,
+                rem reprehenderit quod debitis molestias magnam consequuntur numquam? Optio dolore quae porro,
+                molestias
+                quod ullam, debitis numquam magni cupiditate obcaecati quos, aliquam sed at quaerat quibusdam doloribus
+                amet voluptatibus similique. Cum, corporis laboriosam aspernatur suscipit obcaecati exercitationem
+                amet,
+                minima modi pariatur delectus cumque ratione animi deleniti beatae. Dolorum deleniti, ducimus illo amet
+                dignissimos aspernatur error aut saepe modi nulla, soluta porro temporibus magnam nobis accusantium
+                quod
+                quas ad hic ab dolor optio alias odio perspiciatis cumque? Tempore, voluptates assumenda est esse et
+                exercitationem iusto nisi aperiam sunt eligendi! Facilis, consequuntur alias. Dolore exercitationem,
+                officia fugiat commodi cupiditate velit, magnam voluptas quae culpa ut iure! Aliquam id illum autem.
+                Alias
+                maxime minus dolor et, placeat facilis inventore porro quas corporis voluptate non eveniet, accusantium
+                quia quisquam repellat fugit harum. Accusantium, repellendus dolores architecto veritatis iusto
+                voluptatibus?</p>
+
+        </span>
+        <span class=col-2>
+            <img id="temp" src="" alt=" Fake logo here">
+            <br>
+            <div class="mt-3" style="width: 370px; border:1px solid black">
+                <p>Compensation: TEMP YES/NO{{comp}}</p>
+                <p>Hours: ALL OF THEM{{timeFrame}}</p>
+            </div>
+        </span>
+    </div>
+    <div class="row mt-3 pb-4">
+        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1">About</button>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1">Support</button>
+    </div>
+</div>
+<div>
+    <pre>
+
+
+
+    </pre>
 </div>
 {% endif %}
 
