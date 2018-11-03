@@ -43,9 +43,9 @@ def login():
             # set a session cookie with values role and ID that refrences our tables
             session['Username'] = email
             session['Role'] = db.query(
-                'PULL', "Select role from users where email='"+email+"'")[0][0]
+                'PULL', "SELECT role FROM users WHERE email LIKE '%s'" % email)[0][0]
             session['ID'] = db.query(
-                'PULL', "Select user_id from users where email='"+email+"'")[0][0]  # [0][0] gives us the integer rather then tuple
+                'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]  # [0][0] gives us the integer rather then tuple
             route = '/dashboard/' + email
             return redirect(route)
         else:
@@ -76,15 +76,14 @@ def registration():
 
         # Pull from Database
 
-        sql = 'Select * from users where email="' + email+'"'
+        sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
             db.register(first, last, user_type, vKey, email, pswrd)
-            sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
+            sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO "+user_type + \
-                "(user_id, first_name, last_name) VALUES(%s,%s,%s)"
-            db.query('PUSH', sql, (user_id, first, last))
+            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
+            db.query('PUSH', sql)
 
         else:
             flash("Email address already used! Please Login.", 'danger')
