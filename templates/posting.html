@@ -29,7 +29,7 @@
 {% block content %}
 <!-- if there is a form Sponsor is creating a posting render this-->
 {% if form %}
-<div class="container h-90 w-90 pt-4 text-center">
+<div class="container h-90 w-90 pt-4 text-center mt-1" id="backing">
     <!--Do form stuff here-->
     <form action="" method="POST">
         {{ form.hidden_tag() }}
@@ -240,9 +240,9 @@
     </div>
     <div class="row mt-3 pb-4">
         <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1"><a href="{{ url_for('profile', user=' ') }}" style="color:white">View</a></button>
+        <div class="col-1"></div>
         <button type="button" class="btn btn-primary col-1">About</button>
-        <div class="col-1"></div>
-        <div class="col-1"></div>
         <div class="col-1"></div>
         <button type="button" class="btn btn-primary col-1">Support</button>
     </div>
