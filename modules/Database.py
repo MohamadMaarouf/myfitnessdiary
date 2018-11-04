@@ -12,7 +12,7 @@ class Database():
 
     def credntial_check(self, email, password):
         credentials = False
-        sql = ('SELECT * FROM  users WHERE  email="'+email+'"')
+        sql = "SELECT * FROM  users WHERE email LIKE '%s'" % email
         row = self.query('PULL', sql)
         if(len(row) != 0 and row[0][1] == email and row[0][2] == self.encrypt(password)):
             credentials = True
@@ -29,6 +29,14 @@ class Database():
                              password=self.DB_PASS, db=self.DATABASE)
         cursor = db.cursor()
         return (db, cursor)
+
+    def commit(self):
+        # TO-DO: we must have a way to commit changes to the DB after data has been inserted
+        return
+
+    def close(self):
+        # TO-DO: we must have a way to close database connections after they have been opened
+        return
 
     def encrypt(self, toEncrypt):
         sha = hashlib.sha256()
