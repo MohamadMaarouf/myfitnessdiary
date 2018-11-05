@@ -5,14 +5,6 @@ import getpass
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 # end Import's
-'''
-Authors:
-    Tom Birmingham
-    Christopher Conlon
-    Daniel G.
-    Davis Jaekle
-    Mohamad M.
-'''
 
 # Gloabls
 app = Flask(__name__)
@@ -48,7 +40,12 @@ def login():
         pwrd = form.password.data
 
         if(db.credntial_check(email, pwrd)):
+            # set a session cookie with values role and ID that refrences our tables
             session['Username'] = email
+            session['Role'] = db.query(
+                'PULL', "SELECT role FROM users WHERE email LIKE '%s'" % email)[0][0]
+            session['ID'] = db.query(
+                'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]  # [0][0] gives us the integer rather then tuple
             route = '/dashboard/' + email
             return redirect(route)
         else:
@@ -83,13 +80,17 @@ def registration():
         if(len(db.query('PULL', sql)) == 0):
             # add user to user table
             db.register(first, last, user_type, vKey, email, pswrd)
+            sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
+            user_id = db.query("PULL", sql)
+            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
+            db.query('PUSH', sql)
 
             # add user to student/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES (%s, %s, %s) " % user_type, user_id, first, last
             db.query('PUSH', sql)
- 
+
         else:
             flash("Email address already used! Please Login.", 'danger')
             # TO-DO: CLOSE CONNECTION TO DATABASE
@@ -112,10 +113,14 @@ Skeleton code for user profile
 
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
-    if(session and session['Username'] == user):
-        # return (render_template('profile.html', Username=user, title=(title+"-Profile")))
-        return render_template('sponsorPage.html', Username=user, Edit=True)
-    return render_template('SponsorPAge.html', Username=user, edit=False)
+    if('Username' in session and session['Username'] == user):
+        first = db.query("PULL", "Select first_name from " +
+                         (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        last = db.query("PULL", "Select last_name from " +
+                        (session['Role'])+" where user_id="+str(session['ID']))[0][0]
+        name = first + " " + last
+        return render_template('profile.html', Username=name, Edit=True)
+    return render_template('profile.html', Username=user)
 
 
 '''
@@ -129,6 +134,19 @@ def dashboard(name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/login')
+
+
+@app.route('/posting')
+def posting():
+    return render_template('posting.html', datePosted=1)
+
+
+@app.route('/create/posting')
+def createPosting():
+    form = forms.Posting()
+    if(form.validate_on_submit()):
+        return redirect('/profile/'+session['Username'])
+    return (render_template('posting.html', datePosted=1, form=form))
 
 
 if (__name__ == "__main__"):
