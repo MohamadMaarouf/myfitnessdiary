@@ -58,6 +58,7 @@ INSERT INTO faculty (user_id, first_name, last_name, location, degree, departmen
         'I am an expert in computer organization and hardware, CPU design, networking, and more.'
 );
 
+
 CREATE TABLE student(
     user_id INT NOT NULL,
     first_name VARCHAR(50),
@@ -88,6 +89,7 @@ INSERT INTO student (user_id, first_name, last_name, location, major, graduation
         'As a music major I am a believer that music can change the world.',
         'Can play several instruments, read sheet music, and excellent communicator.'
 );
+
 
 
 CREATE TABLE sponsor(
