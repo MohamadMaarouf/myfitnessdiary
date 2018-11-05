@@ -5,14 +5,6 @@ import getpass
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 # end Import's
-'''
-Authors:
-    Tom Birmingham
-    Christopher Conlon
-    Daniel G.
-    Davis Jaekle
-    Mohamad M.
-'''
 
 # Gloabls
 app = Flask(__name__)
@@ -21,7 +13,8 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.196.126.63'
+# <!> for connection issues ask TOM for password and to whitelist your IP </!>
+IP = '35.221.39.35' # official Gear Grinders DB
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
@@ -48,7 +41,16 @@ def login():
         pwrd = form.password.data
 
         if(db.credntial_check(email, pwrd)):
+            # set a session cookie with values: Username, Role, ID, Name
             session['Username'] = email
+            session['Role'] = db.query(
+                'PULL', "SELECT role FROM users WHERE email LIKE '%s'" % email)[0][0]
+            session['ID'] = db.query(
+                'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]  # [0][0] gives us the integer rather then tuple
+            sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (session['Role'], session['ID'])
+            result = db.query("PULL", sql)
+            name = result[0][0] + ' ' + result[0][1]
+            session['Name'] = name
             route = '/dashboard/' + email
             return redirect(route)
         else:
@@ -78,28 +80,21 @@ def registration():
         pswrd = form.confirm.data
 
         # Pull from Database
+
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            # add user to user table
             db.register(first, last, user_type, vKey, email, pswrd)
-
-            # add user to student/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES (%s, %s, %s) " % user_type, user_id, first, last
+            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
             db.query('PUSH', sql)
- 
+
         else:
             flash("Email address already used! Please Login.", 'danger')
-            # TO-DO: CLOSE CONNECTION TO DATABASE
             return redirect('/registration')
 
         flash('Account Creation Successful!', 'success')
-
-        # TO-DO: COMMIT CHANGES TO DB
-        # TO-DO: CLOSE CONNECTION TO DATABASE
-
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
@@ -110,12 +105,33 @@ Skeleton code for user profile
 '''
 
 
-@app.route('/profile/<user>', methods=['GET', 'POST'])
-def profile(user):
-    if(session and session['Username'] == user):
-        # return (render_template('profile.html', Username=user, title=(title+"-Profile")))
-        return render_template('sponsorPage.html', Username=user, Edit=True)
-    return render_template('SponsorPAge.html', Username=user, edit=False)
+@app.route('/profile/<user_id>', methods=['GET', 'POST'])
+def profile(user_id):
+    print("enterine profile route ...")
+
+    # if profile has been created for this user
+    sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
+    if (db.query("PULL", sql)):
+        # get role
+        sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
+        role = db.query("PULL", sql)[0][0]
+        # get name, title, major, location
+        sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (role, user_id)
+        result = db.query("PULL", sql)
+        name = result[0][0] + ' ' + result[0][1] # flatten tuple
+        sql = "SELECT title FROM %s WHERE user_id = %s" % (role, user_id)
+        title = db.query("PULL", sql)[0][0]
+        sql = "SELECT department FROM %s WHERE user_id = %s" % (role, user_id)
+        department = db.query("PULL", sql)[0][0]
+        sql = "SELECT location FROM %s WHERE user_id = %s" % (role, user_id)
+        location = db.query("PULL", sql)[0][0]
+        # get about
+        sql = "SELECT about FROM %s WHERE user_id = %s" % (role, user_id)
+        about = db.query("PULL", sql)[0][0]
+        return render_template('profile.html', name=name, title=title, department=department, location=location, about=about, Edit=True)
+    else:
+        name = 'User Profile not created yet :('
+        return render_template('profile.html', name=name)
 
 
 '''
@@ -129,6 +145,19 @@ def dashboard(name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/login')
+
+
+@app.route('/posting')
+def posting():
+    return render_template('posting.html', datePosted=1)
+
+
+@app.route('/create/posting')
+def createPosting():
+    form = forms.Posting()
+    if(form.validate_on_submit()):
+        return redirect('/profile/'+session['Username'])
+    return (render_template('posting.html', datePosted=1, form=form))
 
 
 if (__name__ == "__main__"):
