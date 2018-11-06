@@ -115,12 +115,7 @@ Skeleton code for user profile
 @app.route('/profile/<user>', methods=['GET', 'POST'])
 def profile(user):
     if('Username' in session and session['Username'] == user):
-        first = db.query("PULL", "Select first_name from " +
-                         (session['Role'])+" where user_id="+str(session['ID']))[0][0]
-        last = db.query("PULL", "Select last_name from " +
-                        (session['Role'])+" where user_id="+str(session['ID']))[0][0]
-        name = first + " " + last
-        return render_template('profile.html', Username=name, Edit=True)
+        return render_template('profile.html', Username=session['Username'], Edit=True)
     return render_template('profile.html', Username=user)
 
 
