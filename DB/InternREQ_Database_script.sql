@@ -33,6 +33,10 @@ CREATE TABLE faculty(
     user_id INT NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
+    title VARCHAR(50),
+    department VARCHAR(50),
+    education VARCHAR(50),
+    location VARCHAR(50),
     location VARCHAR(50),
     degree VARCHAR(50),
     department VARCHAR(50),
@@ -46,25 +50,25 @@ CREATE TABLE faculty(
 );
 
 
-INSERT INTO faculty (user_id, first_name, last_name, location, degree, department, position, about)
+INSERT INTO faculty (user_id, first_name, last_name, title, department, education, location, about)
     VALUES(
         8,
         'Ata',
         'Elahi',
-        'New Haven, CT',
-        'Phd Electrical Engineering',
-        'Computer Science Department',
         'Professor',
+        'Computer Science Department',
+        'Ph.D. Elec. Engineering',
+        'New Haven, CT',
         'I am an expert in computer organization and hardware, CPU design, networking, and more.'
 );
-
 
 CREATE TABLE student(
     user_id INT NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
+    title VARCHAR(50),
+    department VARCHAR(50),
     location VARCHAR(50),
-    major VARCHAR(50),
     graduation_date DATE,
     # 'YYY-MM-DD' format
     GPA FLOAT(3,2),
@@ -77,19 +81,19 @@ CREATE TABLE student(
 );
 
 
-INSERT INTO student (user_id, first_name, last_name, location, major, graduation_date, GPA, about, skills)
+INSERT INTO student (user_id, first_name, last_name, title, department, location, graduation_date, GPA, about, skills)
     VALUES(
         7,
         'Jeff',
         'Morro',
+        'Student',
+        'Fine Arts & Music',
         'New Haven, CT',
-        'Fine Arts: Music',
         '2019-05-01',
         3.5,
         'As a music major I am a believer that music can change the world.',
         'Can play several instruments, read sheet music, and excellent communicator.'
 );
-
 
 
 CREATE TABLE sponsor(
