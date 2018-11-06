@@ -12,7 +12,7 @@ class Database():
 
     def credntial_check(self, email, password):
         credentials = False
-        sql = ('SELECT * FROM  users WHERE  email="'+email+'"')
+        sql = "SELECT * FROM  users WHERE email LIKE '%s'" % email
         row = self.query('PULL', sql)
         if(len(row) != 0 and row[0][1] == email and row[0][2] == self.encrypt(password)):
             credentials = True
@@ -30,6 +30,14 @@ class Database():
         cursor = db.cursor()
         return (db, cursor)
 
+    def commit(self):
+        # TO-DO: we must have a way to commit changes to the DB after data has been inserted
+        return
+
+    def close(self):
+        # TO-DO: we must have a way to close database connections after they have been opened
+        return
+
     def encrypt(self, toEncrypt):
         sha = hashlib.sha256()
         sha.update(toEncrypt.encode('utf-8'))
@@ -42,7 +50,9 @@ class Database():
     arguments:
         self: required for object construction
         qType: short for query type. This will tell the databse if you are pulling ("PULL") down data 
-            to work with, (i.e logging in) or pushing ("PUSH") data to the database (i.e registration) 
+            to work with, (i.e logging in) or pushing ("PUSH") data to the database (i.e registration)
+        statment: the SQL statment to be run
+        *args: variable amout of arguments to be appended to the statment (i.e.: when inserting via pymysql) 
 
     return:
         if pulling down data it returns a tuple that was gained via your query

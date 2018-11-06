@@ -1,0 +1,211 @@
+{% extends "template.html" %}
+
+{% block title%}
+{{title}}
+{% endblock %}
+
+{% block style %}
+<style>
+    body{
+        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    }
+    #backing{
+        background: #fff;
+    }
+    div{
+        border-radius: 3%;
+    }
+    span{
+        border-radius: 1%;
+    }
+    #temp{
+        height: 350px;
+        width: 370px;
+        background-color: grey;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- if there is a form Sponsor is creating a posting render this-->
+{% if form %}
+<div class="container h-90 w-90 pt-4 text-center mt-1" id="backing">
+    <!--Do form stuff here-->
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4 text-center">Job Posting</legend>
+            <hr>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.title.label(class="form-control-label") }}</b>
+
+                {% if form.title.errors %}
+                <b class="col-sm-3">{{ form.title(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.title.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-lg-3">{{ form.title(class="form-control-sm") }}</b>
+                {% endif %}
+                <div class="form-group align-right ml-5">
+                    {{ form.submit(class='btn btn-outline-info')}}
+                </div>
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.location.label(class="form-control-label") }}</b>
+
+                {% if form.location.errors %}
+                <b class="col-sm-3">{{ form.location(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.location.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-sm-3">{{ form.location(class="form-control-sm") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.overview.label(class="form-control-label") }}</b>
+
+                {% if form.overview.errors %}
+                <b class="col-sm-3">{{ form.overview(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.overview.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-md-3">{{ form.overview(class="form-control-lg") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.responsibilities.label(class="form-control-label") }}</b>
+
+                {% if form.responsibilities.errors %}
+                <b class="col-sm-3">{{ form.responsibilities(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.responsibilities.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-md-3">{{ form.responsibilities(class="form-control-lg") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.reqs.label(class="form-control-label") }}</b>
+
+                {% if form.reqs.errors %}
+                <b class="col-sm-3">{{ form.reqs(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.reqs.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-md-3">{{ form.reqs(class="form-control-lg") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.comp.label(class="form-control-label mr-2") }}</b>
+
+                {% if form.comp.errors %}
+                <b class="col-sm-3">{{ form.comp(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.comp.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-sm-3">{{ form.comp(class="form-control-sm") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.fullPart.label(class="form-control-label mr-2") }}</b>
+
+                {% if form.fullPart.errors %}
+                <b class="col-sm-3">{{ form.fullPart(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.fullPart.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-sm-3">{{ form.fullPart(class="form-control-sm") }}</b>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <b class="col-sm-3">{{ form.hours.label(class="form-control-label mr-2") }}</b>
+
+                {% if form.hours.errors %}
+                <b class="col-sm-3">{{ form.hours(class="form-control-sm is-invalid") }}</b>
+                <div class="invalid-feedback">
+                    {% for error in form.hours.errors%}
+                    <span class="danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <b class="col-sm-3">{{ form.hours(class="form-control-lg") }}</b>
+                {% endif %}
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% else %}
+<div class="container h-90 w-90 pt-4 mt-4" id="backing">
+    <!--If no form then someone is looking at the posting render this-->
+    <span class="row-12"><button type="button" class="btn btn-primary mr-4">Apply Now</button>
+        <p style="display:inline">Posted {{datePosted}} day(s) ago</p>
+        <button type="button" class="btn btn-primary float-right mr-5">Print</button>
+    </span><br>
+    <div class="pl-3 mt-5 row w-75">
+        <span class="col-10" style="border:1px solid black">
+            <b>{{postingInfo[0]}}</b>
+            <b class="float-right">{{postingInfo[1]}}</b>
+            <br>
+            <br>
+            <h4>Overview:</h4>
+            <hr>
+            <p>{{postingInfo[2]}}</p>
+            <br>
+            <h4>Responsiblities:</h4>
+            <hr>
+            <p>{{postingInfo[3]}}</p>
+            <br>
+            <h4>Requirments:</h4>
+            <hr>
+            <p>{{postingInfo[4]}}</p>
+
+        </span>
+        <span class=col-2>
+            <img id="temp" src="" alt=" Fake logo here">
+            <br>
+            <div class="mt-3" style="width: 370px; border:1px solid black">
+                <p><strong>Compensation:</strong> {{postingInfo[5]}}</p>
+                <p><strong>Type of Job: </strong>{{postingInfo[6]}}</p>
+                <p><strong>Hours: </strong>{{postingInfo[7]}}</p>
+            </div>
+        </span>
+    </div>
+    <div class="row mt-3 pb-4">
+        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1"><a href="{{ url_for('profile', user=' ') }}" style="color:white">View</a></button>
+        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1">About</button>
+        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary col-1">Support</button>
+    </div>
+</div>
+<div>
+    <pre>
+
+
+
+    </pre>
+</div>
+{% endif %}
+
+{% endblock %}
