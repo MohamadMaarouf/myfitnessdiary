@@ -84,10 +84,6 @@ def registration():
 
         if(len(db.query('PULL', sql)) == 0):
             db.register(first, last, user_type, vKey, email, pswrd)
-<<<<<<< HEAD
-            print(db.query('PULL', "Select * from users"))
-          
-=======
             sql = "SELECT user_id FROM users WHERE email LIKE '"+email+"'"
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
@@ -95,7 +91,6 @@ def registration():
 
 
         
->>>>>>> f291231b3b77d256644fe2379ce7a8fb9e9efcaf
         else:
             flash("Email address already used! Please Login.", 'danger')
             return redirect('/registration')
