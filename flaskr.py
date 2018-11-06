@@ -13,7 +13,8 @@ title = 'InternREQ-'
 
 
 # Database Access
-IP = '35.196.126.63'
+# IP = '35.221.39.35' # Tom's IP
+IP = '35.196.126.63' # Chris's IP
 pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
@@ -24,9 +25,9 @@ def landing():
 
 
 '''
-This is the route for login page, when first opening the page it is opened 
-via a GET request and ONLY the last render template executes. 
-If the user clicks submit the POST method executes and server recives entered data and verifies 
+This is the route for login page, when first opening the page it is opened
+via a GET request and ONLY the last render template executes.
+If the user clicks submit the POST method executes and server recives entered data and verifies
 against the database
 '''
 
@@ -55,7 +56,7 @@ def login():
 
 
 '''
-Same as Login: only last line executes at first, upon submit the if statment executes and evaluates 
+Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
 against our database. If account not in database: create a new user
                       Else: foward to login page and request user to login
 '''
@@ -75,21 +76,32 @@ def registration():
         pswrd = form.confirm.data
 
         # Pull from Database
-
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
+            # add user to user table
             db.register(first, last, user_type, vKey, email, pswrd)
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
             db.query('PUSH', sql)
 
+            # add user to student/faculty/sponsor table
+            sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
+            user_id = db.query("PULL", sql)
+            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES (%s, %s, %s) " % user_type, user_id, first, last
+            db.query('PUSH', sql)
+
         else:
             flash("Email address already used! Please Login.", 'danger')
+            # TO-DO: CLOSE CONNECTION TO DATABASE
             return redirect('/registration')
 
         flash('Account Creation Successful!', 'success')
+
+        # TO-DO: COMMIT CHANGES TO DB
+        # TO-DO: CLOSE CONNECTION TO DATABASE
+
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
@@ -125,15 +137,30 @@ def dashboard(name):
     return redirect('/login')
 
 
-@app.route('/posting')
-def posting():
-    return render_template('posting.html', datePosted=1)
+@app.route('/posting/<id>')
+def posting(id):
+    # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
+    posting = db.query(
+        'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
+    return render_template('posting.html', datePosted=1, postingInfo=posting)
 
 
-@app.route('/create/posting')
+@app.route('/create/posting', methods=['GET','POST'])
 def createPosting():
     form = forms.Posting()
     if(form.validate_on_submit()):
+        title = form.title.data
+        location = form.location.data
+        overview = form.overview.data
+        repsons = form.responsibilities.data
+        reqs = form.reqs.data
+        comp = form.comp.data
+        jType = form.fullPart.data
+        hours = form.hours.data
+        sql = "INSERT INTO internship(internship_id, user_id, title," \
+        " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
+        "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0, session['ID'], title, location, overview,repsons,reqs,comp,jType, hours)
+        db.query('PUSH',sql)
         return redirect('/profile/'+session['Username'])
     return (render_template('posting.html', datePosted=1, form=form))
 
