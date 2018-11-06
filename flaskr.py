@@ -136,9 +136,12 @@ def dashboard(name):
     return redirect('/login')
 
 
-@app.route('/posting')
-def posting():
-    return render_template('posting.html', datePosted=1)
+@app.route('/posting/<id>')
+def posting(id):
+    posting = db.query(
+        'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
+    print(posting)
+    return render_template('posting.html', datePosted=1, postingInfo=posting)
 
 
 @app.route('/create/posting')
