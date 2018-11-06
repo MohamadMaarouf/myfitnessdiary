@@ -1,7 +1,12 @@
 # CSC-330---GearGrinders
-This repo will house our project.
 
-# Flask structure we are working with
+# Authors of InternREQ  
+  Tom Birmingham    
+  Christopher Conlon      
+    ---> Insert your names here <----
+
+    
+  # Flask structure we are working with
 
   |  
   |-|InternREQ (project's root level)  
@@ -15,14 +20,17 @@ This repo will house our project.
   |-|modules  
   |-----| python files that our server will import(i.e.: Flask forms that we create)  
   
-# Steps for working with a repo  
+  # Steps for working with a repo  
     
-  1) Make sure you have git installed on what ever machine you wish to use. If you do not have git go here: [https://git-scm.com] and download.  
-  
-  2) Set git up by typing the following commands in the command line:   
+    1) Make sure you have git installed on what ever machine you wish to use. 
+        If you do not have git go here: [git](https://git-scm.com) and download.  
+
+    2) Set git up by typing the following commands in the command line:   
             git config --global user.name "Enter Username Here"  
             git config --global user.email johndoe@example.com  
-     These steps are required so we know who is adding what and, git usually won't allow you to push files without this step.  
+
+     These steps are required so we know who is adding what and, git usually won't allow 
+     you to push files without this step.  
        
   2.5) Test your variabels by typing  
             git config --list  
@@ -32,8 +40,16 @@ This repo will house our project.
     2) cd into the folder you want to store this repo 
     5) Now in the open command line type "git clone [https://github.com/scsu-csc330-400/gear-grinders-test.git]". Press enter  
     6) Make sure the folder is now on your computer and start hacking away!  
-    
- # Adding changes to github  
+      
+  # Branching  
+    1) Open terminal/cmd  
+    2) Make sure your in the proper git repository  
+    3) Type "git checkout -b <NAME YOUR BRANCH>"  
+    This creates a new branch and moves you into it. Step 3 is shorthand for
+    --> "git branch <NAME BRANCH HERE>"
+    --> "git checkout <SAME BRANCH NAME HERE>"
+
+  # Adding changes to github  
     1) Make edits to the project  
     2) git add < enter files that have been updated and need to be staged >  
     3) git commit -m "Enter message that tells us what you did"  

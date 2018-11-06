@@ -37,6 +37,10 @@ CREATE TABLE faculty(
     department VARCHAR(50),
     education VARCHAR(50),
     location VARCHAR(50),
+    location VARCHAR(50),
+    degree VARCHAR(50),
+    department VARCHAR(50),
+    position VARCHAR(50),
     profile_img BLOB,
     banner_img BLOB,
     about VARCHAR(1024),
@@ -53,7 +57,7 @@ INSERT INTO faculty (user_id, first_name, last_name, title, department, educatio
         'Elahi',
         'Professor',
         'Computer Science Department',
-        'Phd. Elec. Engineering',
+        'Ph.D. Elec. Engineering',
         'New Haven, CT',
         'I am an expert in computer organization and hardware, CPU design, networking, and more.'
 );
