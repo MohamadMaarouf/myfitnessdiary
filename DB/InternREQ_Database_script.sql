@@ -1,8 +1,8 @@
-# InternREQ Database (script)
-
+# InternREQ Database Script
+#   This script builds the database
+#   from the ground up
 
 CREATE DATABASE internreq;
-
 USE internreq;
 
 
@@ -14,20 +14,6 @@ CREATE TABLE users(
     PRIMARY KEY(user_id)
 );
 
-
-INSERT INTO users VALUES (0, 'chris.conlon1993@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO users VALUES (0, 'tombirmingham91@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO users VALUES (0, 'djaekle123@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO users VALUES (0, 'mmaarouf95@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO users VALUES (0, 'glinskid3@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-
-INSERT INTO users VALUES (0, 'hendell@brandshop.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'sponsor');
-INSERT INTO users VALUES (0, 'morroj@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'student');
-INSERT INTO users VALUES (0, 'elahia@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-
-
-SELECT * FROM users;
-
  
 CREATE TABLE faculty(
     user_id INT NOT NULL,
@@ -37,10 +23,6 @@ CREATE TABLE faculty(
     department VARCHAR(50),
     education VARCHAR(50),
     location VARCHAR(50),
-    location VARCHAR(50),
-    degree VARCHAR(50),
-    department VARCHAR(50),
-    position VARCHAR(50),
     profile_img BLOB,
     banner_img BLOB,
     about VARCHAR(1024),
@@ -49,18 +31,6 @@ CREATE TABLE faculty(
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
 
-
-INSERT INTO faculty (user_id, first_name, last_name, title, department, education, location, about)
-    VALUES(
-        8,
-        'Ata',
-        'Elahi',
-        'Professor',
-        'Computer Science Department',
-        'Ph.D. Elec. Engineering',
-        'New Haven, CT',
-        'I am an expert in computer organization and hardware, CPU design, networking, and more.'
-);
 
 CREATE TABLE student(
     user_id INT NOT NULL,
@@ -81,21 +51,6 @@ CREATE TABLE student(
 );
 
 
-INSERT INTO student (user_id, first_name, last_name, title, department, location, graduation_date, GPA, about, skills)
-    VALUES(
-        7,
-        'Jeff',
-        'Morro',
-        'Student',
-        'Fine Arts & Music',
-        'New Haven, CT',
-        '2019-05-01',
-        3.5,
-        'As a music major I am a believer that music can change the world.',
-        'Can play several instruments, read sheet music, and excellent communicator.'
-);
-
-
 CREATE TABLE sponsor(
     user_id INT NOT NULL,
     first_name VARCHAR(50),
@@ -109,21 +64,6 @@ CREATE TABLE sponsor(
     about VARCHAR(1024),
     PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
-);
-
-
-INSERT INTO sponsor (user_id, first_name, last_name, location, title, company, url, about)
-    VALUES(
-        6,
-        'Reuben',
-        'Hendell',
-        'Chief Executive Officer',
-        'BrandShop',
-        'Shelton, CT',
-        'https://brandshop.com/',
-        'Our mission is to create branded digital commerce experiences
-         for the world’s best brands. If you are passionate, motivated,
-         collaborative, innovative and a whole lot of fun, then we need your help.'
 );
 
 
@@ -152,6 +92,33 @@ CREATE TABLE internship(
 	FOREIGN KEY(user_id) REFERENCES sponsor(user_id)
 );
 
+
+CREATE TABLE applications(
+	user_id INT NOT NULL,
+	internship_id INT NOT NULL,
+	PRIMARY KEY(user_id, internship_id),
+	FOREIGN KEY(user_id) REFERENCES student(user_id),
+	FOREIGN KEY(internship_id) REFERENCES internship(internship_id)
+);
+
+# Test Data
+
+INSERT INTO users VALUES (0, 'chris.conlon1993@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO faculty (user_id, first_name, last_name) VALUES (1, 'Chris', 'Conlon');
+INSERT INTO users VALUES (0, 'tombirmingham91@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO faculty (user_id, first_name, last_name) VALUES (2, 'Tom', 'Birmingham');
+INSERT INTO users VALUES (0, 'djaekle123@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO faculty (user_id, first_name, last_name) VALUES (3, 'Davis', 'Jaekle');
+INSERT INTO users VALUES (0, 'mmaarouf95@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO faculty (user_id, first_name, last_name) VALUES (4, 'Mohamad', 'Maarouf');
+INSERT INTO users VALUES (0, 'glinskid3@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+INSERT INTO faculty (user_id, first_name, last_name) VALUES (5, 'Dan', 'Glinski');
+
+INSERT INTO users VALUES (0, 'hendell@brandshop.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'sponsor');
+INSERT INTO users VALUES (0, 'morroj@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'student');
+INSERT INTO users VALUES (0, 'elahia@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+
+
 INSERT INTO internship (internship_id, user_id, title, location, overview, responsibilities, requirements, compensation, type, availability)
     VALUES(
         0,
@@ -179,10 +146,44 @@ INSERT INTO internship (internship_id, user_id, title, location, overview, respo
     );
 
 
-CREATE TABLE applications(
-	user_id INT NOT NULL,
-	internship_id INT NOT NULL,
-	PRIMARY KEY(user_id, internship_id),
-	FOREIGN KEY(user_id) REFERENCES student(user_id),
-	FOREIGN KEY(internship_id) REFERENCES internship(internship_id)
+INSERT INTO student (user_id, first_name, last_name, title, department, location, graduation_date, GPA, about, skills)
+    VALUES(
+        7,
+        'Jeff',
+        'Morro',
+        'Student',
+        'Fine Arts & Music',
+        'New Haven, CT',
+        '2019-05-01',
+        3.5,
+        'As a music major I am a believer that music can change the world.',
+        'Can play several instruments, read sheet music, and excellent communicator.'
+);
+
+
+INSERT INTO faculty (user_id, first_name, last_name, title, department, education, location, about)
+    VALUES(
+        8,
+        'Ata',
+        'Elahi',
+        'Professor',
+        'Computer Science Department',
+        'Ph.D. Elec. Engineering',
+        'New Haven, CT',
+        'I am an expert in computer organization and hardware, CPU design, networking, and more.'
+);
+
+
+INSERT INTO sponsor (user_id, first_name, last_name, location, title, company, url, about)
+    VALUES(
+        6,
+        'Reuben',
+        'Hendell',
+        'Chief Executive Officer',
+        'BrandShop',
+        'Shelton, CT',
+        'https://brandshop.com/',
+        'Our mission is to create branded digital commerce experiences
+         for the world’s best brands. If you are passionate, motivated,
+         collaborative, innovative and a whole lot of fun, then we need your help.'
 );
