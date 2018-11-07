@@ -4,6 +4,7 @@
 import getpass
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from hashlib import md5
 # end Import's
 
 # Gloabls
@@ -45,16 +46,20 @@ def login():
         if(db.credntial_check(email, pwrd)):
             # set a session cookie with values: Username, Role, ID, Name
             session['Username'] = email
+            session['Email'] = email
             session['Role'] = db.query(
                 'PULL', "SELECT role FROM users WHERE email LIKE '%s'" % email)[0][0]
             session['ID'] = db.query(
                 'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]  # [0][0] gives us the integer rather then tuple
             sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (session['Role'], session['ID'])
             result = db.query("PULL", sql)
-            name = result[0][0] + ' ' + result[0][1]
-            session['Name'] = name
-            route = '/dashboard/' + email
-            return redirect(route)
+            session['Name'] = result[0][0]
+            full_name = result[0][0] + ' ' + result[0][1]
+            session['Full Name'] = full_name
+            session['Authenticated'] = True
+            session['User_id'] = db.query(
+                'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]
+            return redirect('/dashboard')
         else:
             flash('Username or Password Error', 'danger')
 
@@ -110,44 +115,58 @@ Skeleton code for user profile
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
-    print("enterine profile route ...")
-
-    # if profile has been created for this user
-    sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
-    if (db.query("PULL", sql)):
-        # get role
+    if (session.get('Authenticated')):
+        # if profile has been created for this user
         sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
-        role = db.query("PULL", sql)[0][0]
-        # get name, title, major, location
-        sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (role, user_id)
-        result = db.query("PULL", sql)
-        name = result[0][0] + ' ' + result[0][1] # flatten tuple
-        sql = "SELECT title FROM %s WHERE user_id = %s" % (role, user_id)
-        title = db.query("PULL", sql)[0][0]
-        sql = "SELECT department FROM %s WHERE user_id = %s" % (role, user_id)
-        department = db.query("PULL", sql)[0][0]
-        sql = "SELECT location FROM %s WHERE user_id = %s" % (role, user_id)
-        location = db.query("PULL", sql)[0][0]
-        # get about
-        sql = "SELECT about FROM %s WHERE user_id = %s" % (role, user_id)
-        about = db.query("PULL", sql)[0][0]
-        return render_template('profile.html', name=name, title=title, department=department, location=location, about=about, Edit=True)
+        if (db.query("PULL", sql)):
+            # get role
+            sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
+            role = db.query("PULL", sql)[0][0]
+            # get name, title, major, location
+            sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (role, user_id)
+            result = db.query("PULL", sql)
+            name = result[0][0] + ' ' + result[0][1] # flatten tuple
+            sql = "SELECT title FROM %s WHERE user_id = %s" % (role, user_id)
+            title = db.query("PULL", sql)[0][0]
+            sql = "SELECT department FROM %s WHERE user_id = %s" % (role, user_id)
+            department = db.query("PULL", sql)[0][0]
+            sql = "SELECT location FROM %s WHERE user_id = %s" % (role, user_id)
+            location = db.query("PULL", sql)[0][0]
+            # get about
+            sql = "SELECT about FROM %s WHERE user_id = %s" % (role, user_id)
+            about = db.query("PULL", sql)[0][0]
+            # get user avatar by email (powered by Gravatar)
+            sql = "SELECT email FROM users WHERE user_id = %s" % (user_id)
+            email = db.query("PULL", sql)[0][0]
+            size = 128
+            digest = md5(email.lower().encode('utf-8')).hexdigest()
+            avatar = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+            
+            # Enable Edit Profile (if logged in user's profile by user_id)
+            if( int(user_id) == int(session.get('User_id'))):
+                edit = True
+            else:
+                edit = False
+            return render_template('profile.html', avatar=avatar, name=name, title=title, department=department, location=location, about=about, Edit=edit)           
+        else:
+            # TODO: Error page for no profile
+            name = 'User Profile not created yet :('
+            return render_template('profile.html', name=name)
     else:
-        name = 'User Profile not created yet :('
-        return render_template('profile.html', name=name)
+        return redirect('/login')
 
 
 '''
 Skeleton code for dashboard
 '''
-
-
-@app.route('/dashboard/<name>')
-def dashboard(name):
-    if(session['Username'] == name):
-        return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
-    session.pop('Username', None)
-    return redirect('/login')
+@app.route('/dashboard')
+def dashboard():
+    if(session.get('Authenticated')):
+        name = session.get('Name')
+        return render_template('dashboard.html', title=(title+'Dashboard'), name=name)
+    else:
+        return redirect('/login')
 
 
 @app.route('/posting/<id>')
