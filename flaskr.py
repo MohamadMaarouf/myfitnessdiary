@@ -191,8 +191,9 @@ def createPosting():
         hours = form.hours.data
         sql = "INSERT INTO internship(internship_id, user_id, title," \
         " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
-        "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0, session['ID'], title, location, overview,repsons,reqs,comp,jType, hours)
-        db.query('PUSH',sql)
+        "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        args = (0, session['ID'], title, location, overview,repsons,reqs,comp,jType, hours)
+        db.query('PUSH',sql, args)
         return redirect('/profile/'+session['Username'])
     return (render_template('posting.html', datePosted=1, form=form))
 
