@@ -59,7 +59,7 @@ def login():
             session['Authenticated'] = True
             session['User_id'] = db.query(
                 'PULL', "SELECT user_id FROM users WHERE email LIKE '%s'" % email)[0][0]
-            return redirect('/dashboard')
+            return redirect(url_for('dashboard'))
         else:
             flash('Username or Password Error', 'danger')
 
