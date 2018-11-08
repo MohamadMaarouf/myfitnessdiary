@@ -166,22 +166,21 @@ def profile(user_id):
             sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (
                 role, user_id)
             result = db.query("PULL", sql)
-            #TO-DO result[0][0] + ' ' + result[0][0] # flatten tuple
-            name =  'test'
+            name = result[0][0] + ' ' + result[0][0] # flatten tuple
             sql = "SELECT title FROM %s WHERE user_id = %s" % (role, user_id)
-            title = 'Title' #db.query("PULL", sql)[0][0]
+            title = db.query("PULL", sql)[0][0]
             sql = "SELECT department FROM %s WHERE user_id = %s" % (
                 role, user_id)
-            department = 'TEST DEPT' # db.query("PULL", sql)[0][0]
+            department = db.query("PULL", sql)[0][0]
             sql = "SELECT location FROM %s WHERE user_id = %s" % (
                 role, user_id)
-            location = 'Location' #db.query("PULL", sql)[0][0]
+            location = db.query("PULL", sql)[0][0]
             # get about
             sql = "SELECT about FROM %s WHERE user_id = %s" % (role, user_id)
-            about = 'About' # db.query("PULL", sql)[0][0]
+            about = db.query("PULL", sql)[0][0]
             # get user avatar by email (powered by Gravatar)
             sql = "SELECT email FROM users WHERE user_id = %s" % (user_id)
-            email = 'Email' #db.query("PULL", sql)[0][0]
+            email = db.query("PULL", sql)[0][0]
             size = 128
             digest = md5(email.lower().encode('utf-8')).hexdigest()
             avatar = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
