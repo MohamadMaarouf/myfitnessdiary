@@ -48,9 +48,8 @@ class User(UserMixin):
 # Database Access
 # <!> for connection issues ask TOM for password and to whitelist your IP </!>
 IP = '35.221.39.35' # Gear Grinders Official DB
-IP = '35.196.126.63'
 
-pas = 'Baec11072793.'#getpass.getpass('Enter Password for InternREQ DB: ')
+pas = getpass.getpass('Enter Password for InternREQ DB: ')
 db = Database.Database(IP, 'root', pas, 'internreq')
 
 ''' Flask-Login login_manager'''
