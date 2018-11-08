@@ -78,6 +78,8 @@ against the database
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if(current_user.is_authenticated):
+        return redirect(url_for('dashboard'))
     form = forms.Login()
     if(form.validate_on_submit()):
         # Retrieve Input from Form
