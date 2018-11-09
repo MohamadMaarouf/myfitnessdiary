@@ -4,6 +4,8 @@
 import getpass
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask_mail import Mail
+from flask_mail import Message
 # end Import's
 '''
 Authors:
@@ -16,9 +18,19 @@ Authors:
 
 # Gloabls
 app = Flask(__name__)
+app.config.update(dict(
+    DEBUG = True,
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 587,
+    MAIL_USE_TLS = True,
+    MAIL_USE_SSL = False,
+    MAIL_USERNAME = 'chrisddhnt@gmail.com',
+    MAIL_PASSWORD = 'internreq',
+))
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
-
+app.config.from_object(__name__)
+mail = Mail(app)
 
 # Database Access
 IP = '35.221.39.35'
@@ -88,6 +100,7 @@ def registration():
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO "+user_type+"(user_id, first_name, last_name) VALUES(%s,%s,%s)"
             db.query('PUSH', sql, (user_id, first, last))
+            send_email("Thank You", 'admin@internreq.com', email, "Thank you for registering with InternREQ")
 
 
         
@@ -96,8 +109,6 @@ def registration():
             return redirect('/registration')
         
         flash('Account Creation Successful!', 'success')
-        db.commit()
-        db.close()
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
@@ -128,7 +139,17 @@ def dashboard(name):
         return render_template('dashboard.html', title=(title+'Dashboard'), Username=name)
     session.pop('Username', None)
     return redirect('/login')
+    list
+
+
+def send_email(subject, sender, recipients, body):
+    msg = Message(subject, sender=sender, recipients=[recipients])
+    msg.body = body
+    mail.send(msg)
 
 
 if (__name__ == "__main__"):
     app.run(host='0.0.0.0', port=8080, debug=True)
+
+
+
