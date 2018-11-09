@@ -100,7 +100,6 @@ def login():
             row = db.query('PULL', sql)[0]
             user = User(row[0], row[1], row[2], row[3])
             login_user(user)
-            print(current_user.uniqueID)
             return redirect(url_for('dashboard'))
         else:
             flash('Username or Password Error', 'danger')
