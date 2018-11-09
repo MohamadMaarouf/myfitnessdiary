@@ -236,8 +236,9 @@ def createPosting():
             " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
             "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0,current_user.id, title, location, overview,repsons,reqs,comp,jType, hours)
             db.query('PUSH',sql)
-            return redirect('/profile/'+current_user.id)
+            return redirect('/profile/'+str(current_user.id))
     return(render_template('unauthorized.html'))
+
 
 
 if (__name__ == "__main__"):
