@@ -63,19 +63,6 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                <b>{{ form.v_key.label(class="form-control-label mr-1") }}</b>
-                {% if form.v_key.errors %}
-                <b>{{ form.v_key(class="form-control-sm is-invalid") }}</b>
-                <div class="invalid-feedback">
-                    {% for error in form.v_key.errors%}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <b>{{ form.v_key(class="form-control-sm mr-4") }}</b>
-                {% endif %}
-            </div>
-            <div class="form-group">
                 <b>{{ form.email.label(class="form-control-label mr-3 ml-5") }}</b>
                 {% if form.email.errors %}
                 <b>{{ form.email(class="form-control-sm is-invalid") }}</b>

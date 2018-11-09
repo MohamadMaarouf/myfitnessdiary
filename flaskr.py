@@ -130,7 +130,6 @@ def registration():
         first = form.first_name.data
         last = form.last_name.data
         user_type = form.user_type.data
-        vKey = form.v_key.data
         email = form.email.data
         pswrd = form.confirm.data
 
@@ -139,7 +138,7 @@ def registration():
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            db.register(first, last, user_type, vKey, email, pswrd)
+            db.register(first, last, user_type, email, pswrd)
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
