@@ -75,6 +75,15 @@ If the user clicks submit the POST method executes and server recives entered da
 against the database
 '''
 
+@app.errorhandler(404):
+def page_not_found(a):
+    # This route is for handling when an incorrect url is typed
+    return render_template('404.html')
+
+@app.errorhandler(500):
+def server_error(b):
+    # This route is for handling when an internal server error occurs
+    return render_template('500.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
