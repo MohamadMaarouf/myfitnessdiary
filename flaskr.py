@@ -87,7 +87,6 @@ def login():
         pwrd = form.password.data
 
         if(db.credntial_check(email, pwrd)):
-            # set a session cookie with values: Username, Role, ID, Name
             sql = 'Select * from users WHERE email="%s"' % (email)
             row = db.query('PULL', sql)[0]
             user = User(row[0], row[1], row[2], row[3])
@@ -235,9 +234,9 @@ def createPosting():
             hours = form.hours.data
             sql = "INSERT INTO internship(internship_id, user_id, title," \
             " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
-            "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0, session['ID'], title, location, overview,repsons,reqs,comp,jType, hours)
+            "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0,current_user.id, title, location, overview,repsons,reqs,comp,jType, hours)
             db.query('PUSH',sql)
-            return redirect('/profile/'+session['Username'])
+            return redirect('/profile/'+current_user.id)
     return(render_template('unauthorized.html'))
 
 
