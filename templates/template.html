@@ -18,6 +18,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+
     <!-- End Bootstrap 4 links -->
 
     {% block style %} {{style}} {% endblock %}
@@ -56,12 +57,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
                     </li>
-                    {% endif %}
-                    {% if current_user.is_anonymous %}
-                    <li><a class='nav-link' href="/login">Login</a></li>
-                    {% else %}
                     <li><a class='nav-link' href="/logout">Logout</a>
-                        {%endif%}
+                        {% endif %}
 
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
