@@ -17,7 +17,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # Gloabls
 app = Flask(__name__)
-app.config.from_pyfile('config.cfg')
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 app.secret_key = 'Any String or Number for encryption here'
@@ -76,6 +75,8 @@ def load_user(id):
 
 @app.route('/')
 def landing():
+    if(current_user.is_authenticated):
+        return redirect(url_for('dashboard'))
     return render_template('landingPage.html', title=title+"-Home")
 
 
