@@ -11,6 +11,8 @@ CREATE TABLE users(
     email VARCHAR(255),
     password VARCHAR(255),
     role VARCHAR(25),
+    name VARCHAR(255),
+    last_login DATETIME,
     PRIMARY KEY(user_id)
 );
 
@@ -21,12 +23,15 @@ CREATE TABLE faculty(
     last_name VARCHAR(50),
     title VARCHAR(50),
     department VARCHAR(50),
-    education VARCHAR(50),
     location VARCHAR(50),
-    profile_img BLOB,
-    banner_img BLOB,
     about VARCHAR(1024),
-    skills VARCHAR(1024),
+    url VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(14),
+    phone_desc VARCHAR(50),
+    verified BOOL,
+    education VARCHAR(50),
+    additional VARCHAR(1024),
     PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
@@ -37,16 +42,19 @@ CREATE TABLE student(
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     title VARCHAR(50),
-    department VARCHAR(50),
+    major VARCHAR(50),
     location VARCHAR(50),
-    graduation_date DATE,
-    # 'YYY-MM-DD' format
-    GPA FLOAT(3,2),
-    profile_img BLOB,
-    banner_img BLOB,
     about VARCHAR(1024),
-    skills VARCHAR(1024),
-    PRIMARY KEY(user_id),        
+    url VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(13),
+    phone_desc VARCHAR(50),
+    verified BOOL,
+    education VARCHAR(50),
+    additional VARCHAR(1024),
+    graduation_date DATE,
+    GPA FLOAT(3,2),
+    PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
 
@@ -55,22 +63,17 @@ CREATE TABLE sponsor(
     user_id INT NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    location VARCHAR(50),
     title VARCHAR(50),
     company VARCHAR(50),
-    url VARCHAR(255),
-    profile_picture BLOB,
-    banner BLOB,
+    location VARCHAR(50),
     about VARCHAR(1024),
-    PRIMARY KEY(user_id),
-    FOREIGN KEY(user_id) REFERENCES users(user_id)
-);
-
-
-CREATE TABLE profile(
-    user_id INT NOT NULL,
-    about VARCHAR(1000),
-    skills VARCHAR(1000),
+    url VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(13),
+    phone_desc VARCHAR(50),
+    verified BOOL,
+    education VARCHAR(50),
+    additional VARCHAR(1024),
     PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
@@ -85,7 +88,7 @@ CREATE TABLE internship(
     overview VARCHAR(1024),
     responsibilities VARCHAR(1024),
     requirements VARCHAR(1024),
-    compensation BIT(1),
+    compensation BOOL,
     type VARCHAR(50), # full, part or internship
     availability VARCHAR(255),
 	PRIMARY KEY(internship_id),
@@ -103,20 +106,68 @@ CREATE TABLE applications(
 
 # Test Data
 
-INSERT INTO users VALUES (0, 'chris.conlon1993@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO faculty (user_id, first_name, last_name) VALUES (1, 'Chris', 'Conlon');
-INSERT INTO users VALUES (0, 'tombirmingham91@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO faculty (user_id, first_name, last_name) VALUES (2, 'Tom', 'Birmingham');
-INSERT INTO users VALUES (0, 'djaekle123@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO faculty (user_id, first_name, last_name) VALUES (3, 'Davis', 'Jaekle');
-INSERT INTO users VALUES (0, 'mmaarouf95@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO faculty (user_id, first_name, last_name) VALUES (4, 'Mohamad', 'Maarouf');
-INSERT INTO users VALUES (0, 'glinskid3@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
-INSERT INTO faculty (user_id, first_name, last_name) VALUES (5, 'Dan', 'Glinski');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'chris.conlon1993@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Chris');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'tombirmingham91@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Tom');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'djaekle123@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Davis');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'mmaarouf95@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Mohamad');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'glinskid3@gmail.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Dan');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'hendell@brandshop.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'sponsor', 'Rubin');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'morroj@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'student', 'Jeff');
+INSERT INTO users (user_id, email, password, role, name)
+    VALUES (0, 'elahia@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+    'faculty', 'Ata');
 
-INSERT INTO users VALUES (0, 'hendell@brandshop.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'sponsor');
-INSERT INTO users VALUES (0, 'morroj@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'student');
-INSERT INTO users VALUES (0, 'elahia@southernct.edu', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'faculty');
+
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, URL, email,
+    phone, phone_desc, education, additional)
+    VALUES (1, 'Chris', 'Conlon', 'Software Clown', 'Computer Science Department', 'Wallingford, CT',
+    'As a software clown I strive for excellence in comedic value and unbreakable code',
+    'https://www.southernct.edu/', 'chris.conlon1993@gmail.com', '(203) 392-7278', 'office phone',
+    'undergrad', 'Python, SQL, Flask, Bootstrap, HTML/CSS, Jinja');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    VALUES (2, 'Tom', 'Birmingham', 'Software Clown', 'Computer Science Department', 'Brookfield, CT',
+    'As a software clown I strive for excellence in comedic value and unbreakable code');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    VALUES (3, 'Davis', 'Jaekle', 'Demon of Design', 'Computer Science Department', 'Stratford, CT',
+    'Master of designing advanced systems built on the basis fear and terror');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    VALUES (4, 'Mohamad', 'Maarouf', 'Demon of Design', 'Computer Science Department', 'Stratford, CT',
+    'Master of designing advanced systems built on the basis fear and terror');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    VALUES (5, 'Dan', 'Glinski', 'Software Clown', 'Computer Science Department', 'Brookfield, CT',
+    'As a software clown I strive for excellence in comedic value and unbreakable code');
+
+
+INSERT INTO sponsor (user_id, first_name, last_name, title, company, location, about, url, email, verified, education)
+    VALUES(6, 'Reuben', 'Hendell', 'Chief Executive Officer', 'BrandShop', 'Shelton, CT',
+    'Our mission is to create branded digital commerce experiences for the world’s best brands. If you are passionate, motivated, collaborative, innovative and a whole lot of fun, then we need your help.',
+    'https://brandshop.com/', 'rhendell@brandshop.com', 1, 'MBA');
+INSERT INTO student (user_id, first_name, last_name, title, major, location, about, education, additional,
+    graduation_date, GPA)
+    VALUES(7, 'Jeff', 'Morro', 'Student', 'Fine Arts & Music', 'New Haven, CT',
+    'As a music major I am a believer that music can change the world.',
+    'undergrad', 'Can play several instruments, read sheet music, and excellent communicator.',
+    '2019-05-01', 3.5);
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, url, email,
+    phone, phone_desc, verified, education)
+    VALUES(8, 'Ata', 'Elahi', 'Professor', 'Computer Science Department', 'New Haven, CT',
+    'I am an expert in computer organization and hardware, CPU design, networking, and more.',
+    'https://southernct.edu/', 'elahia@southernct.edu', '(203) 392-7278', 'office phone',
+    1, 'Ph.D. Elec. Engineering');
 
 
 INSERT INTO internship (internship_id, user_id, title, location, overview, responsibilities, requirements, compensation, type, availability)
@@ -144,46 +195,3 @@ INSERT INTO internship (internship_id, user_id, title, location, overview, respo
         'internship',
         'M-F 3:00-5 PM'
     );
-
-
-INSERT INTO student (user_id, first_name, last_name, title, department, location, graduation_date, GPA, about, skills)
-    VALUES(
-        7,
-        'Jeff',
-        'Morro',
-        'Student',
-        'Fine Arts & Music',
-        'New Haven, CT',
-        '2019-05-01',
-        3.5,
-        'As a music major I am a believer that music can change the world.',
-        'Can play several instruments, read sheet music, and excellent communicator.'
-);
-
-
-INSERT INTO faculty (user_id, first_name, last_name, title, department, education, location, about)
-    VALUES(
-        8,
-        'Ata',
-        'Elahi',
-        'Professor',
-        'Computer Science Department',
-        'Ph.D. Elec. Engineering',
-        'New Haven, CT',
-        'I am an expert in computer organization and hardware, CPU design, networking, and more.'
-);
-
-
-INSERT INTO sponsor (user_id, first_name, last_name, location, title, company, url, about)
-    VALUES(
-        6,
-        'Reuben',
-        'Hendell',
-        'Chief Executive Officer',
-        'BrandShop',
-        'Shelton, CT',
-        'https://brandshop.com/',
-        'Our mission is to create branded digital commerce experiences
-         for the world’s best brands. If you are passionate, motivated,
-         collaborative, innovative and a whole lot of fun, then we need your help.'
-);
