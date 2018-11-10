@@ -5,6 +5,8 @@ import getpass
 from random import randint
 from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask_mail import Mail
+from flask_mail import Message
 from hashlib import md5
 # Flask-Login attempt import's
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -16,6 +18,19 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # Gloabls
 app = Flask(__name__)
+app.config.update(dict(
+    DEBUG = True,
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 587,
+    MAIL_USE_TLS = True,
+    MAIL_USE_SSL = False,
+    MAIL_USERNAME = 'chrisddhnt@gmail.com',
+    MAIL_PASSWORD = 'internreq',
+))
+app.secret_key = 'Any String or Number for encryption here'
+title = 'InternREQ-'
+app.config.from_object(__name__)
+mail = Mail(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 app.secret_key = 'Any String or Number for encryption here'
@@ -143,6 +158,8 @@ def registration():
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
             db.query('PUSH', sql)
+            send_email("Thank You", 'admin@internreq.com', email, "Thank you for registering with InternREQ")
+
 
         else:
             flash("Email address already used! Please Login.", 'danger')
@@ -217,6 +234,11 @@ def dashboard():
     return redirect('/login')
 
 
+def send_email(subject, sender, recipients, body):
+    msg = Message(subject, sender=sender, recipients=[recipients])
+    msg.body = body
+    mail.send(msg)
+    
 @app.route('/posting/<id>')
 def posting(id):
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
@@ -250,3 +272,6 @@ def createPosting():
 
 if (__name__ == "__main__"):
     app.run(host='0.0.0.0', port=8080, debug=True)
+
+
+
