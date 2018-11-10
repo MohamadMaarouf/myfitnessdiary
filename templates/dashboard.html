@@ -4,6 +4,7 @@
 {%block style%}
 <style>
     body {
+        height: 100%;
         background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     }
 
@@ -13,33 +14,118 @@
     }
 
     li {
-        margin: 5%
+        margin: .5%;
     }
 
-    #side-menu {
+    .main-body {
         position: fixed;
+        background-color: white;
+        margin-left: 12%;
+        height: 85%;
+        width: 86%;
+        padding: 1%;
+        border-radius: 2%;
+    }
+
+    #side {
+        margin-top: 1%;
+        position: fixed;
+        text-align: center;
+        background-color: rgba(133, 127, 127, 0.8);
         width: 10%;
-        height: 86%;
-        background-color: rgba(131, 127, 127, 0.582);
-        border-radius: 5%;
+        height: 85%;
     }
 </style>
 {% endblock %}
 {%block content%}
-<div class="mr-2">
-    <ul class="nav nav-pills flex-column mt-2" id="side-menu">
+<div class="sidebar ml-2">
+    <ul class="sidebar navbar-nav" id="side">
+        <li class="nav-item active">
+            <!--Playying with sidebar content-->
+            <a class="nav-link" href="/scoobysnacks">
+                <span>Error 404</span>
+            </a>
+        </li>
+        {% if current_user.role != 'student'%}
         <li class="nav-item">
-            <a class="nav-link active" href="#">Item 1</a>
+            <a href="{{url_for('createPosting')}}" class="nav-link">Create new Posting</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('login')}}">
+                <span>Login</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Item 2</a>
+            <a class="nav-link" href="{{url_for('logout')}}">
+                <span>Logout</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Item 3</a>
+            <a class="nav-link" href="{{url_for('registration')}}">
+                <span>Registration</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Item 4</a>
+            <a class="nav-link" href="{{url_for('profile', user_id = current_user.id)}}">
+                <span>Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('posting',id=current_user.id)}}">
+                <span>View Posting</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('testemail')}}">
+                <span>Send Test Email</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('landing')}}">
+                <span>Landing Page</span>
+            </a>
         </li>
     </ul>
 </div>
-{% endblock %}
+<div class="main-body mt-3">
+    <legend>Welcome {{current_user.email}}</legend>
+    <div class="card-columns">
+        <div class="card bg-primary">
+            <div class="card-body text-center">
+                <a href="#">
+                    <h4 class="card-title">Messages</h4>
+                </a>
+                {% if newMessage%}
+                <p class="card-text">{{newMessage}}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card bg-warning">
+            <div class="card-body text-center">
+                <a href="#">
+                    <h4 class="card-title">New Postings</h4>
+                </a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="card-title">Message of the Day</h4>
+                <p class="card-text">{{Daily}}</p>
+            </div>
+        </div>
+    </div>
+    <div style="position:fixed;bottom:0; padding-bottom:5%">
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, dolore illum, cupiditate nostrum hic
+        doloremque molestiae aliquam iste reprehenderit voluptate repudiandae atque nam corporis unde magnam officia
+        veniam suscipit excepturi delectus. Iusto iste quaerat numquam quo deserunt tenetur quasi, molestias at
+        excepturi exercitationem dolore maxime alias reiciendis harum nisi. Corrupti odio ex dolore placeat fuga
+        voluptatem nam quibusdam cum alias, ullam quisquam, aut omnis laborum, laudantium nemo unde cupiditate. Quas
+        non repellendus voluptatem ratione ullam blanditiis, hic minima, pariatur sunt consequuntur possimus quis aut,
+        quam voluptatibus ea error cumque. Minus, nostrum exercitationem! Optio, aperiam id. Vero adipisci optio
+        accusantium recusandae ab magni minus esse. Repellendus molestiae quidem nostrum fugiat ducimus necessitatibus
+        ipsum cum voluptates quo eveniet aspernatur impedit rerum unde, in pariatur? Incidunt, natus ut, eaque
+        reiciendis dolor sunt distinctio placeat nobis explicabo omnis voluptates dicta fuga iure eos eius laudantium
+        odio labore vitae non id voluptate molestias. Corporis, aliquid.
+    </div>
+    {% endblock %}
