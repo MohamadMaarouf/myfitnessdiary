@@ -3,11 +3,16 @@
 # Import's
 import getpass
 from random import randint
-from modules import forms, Database
+from modules import forms, Database, ProfileUser
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+
+import os
+
+
 from flask_mail import Mail
 from flask_mail import Message
 from hashlib import md5
+
 # Flask-Login attempt import's
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
@@ -41,11 +46,14 @@ sessionID = []
 
 
 class User(UserMixin):
-    def __init__(self, user_id, email, password, role):
+    def __init__(self, user_id, email, password, role, name, last_login):
         self.id = user_id
         self.email = email
         self.pass_hash = generate_password_hash(password)
         self.role = role
+        self.name = name
+        self.last_login = last_login
+
         # Create a uniqueID for each login
         uniqueID = randint(0, 100000000000000000000000000000)
         # If the ID is already in our list recreate another one
@@ -56,25 +64,33 @@ class User(UserMixin):
         self.uniqueID = uniqueID
         ''' Once we reset the server all IDs are droped as well and frees up each number to be re-used'''
 
-
 '''End class'''
-
+       
 
 # Database Access
-# <!> for connection issues ask TOM for password and to whitelist your IP </!>
-IP = '35.221.39.35'  # Gear Grinders Official DB
+# <!> Connection issues troubleshooting </!>
+#     Set Password environment variable in the command line
+#       ie. 'export DB_PASS=ourpassword'
 
-pas = getpass.getpass('Enter Password for InternREQ DB: ')
-db = Database.Database(IP, 'root', pas, 'internreq')
+IP = '35.221.39.35' # InternREQ Official DB | GearGrinders
+PASS = os.environ['DB_PASS']
+db = Database.Database(IP, 'root', PASS, 'internreq')
 
 ''' Flask-Login login_manager'''
 
 
 @login_manager.user_loader
 def load_user(id):
-    sql = 'SELECT * from users WHERE user_id="%s"' % (id)
+     # get user id, email, password, role and name
+    sql = 'SELECT * FROM users WHERE user_id="%s"' % (id)
     row = db.query('PULL', sql)[0]
-    user = User(row[0], row[1], row[2], row[3])
+    user_id = row[0]
+    email = row[1]
+    password = row[2]
+    role = row[3]
+    name = row[4]
+    last_login = row[5]
+    user = User(user_id, email, password, role, name, last_login)
     return (user)
 
 
@@ -83,6 +99,8 @@ def load_user(id):
 
 @app.route('/')
 def landing():
+    if(current_user.is_authenticated):
+        return redirect(url_for('dashboard'))
     return render_template('landingPage.html', title=title+"-Home")
 
 
@@ -120,9 +138,19 @@ def login():
         pwrd = form.password.data
 
         if(db.credntial_check(email, pwrd)):
-            sql = 'Select * from users WHERE email="%s"' % (email)
+            # get user id, email, password, role and name
+            sql = 'SELECT * FROM users WHERE email="%s"' % (email)
             row = db.query('PULL', sql)[0]
-            user = User(row[0], row[1], row[2], row[3])
+            user_id = row[0]
+            email = row[1]
+            password = row[2]
+            role = row[3]
+            name = row[4]
+            last_login = row[5]
+            
+            # create user object
+            user = User(user_id, email, password, role, name, last_login)
+
             login_user(user)
             return redirect(url_for('dashboard'))
         else:
@@ -162,7 +190,9 @@ def registration():
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            db.register(first, last, user_type, email, pswrd)
+            sql = "INSERT INTO users (user_id, email, password, type, name) VALUES (%s,%s,%s,%s,%s)" % (0, email, pswrd, user_type, first)
+            db.query('PUSH', sql)
+
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
@@ -188,44 +218,18 @@ Skeleton code for user profile
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
-    if (current_user.is_authenticated):
-        # if profile has been created for this user
-        sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
-        if (db.query("PULL", sql)):
-            # get role
-            sql = "SELECT role FROM users WHERE user_id = %s" % (user_id)
-            role = db.query("PULL", sql)[0][0]
-            # get name, title, major, location
-            sql = "SELECT first_name, last_name FROM %s WHERE user_id = %s" % (
-                role, user_id)
-            result = db.query("PULL", sql)
-            name = result[0][0] + ' ' + result[0][0]  # flatten tuple
-            sql = "SELECT title FROM %s WHERE user_id = %s" % (role, user_id)
-            title = db.query("PULL", sql)[0][0]
-            sql = "SELECT department FROM %s WHERE user_id = %s" % (
-                role, user_id)
-            department = db.query("PULL", sql)[0][0]
-            sql = "SELECT location FROM %s WHERE user_id = %s" % (
-                role, user_id)
-            location = db.query("PULL", sql)[0][0]
-            # get about
-            sql = "SELECT about FROM %s WHERE user_id = %s" % (role, user_id)
-            about = db.query("PULL", sql)[0][0]
-            # get user avatar by email (powered by Gravatar)
-            sql = "SELECT email FROM users WHERE user_id = %s" % (user_id)
-            email = db.query("PULL", sql)[0][0]
-            size = 128
-            digest = md5(email.lower().encode('utf-8')).hexdigest()
-            avatar = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-                digest, size)
+    if (current_user.is_authenticated): # if user is authenticated
+        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))): # if user profile exists
+            
+            # create profile_user object from class
+            profile_user = ProfileUser.ProfileUser(user_id)
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             edit = False
             if(int(user_id) == current_user.id):
                 edit = True
-            return render_template('profile.html', avatar=avatar, name=name, title=title, department=department, location=location, about=about, Edit=edit)
+            return render_template('profile.html', profile_user=profile_user, Edit=edit)
         else:
-            # TODO: Error page for no profile
             name = 'User Profile not created yet :('
             return render_template('profile.html', name=name)
     else:
@@ -241,7 +245,7 @@ Skeleton code for dashboard
 @login_required
 def dashboard():
     if(current_user.is_authenticated):
-        name = current_user.email
+        name = current_user.name
         return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program")
     return redirect('/login')
 
@@ -257,7 +261,9 @@ def posting(id):
 @app.route('/create/posting', methods=['GET', 'POST'])
 @login_required
 def createPosting():
+    print(current_user.role)
     if(current_user.role == 'sponsor' or current_user.role == 'faculty'):
+        print("made it inside not")
         form = forms.Posting()
         if(form.validate_on_submit()):
             title = form.title.data
