@@ -5,14 +5,10 @@ import getpass
 from random import randint
 from modules import forms, Database, ProfileUser
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-
 import os
-
-
 from flask_mail import Mail
 from flask_mail import Message
 from hashlib import md5
-
 # Flask-Login attempt import's
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
@@ -64,16 +60,17 @@ class User(UserMixin):
         self.uniqueID = uniqueID
         ''' Once we reset the server all IDs are droped as well and frees up each number to be re-used'''
 
+
 '''End class'''
-       
+
 
 # Database Access
 # <!> Connection issues troubleshooting </!>
 #     Set Password environment variable in the command line
 #       ie. 'export DB_PASS=ourpassword'
 
-IP = '35.221.39.35' # InternREQ Official DB | GearGrinders
-PASS = os.environ['DB_PASS']
+IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
+PASS = os.environ.get('DB_PASS')
 db = Database.Database(IP, 'root', PASS, 'internreq')
 
 ''' Flask-Login login_manager'''
@@ -147,7 +144,7 @@ def login():
             role = row[3]
             name = row[4]
             last_login = row[5]
-            
+
             # create user object
             user = User(user_id, email, password, role, name, last_login)
 
@@ -184,20 +181,24 @@ def registration():
         user_type = form.user_type.data
         email = form.email.data
         pswrd = form.confirm.data
+        pswrd = db.encrypt(pswrd)
 
         # Pull from Database
 
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            sql = "INSERT INTO users (user_id, email, password, type, name) VALUES (%s,%s,%s,%s,%s)" % (0, email, pswrd, user_type, first)
-            db.query('PUSH', sql)
+            sql = "INSERT INTO users (user_id, email, password, role, name) VALUES (%s,%s,%s,%s,%s)"
+            args = (0, email, pswrd, user_type, first)
+            db.query('PUSH', sql, args)
 
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
-            db.query('PUSH', sql)
+            sql = "INSERT INTO " + user_type + \
+                " (user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            args = (user_id, first, last)
+            db.query('PUSH', sql, args)
             send_email("Thank You", 'admin@internreq.com', email,
                        "Thank you for registering with InternREQ")
 
@@ -218,17 +219,21 @@ Skeleton code for user profile
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
-    if (current_user.is_authenticated): # if user is authenticated
-        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))): # if user profile exists
-            
+    if (current_user.is_authenticated):  # if user is authenticated
+        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))):  # if user profile exists
+
             # create profile_user object from class
             profile_user = ProfileUser.ProfileUser(user_id)
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             edit = False
             if(int(user_id) == current_user.id):
+                posting = db.query(
+                    'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
+                applications = db.query(
+                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
                 edit = True
-            return render_template('profile.html', profile_user=profile_user, Edit=edit)
+            return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
         else:
             name = 'User Profile not created yet :('
             return render_template('profile.html', name=name)
@@ -236,22 +241,24 @@ def profile(user_id):
         return redirect('/login')
 
 
-'''
-Skeleton code for dashboard
-'''
-
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
     if(current_user.is_authenticated):
         name = current_user.name
-        return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program")
+        postings = db.query('PULL', 'SELECT * from internship')
+        return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
 
-@app.route('/posting/<id>')
+@app.route('/posting/<id>', methods=['GET', 'POST'])
 def posting(id):
+
+    if request.method == 'POST':
+        sql = 'INSERT INTO applications(user_id, internship_id) VALUES(%s,%s)'
+        args = (current_user.id, id)
+        db.query('PUSH', sql, args)
+        flash('Application Submited', 'success')
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
     posting = db.query(
         'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
@@ -276,9 +283,10 @@ def createPosting():
             hours = form.hours.data
             sql = "INSERT INTO internship(internship_id, user_id, title," \
                 " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
-                "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0, current_user.id,
-                                                     title, location, overview, repsons, reqs, comp, jType, hours)
-            db.query('PUSH', sql)
+                "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            args = (0, current_user.id, title, location,
+                    overview, repsons, reqs, comp, jType, hours)
+            db.query('PUSH', sql, args)
             return redirect('/profile/'+str(current_user.id))
         return(render_template('posting.html', form=form))
     return(render_template('unauthorized.html'))
@@ -294,7 +302,7 @@ def send_email(subject, sender, recipients, body):
 def testemail():
     send_email("Thank You", 'chrisddhnt@gmail.com',
                current_user.email, "<h1>Test Email recived</h1>")
-    flash('email sent')
+    flash('email sent', 'success')
     return(redirect(url_for('dashboard')))
 
 

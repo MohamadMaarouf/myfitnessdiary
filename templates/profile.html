@@ -135,10 +135,12 @@
                             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
                                 aria-controls="home" aria-selected="true">About</a>
                         </li>
+                        {% if Edit %}
                         <li class="nav-item">
                             <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                                aria-controls="profile" aria-selected="false">Postings</a>
+                                aria-controls="profile" aria-selected="false">Your Applications</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -153,8 +155,6 @@
                 <div class="profile-work">
                     <p>Work</p>
                     <a href="">Github Link Here</a><br />
-                    <a href="{{ url_for('posting', id=request.path[-1]) }}">Posting HERE</a><br />
-                    <a href="{{url_for('createPosting')}}">Create Posting</a>
                     <p>SKILLS</p>
                     <a href="">Web Designer</a><br />
                     <a href="">Web Developer</a><br />
@@ -169,46 +169,32 @@
                         {{profile_user.about}}
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Experience</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>Expert</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Hourly Rate</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>10$/hr</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Total Projects</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>230</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>English Level</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>Expert</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Availability</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>6 months</p>
-                            </div>
-                        </div>
+                        <table class="table">
+                            <table class="table table-sm table-bordered table-hover table-striped" id="postings">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Location</th>
+                                        <th>Compensation</th>
+                                        <th>Type of Job</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for app in applied%}
+                                    <tr>
+                                        <td><a href="{{ url_for('posting', id=app[0]) }}"> {{app[3]}} </a></td>
+                                        <td> {{app[4]}} </td>
+                                        {% if app[8] == 0 %}
+                                        <td> No </td>
+                                        {% else %}
+                                        <td> Yes </td>
+                                        {% endif %}
+                                        <td> {{app[9]}} </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </table>
                     </div>
                 </div>
             </div>
