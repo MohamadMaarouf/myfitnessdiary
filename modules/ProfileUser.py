@@ -31,6 +31,7 @@ class ProfileUser():
         self.verified = row[11]
         self.education = row[12]
         self.additional = row[13]
+        '''
         # avatar by Gravatar
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         # 36px square
@@ -42,6 +43,7 @@ class ProfileUser():
         # 128px square
         self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, 128)
+            '''
 
         # additional datapoints
         if (self.role == 'student'):

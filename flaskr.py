@@ -181,6 +181,7 @@ def registration():
         user_type = form.user_type.data
         email = form.email.data
         pswrd = form.confirm.data
+        pswrd = db.encrypt(pswrd)
 
         # Pull from Database
 
@@ -194,7 +195,8 @@ def registration():
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO "+ user_type +" (user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            sql = "INSERT INTO " + user_type + \
+                " (user_id, first_name, last_name) VALUES(%s,%s,%s)"
             args = (user_id, first, last)
             db.query('PUSH', sql, args)
             send_email("Thank You", 'admin@internreq.com', email,
@@ -226,8 +228,12 @@ def profile(user_id):
             # Enable Edit Profile (if logged in user's profile by user_id)
             edit = False
             if(int(user_id) == current_user.id):
+                posting = db.query(
+                    'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
+                applications = db.query(
+                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
                 edit = True
-            return render_template('profile.html', profile_user=profile_user, Edit=edit)
+            return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
         else:
             name = 'User Profile not created yet :('
             return render_template('profile.html', name=name)
@@ -245,8 +251,14 @@ def dashboard():
     return redirect('/login')
 
 
-@app.route('/posting/<id>')
+@app.route('/posting/<id>', methods=['GET', 'POST'])
 def posting(id):
+
+    if request.method == 'POST':
+        sql = 'INSERT INTO applications(user_id, internship_id) VALUES(%s,%s)'
+        args = (current_user.id, id)
+        db.query('PUSH', sql, args)
+        flash('Application Submited', 'success')
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
     posting = db.query(
         'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]

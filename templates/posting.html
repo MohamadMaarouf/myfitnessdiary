@@ -157,11 +157,12 @@
 {% else %}
 <div class="container h-90 w-90 pt-4 mt-4" id="backing">
     <!--If no form then someone is looking at the posting render this-->
-    <span class="row-12"><button type="button" class="btn btn-primary mr-4">Apply Now</button>
+    <form action="" method="POST" style="display: inline"><button type="submit" class="btn btn-primary mr-4">Apply Now</button></form>
+    <span class="row-12">
         <p style="display:inline">Posted {{datePosted}} day(s) ago</p>
         <button type="button" class="btn btn-primary float-right mr-5">Print</button>
     </span><br>
-    <div class="pl-3 mt-5 row w-75">
+    <div class="pl-3 mt-2 row w-75">
         <span class="col-10" style="border:1px solid black">
             <b>{{postingInfo[0]}}</b>
             <b class="float-right">{{postingInfo[1]}}</b>
