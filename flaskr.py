@@ -235,11 +235,6 @@ def profile(user_id):
         return redirect('/login')
 
 
-'''
-Skeleton code for dashboard
-'''
-
-
 @app.route('/dashboard')
 @login_required
 def dashboard():
