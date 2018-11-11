@@ -70,7 +70,7 @@ class User(UserMixin):
 #       ie. 'export DB_PASS=ourpassword'
 
 IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
-PASS = os.environ['DB_PASS']
+PASS = os.environ.get('DB_PASS')
 db = Database.Database(IP, 'root', PASS, 'internreq')
 
 ''' Flask-Login login_manager'''
@@ -187,15 +187,16 @@ def registration():
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            sql = "INSERT INTO users (user_id, email, password, type, name) VALUES (%s,%s,%s,%s,%s)" % (
-                0, email, pswrd, user_type, first)
-            db.query('PUSH', sql)
+            sql = "INSERT INTO users (user_id, email, password, role, name) VALUES (%s,%s,%s,%s,%s)"
+            args = (0, email, pswrd, user_type, first)
+            db.query('PUSH', sql, args)
 
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
-            sql = "INSERT INTO %s (user_id, first_name, last_name) VALUES(%s,%s,%s)" % user_type, user_id, first, last
-            db.query('PUSH', sql)
+            sql = "INSERT INTO "+ user_type +" (user_id, first_name, last_name) VALUES(%s,%s,%s)"
+            args = (user_id, first, last)
+            db.query('PUSH', sql, args)
             send_email("Thank You", 'admin@internreq.com', email,
                        "Thank you for registering with InternREQ")
 
@@ -275,9 +276,10 @@ def createPosting():
             hours = form.hours.data
             sql = "INSERT INTO internship(internship_id, user_id, title," \
                 " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
-                "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)" % (0, current_user.id,
-                                                     title, location, overview, repsons, reqs, comp, jType, hours)
-            db.query('PUSH', sql)
+                "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            args = (0, current_user.id, title, location,
+                    overview, repsons, reqs, comp, jType, hours)
+            db.query('PUSH', sql, args)
             return redirect('/profile/'+str(current_user.id))
         return(render_template('posting.html', form=form))
     return(render_template('unauthorized.html'))

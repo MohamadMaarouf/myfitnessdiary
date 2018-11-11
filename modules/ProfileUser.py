@@ -3,7 +3,7 @@ from hashlib import md5
 import os
 
 IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
-PASS = os.environ['DB_PASS']
+PASS = os.environ.get('DB_PASS')
 db = Database.Database(IP, 'root', PASS, 'internreq')
 
 
