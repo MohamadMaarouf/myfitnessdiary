@@ -2,9 +2,10 @@ from modules import Database
 from hashlib import md5
 import os
 
-IP = '35.221.39.35' # InternREQ Official DB | GearGrinders
+IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
 PASS = os.environ['DB_PASS']
 db = Database.Database(IP, 'root', PASS, 'internreq')
+
 
 class ProfileUser():
     def __init__(self, user_id):
@@ -32,9 +33,15 @@ class ProfileUser():
         self.additional = row[13]
         # avatar by Gravatar
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 36) # 36px square
-        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 80) # 80px square
-        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, 128) # 128px square
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
 
         # additional datapoints
         if (self.role == 'student'):

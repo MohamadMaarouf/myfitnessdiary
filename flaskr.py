@@ -5,14 +5,10 @@ import getpass
 from random import randint
 from modules import forms, Database, ProfileUser
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-
 import os
-
-
 from flask_mail import Mail
 from flask_mail import Message
 from hashlib import md5
-
 # Flask-Login attempt import's
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
@@ -64,15 +60,16 @@ class User(UserMixin):
         self.uniqueID = uniqueID
         ''' Once we reset the server all IDs are droped as well and frees up each number to be re-used'''
 
+
 '''End class'''
-       
+
 
 # Database Access
 # <!> Connection issues troubleshooting </!>
 #     Set Password environment variable in the command line
 #       ie. 'export DB_PASS=ourpassword'
 
-IP = '35.221.39.35' # InternREQ Official DB | GearGrinders
+IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
 PASS = os.environ['DB_PASS']
 db = Database.Database(IP, 'root', PASS, 'internreq')
 
@@ -147,7 +144,7 @@ def login():
             role = row[3]
             name = row[4]
             last_login = row[5]
-            
+
             # create user object
             user = User(user_id, email, password, role, name, last_login)
 
@@ -190,7 +187,8 @@ def registration():
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
-            sql = "INSERT INTO users (user_id, email, password, type, name) VALUES (%s,%s,%s,%s,%s)" % (0, email, pswrd, user_type, first)
+            sql = "INSERT INTO users (user_id, email, password, type, name) VALUES (%s,%s,%s,%s,%s)" % (
+                0, email, pswrd, user_type, first)
             db.query('PUSH', sql)
 
             # add to sudent/faculty/sponsor table
@@ -218,9 +216,9 @@ Skeleton code for user profile
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
-    if (current_user.is_authenticated): # if user is authenticated
-        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))): # if user profile exists
-            
+    if (current_user.is_authenticated):  # if user is authenticated
+        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))):  # if user profile exists
+
             # create profile_user object from class
             profile_user = ProfileUser.ProfileUser(user_id)
 
@@ -246,7 +244,8 @@ Skeleton code for dashboard
 def dashboard():
     if(current_user.is_authenticated):
         name = current_user.name
-        return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program")
+        postings = db.query('PULL', 'SELECT * from internship')
+        return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
 
@@ -294,7 +293,7 @@ def send_email(subject, sender, recipients, body):
 def testemail():
     send_email("Thank You", 'chrisddhnt@gmail.com',
                current_user.email, "<h1>Test Email recived</h1>")
-    flash('email sent')
+    flash('email sent', 'success')
     return(redirect(url_for('dashboard')))
 
 

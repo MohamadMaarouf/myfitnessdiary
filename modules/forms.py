@@ -33,7 +33,7 @@ class Posting(FlaskForm):
                        ('TRUE', 'Yes'), ('FALSE', "No")])
     fullPart = SelectField('Internship/Part/Full time',
                            validators=[DataRequired()],
-                           choices=[('intern', 'Internship'), ('part', 'Part-Time'), ('full', 'Full Time')])
+                           choices=[('Internship', 'Internship'), ('Part-Time', 'Part-Time'), ('Full-Time', 'Full Time')])
     hours = TextAreaField('Hours (Day: required hours)',
                           validators=[DataRequired()])
 
