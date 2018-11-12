@@ -227,11 +227,13 @@ def profile(user_id):
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             edit = False
+            applications = []
             if(int(user_id) == current_user.id):
                 posting = db.query(
                     'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
-                applications = db.query(
-                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
+                if(current_user.role == 'student'):
+                    applications = db.query(
+                        'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
                 edit = True
             return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
         else:
