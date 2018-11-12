@@ -232,8 +232,9 @@ def profile(user_id):
                 posting = db.query(
                     'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
                 if(current_user.role == 'student'):
-                    applications = db.query(
-                        'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
+                    for x in range(len(posting)):
+                        applications.append(db.query(
+                            'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
                 edit = True
             return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
         else:

@@ -31,6 +31,7 @@ class ProfileUser():
         self.verified = row[11]
         self.education = row[12]
         self.additional = row[13]
+        '''
         # avatar by Gravatar
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         # 36px square
@@ -47,3 +48,4 @@ class ProfileUser():
         if (self.role == 'student'):
             self.grad_date = row[14]
             self.gpa = row[15]
+'''
