@@ -183,6 +183,11 @@ def registration():
         pswrd = form.confirm.data
         pswrd = db.encrypt(pswrd)
 
+        southern = email.split('@')
+        student = False
+        if(southern[1] == 'southernct.edu'):
+            student = True
+
         # Pull from Database
 
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
