@@ -14,6 +14,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
+from itsdangerous import URLSafeTimedSerializer
 # end Import's
 
 
@@ -37,6 +38,7 @@ login_manager.login_view = 'login'
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
 sessionID = []
+serial = URLSafeTimedSerializer(app.secret_key)
 
 '''Flask-Login User class'''
 
@@ -183,11 +185,6 @@ def registration():
         pswrd = form.confirm.data
         pswrd = db.encrypt(pswrd)
 
-        southern = email.split('@')
-        student = False
-        if(southern[1] == 'southernct.edu'):
-            student = True
-
         # Pull from Database
 
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
@@ -196,25 +193,47 @@ def registration():
             sql = "INSERT INTO users (user_id, email, password, role, name) VALUES (%s,%s,%s,%s,%s)"
             args = (0, email, pswrd, user_type, first)
             db.query('PUSH', sql, args)
-
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO " + user_type + \
-                " (user_id, first_name, last_name) VALUES(%s,%s,%s)"
-            args = (user_id, first, last)
+                " (user_id, first_name, last_name, verified) VALUES(%s,%s,%s,%s)"
+            args = (user_id, first, last, 0)
             db.query('PUSH', sql, args)
-            send_email("Thank You", 'admin@internreq.com', email,
-                       "Thank you for registering with InternREQ")
+
+            # Check if it is southern email address
+            southern = email.split('@')
+            if(southern[1] == 'southernct.edu'):
+                token = serial.dumps(email, salt='email-confirm')
+                msg = Message(sender='chrisddhnt@gmail.com',subject="Email Verification", recipients=[email])
+                link = (url_for('email_confirm', token=token, _external=True))
+                msg.body = (
+                    'Thanks for signing up. Here is your registration key>{}').format(link)
+                mail.send(msg)
 
         else:
             flash("Email address already used! Please Login.", 'danger')
-            return redirect('/registration')
+            return redirect(url_for('registration'))
 
         flash('Account Creation Successful!', 'success')
         return redirect('/login')
 
     return render_template('registration.html', title=(title+"-Registration"), form=form)
+
+
+@app.route('/email_confirm/<token>')
+def email_confirm(token):
+    try:
+        email = serial.loads(token, salt='email-confirm', max_age=3600)# token lives for 1 hour
+        student = db.query('PULL', "Select user_id FROM users WHERE email='{}'".format(email))
+        print (student)
+        db.query('PUSH', "UPDATE student SET verified=TRUE WHERE user_id={}".format(student[0][0]))
+    except Exception:
+        flash('Your verification link has expired please re-register')
+        return redirect('/scoobysnacks')
+    flash('Account Verified!')
+    return(redirect(url_for('login')))
+    
 
 
 '''
