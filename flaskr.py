@@ -128,7 +128,6 @@ def server_error(b):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if(current_user.is_authenticated):
-        flash('You are already logged in!')
         return redirect(url_for('dashboard'))
     form = forms.Login()
     if(form.validate_on_submit()):
@@ -147,11 +146,16 @@ def login():
             name = row[4]
             last_login = row[5]
 
+            verified = db.query('PULL', "SELECT verified From {} WHERE user_id={}".format(role,user_id))
+            print(verified[0][0])
             # create user object
-            user = User(user_id, email, password, role, name, last_login)
-
-            login_user(user)
-            return redirect(url_for('dashboard'))
+            if(verified[0][0] == 1): # Block all non-verified users from loggin in
+                user = User(user_id, email, password, role, name, last_login)
+                login_user(user)
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Account Not Verified. Please Check the email you registered with.', 'danger')
+                return(render_template('login.html', title=(title + 'Login'), form=form))
         else:
             flash('Username or Password Error', 'danger')
 
