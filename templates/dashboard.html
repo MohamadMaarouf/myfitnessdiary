@@ -71,6 +71,11 @@
             <a href="{{url_for('createPosting')}}" class="nav-link">Create new Posting</a>
         </li>
         {% endif %}
+        {% if current_user.role == 'faculty'%}
+        <li class="nav-item">
+            <a href="{{url_for('user_confirm')}}" class="nav-link">Validate a New Account</a>
+        </li>
+        {% endif %}
         <li class="nav-item">
             <a class="nav-link" href="{{url_for('login')}}">
                 <span>Login</span>

@@ -214,6 +214,11 @@ def registration():
                 msg.body = (
                     'Thanks for signing up. Here is your registration key>{}').format(link)
                 mail.send(msg)
+            else:
+                msg = Message(sender='chrisddhnt@gmail.com',subject="User Verification", recipients=['chris.conlon1993@gmail.com'])
+                link = (url_for('login', _external=True))
+                msg.body = ('New Account created for Faculty/Sponsor. Do You want to allow user with email address {} into the system? If yes please login here {} and go to the appropriate page. Else discard this message').format(email,link)
+                mail.send(msg)
 
         else:
             flash("Email address already used! Please Login.", 'danger')
@@ -238,8 +243,24 @@ def email_confirm(token):
     flash('Account Verified!')
     return(redirect(url_for('login')))
     
-
-
+@app.route('/user_confirm', methods=['GET', 'POST'])
+def user_confirm():
+    if(not(current_user.is_authenticated) or current_user.role != 'faculty'):
+        return render_template('unauthorized.html')
+    else:
+        form = forms.AddUser()
+        if(form.validate_on_submit()):
+            sql = "SELECT * FROM users WHERE email='{}'".format(form.email.data)
+            user = db.query('PULL', sql)
+            print(user)
+            if(len(user) != 0):
+                user = user[0]
+                sql = "UPDATE {} SET verified=TRUE WHERE user_id={}".format(user[3], user[0]) # update <role_table> with a true value in verified 
+                flash('User has been verified.', 'success')
+            else:
+                flash('No user with the email address is registered', 'danger')
+            return(redirect(url_for('user_confirm', form=form)))
+        return(render_template('AddUser.html', form=form))
 '''
 Skeleton code for user profile
 '''
