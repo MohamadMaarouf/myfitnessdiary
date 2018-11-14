@@ -2,7 +2,8 @@
 
 # Authors of InternREQ  
   Tom Birmingham    
-  Christopher Conlon      
+  Christopher Conlon
+  Davis Jaekle      
     ---> Insert your names here <----
 
     
