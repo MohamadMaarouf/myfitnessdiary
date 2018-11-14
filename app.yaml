@@ -1,3 +1,7 @@
 runtime: python37
 
 entrypoint: gunicorn -b :$PORT flaskr:app
+
+env_variables:
+  DB_PASS: GearGrinders1!
+  DB_CONNECTION: birmingham4test:us-east4:internreq-1
