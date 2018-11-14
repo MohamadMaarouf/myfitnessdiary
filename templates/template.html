@@ -57,13 +57,13 @@
                 <ul class="nav nav-pills mr-auto" id="myTab">
                     <!-- This block will handle When a user loggs in we can add to the navigation bar diffrent routs-->
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item" id="nav-btns">
+                    <li class="nav-item ml-1" id="nav-btns">
                         <a class="nav-link" href="{{ url_for('dashboard')}}">Dashboard</a>
                     </li>
-                    <li class="nav-item" id="nav-btns">
+                    <li class="nav-item ml-1" id="nav-btns">
                         <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
                     </li>
-                    <li id="nav-btns"><a class='nav-link' href="/logout">Logout</a>
+                    <li id="nav-btns" class='nav-item ml-1'><a class='nav-link' href="/logout">Logout</a>
                     <li>
                         <span id="welcome" class="ml-5" style="display:inline">
                             Welcome, {{ current_user.name }}! <img style="display:inline" src="{{ current_user.avatar_s }}">
