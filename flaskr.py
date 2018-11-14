@@ -147,7 +147,6 @@ def login():
             last_login = row[5]
 
             verified = db.query('PULL', "SELECT verified From {} WHERE user_id={}".format(role,user_id))
-            print(verified[0][0])
             # create user object
             if(verified[0][0] == 1): # Block all non-verified users from loggin in
                 user = User(user_id, email, password, role, name, last_login)
@@ -293,12 +292,17 @@ def dashboard():
         postings = db.query('PULL', 'SELECT * from internship')
         applications = []
         user_id = str(current_user.id)
-        if(int(user_id) == current_user.id):
+        if(current_user.role == 'student'):
             posting = db.query('PULL', 'SELECT * from applications WHERE user_id=' + user_id)
-            if(current_user.role == 'student'):
-                for x in range(len(posting)):
-                    applications.append(db.query(
-                        'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
+            for x in range(len(posting)):
+                applications.append(db.query(
+                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
+        elif(current_user.role == 'sponsor'):
+            posting = db.query('PULL', 'SELECT * from internship WHERE user_id=' + user_id)
+            for x in range(len(posting)):
+                applications.append(db.query(
+                    'PULL', 'SELECT * from internship WHERE user_id={}'.format(posting[x][1]))[0])
+
         return render_template('dashboard.html', title=(title+'Dashboard'),applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
@@ -320,9 +324,7 @@ def posting(id):
 @app.route('/create/posting', methods=['GET', 'POST'])
 @login_required
 def createPosting():
-    print(current_user.role)
     if(current_user.role == 'sponsor' or current_user.role == 'faculty'):
-        print("made it inside not")
         form = forms.Posting()
         if(form.validate_on_submit()):
             title = form.title.data

@@ -155,10 +155,16 @@
                         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
                             aria-controls="home" aria-selected="true">Postings</a>
                     </li>
-                    {% if current_user.role != 'faculty' %}
+                    {% if current_user.role == 'student' %}
                     <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
                             aria-selected="false">Your Applications</a>
+                    </li>
+                    {% endif %}
+                    {% if current_user.role == 'sponsor'%}
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                            aria-selected="false">Your Postings</a>
                     </li>
                     {% endif %}
                 </ul>
