@@ -27,13 +27,19 @@
         a{
             text-decoration: none;
         }
+        li{
+            margin: .5%;
+        }
         .bg-faded{
             background-color: #103C5F;
         }
         .collapse .nav-link{
             color: white;
             margin:1%;
-            border: 1px solid black;
+        }
+        #nav-btns{
+            background-color: rgba(42, 136, 212, 0.829);
+            border-radius: 15%;
         }
         #welcome{
             color: white;
@@ -54,12 +60,14 @@
                 <ul class="nav nav-pills mr-auto" id="myTab">
                     <!-- This block will handle When a user loggs in we can add to the navigation bar diffrent routs-->
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-btns">
                         <a class="nav-link" href="{{ url_for('dashboard')}}">Dashboard</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-btns">
                         <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
                     </li>
+                    <li id="nav-btns"><a class='nav-link' href="/logout">Logout</a>
+                        {% endif %}
                     <li><a class='nav-link' href="/logout">Logout</a>
                     <li id="nav-btns">
                         <span id="welcome" class="ml-5">
@@ -67,7 +75,6 @@
                         </span>
                     </li>
                     {% endif %}
-
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="text" placeholder="Search">
