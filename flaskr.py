@@ -3,21 +3,20 @@
 # Import's
 import getpass
 from random import randint
-from modules import forms, Database, ProfileUser
+from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 import os
 from flask_mail import Mail
 from flask_mail import Message
 from hashlib import md5
-# Flask-Login attempt import's
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
-# end Import's
+import sqlalchemy
 
 
-# Gloabls
+# Globals
 app = Flask(__name__)
 app.config.update(dict(
     DEBUG=True,
@@ -38,8 +37,7 @@ app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
 sessionID = []
 
-'''Flask-Login User class'''
-
+''' User classes '''
 
 class User(UserMixin):
     def __init__(self, user_id, email, password, role, name, last_login):
@@ -61,17 +59,78 @@ class User(UserMixin):
         ''' Once we reset the server all IDs are droped as well and frees up each number to be re-used'''
 
 
+class ProfileUser():
+    def __init__(self, user_id):
+        sql = 'SELECT * FROM users WHERE user_id = "%s"' % (user_id)
+        row = db.query('PULL', sql)[0]
+        self.email = row[1]
+        self.role = row[3]
+        sql = 'SELECT * FROM %s WHERE user_id = "%s"' % (self.role, user_id)
+        row = db.query('PULL', sql)[0]
+        self.fname = row[1]
+        self.lname = row[2]
+        self.full_name = row[1]+' '+row[2]
+        self.title = row[3]
+        self.department = row[4]
+        self.major = row[4]
+        self.company = row[4]
+        self.location = row[5]
+        self.about = row[6]
+        self.url = row[7]
+        self.email = row[8]
+        self.phone = row[9]
+        self.phone_desc = row[10]
+        self.verified = row[11]
+        self.education = row[12]
+        self.additional = row[13]
+        # avatar by Gravatar
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
+
+        # additional datapoints
+        if (self.role == 'student'):
+            self.grad_date = row[14]
+            self.gpa = row[15]
+
 '''End class'''
 
 
 # Database Access
-# <!> Connection issues troubleshooting </!>
-#     Set Password environment variable in the command line
-#       ie. 'export DB_PASS=ourpassword'
+# <!> Set the environment variable before testing locally
+# (ie. export DB_PASS=ourpassword (mac)   or  $env:DB_PASS = 'ourpassword (win))
+db_user = 'root'
+db_ip = '35.221.39.35'
+db_name = 'internreq'
+db_password = os.environ.get('DB_PASS')
+db_connection_name = 'birmingham4test:us-east4:internreq-1'
 
-IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
-PASS = os.environ.get('DB_PASS')
-db = Database.Database(IP, 'root', PASS, 'internreq')
+# When deployed to App Engine, the `GAE_ENV` environment variable will be
+# set to `standard`
+if os.environ.get('GAE_ENV') == 'standard':
+    # If deployed, use the local socket interface for accessing Cloud SQL
+    unix_socket = '/cloudsql/{}'.format(db_connection_name)
+    engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
+        db_user, db_password, db_name, unix_socket)
+else:
+    # If running locally, use the TCP connections instead
+    # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
+    # so that your application can use 127.0.0.1:3306 to connect to your
+    # Cloud SQL instance
+    host = '127.0.0.1'
+    engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
+        db_user, db_password, host, db_name)
+
+db = Database.Database(engine_url)
+
+
 
 ''' Flask-Login login_manager'''
 
@@ -220,19 +279,22 @@ Skeleton code for user profile
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
-        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))):  # if user profile exists
+        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):  # if user profile exists
 
             # create profile_user object from class
-            profile_user = ProfileUser.ProfileUser(user_id)
+            profile_user = ProfileUser(user_id)
 
             # Enable Edit Profile (if logged in user's profile by user_id)
-            edit = False
             if(int(user_id) == current_user.id):
-                posting = db.query(
-                    'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
-                applications = db.query(
-                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
                 edit = True
+            else:
+                edit = False
+                
+                # get postings and applications
+                posting = db.query(
+                        'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
+                applications = db.query(
+                        'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[0][1]))
             return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
         else:
             name = 'User Profile not created yet :('
@@ -246,7 +308,7 @@ def profile(user_id):
 def dashboard():
     if(current_user.is_authenticated):
         name = current_user.name
-        postings = db.query('PULL', 'SELECT * from internship')
+        postings = db.query('PULL', 'SELECT * FROM internship')
         return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
@@ -307,4 +369,5 @@ def testemail():
 
 
 if (__name__ == "__main__"):
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    if os.environ.get('GAE_ENV') != 'standard':
+        app.run(host='0.0.0.0', port='8080', debug=True)

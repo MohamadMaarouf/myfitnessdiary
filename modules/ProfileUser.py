@@ -2,10 +2,39 @@ from modules import Database
 from hashlib import md5
 import os
 
+'''
+# Database Connect
 IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
 PASS = os.environ.get('DB_PASS')
 db = Database.Database(IP, 'root', PASS, 'internreq')
+'''
 
+# Database Access
+# <!> Set the environment variable before testing locally
+# (ie. 'export DB_PASS=ourpassword'   or  'set DB_PASS=ourpassword')
+db_user = 'root'
+db_ip = '35.221.39.35'
+db_name = 'internreq'
+db_password = os.environ.get('DB_PASS')
+db_connection_name = 'birmingham4test:us-east4:internreq-1'
+
+# When deployed to App Engine, the `GAE_ENV` environment variable will be
+# set to `standard`
+if os.environ.get('GAE_ENV') == 'standard':
+    # If deployed, use the local socket interface for accessing Cloud SQL
+    unix_socket = '/cloudsql/{}'.format(db_connection_name)
+    engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
+        db_user, db_password, db_name, unix_socket)
+else:
+    # If running locally, use the TCP connections instead
+    # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
+    # so that your application can use 127.0.0.1:3306 to connect to your
+    # Cloud SQL instance
+    host = '127.0.0.1'
+    engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
+        db_user, db_password, host, db_name)
+
+db = Database.Database(engine_url)
 
 class ProfileUser():
     def __init__(self, user_id):
