@@ -1,0 +1,105 @@
+{% extends 'template.html'%}
+{% block style %}
+<style>
+    h1 {
+        text-align: center;
+        font-color: white;
+         }
+</style>
+{% endblock %}
+{% block content %}
+
+
+<form action="" method="POST">
+<div class="content-section text-center jumbotron">   
+<legend class="border-bottom mb-4 text-center">Edit Profile</legend>
+<div class="form-group">
+    <b>{{ form.first_name.label(class="form-control-label mr-4") }}</b>
+    {% if form.first_name.errors %}
+    <b>{{ form.first_name(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.first_name.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.first_name(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.last_name.label(class="form-control-label mr-4 ml-1") }}</b>
+    {% if form.last_name.errors %}
+    <b>{{ form.last_name(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.last_name.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.last_name(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.user_title.label(class="form-control-label mr-4 ml-5") }}</b>
+    {% if form.user_title.errors %}
+    <b>{{ form.user_title(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.user_title.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.user_title(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.department.label(class="form-control-label mr-3 ml--2") }}</b>
+    {% if form.department.errors %}
+    <b>{{ form.department(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.department.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.department(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.location.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.location.errors %}
+    <b>{{ form.location(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.location.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.location(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.about.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.about.errors %}
+    <b>{{ form.about(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.about.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.about(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form.submit(class='btn btn-outline-info')}}
+</div>
+</div>
+</form>
+{% endblock %}

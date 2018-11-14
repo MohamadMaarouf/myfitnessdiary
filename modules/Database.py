@@ -1,14 +1,12 @@
 ''' This module will build our database object. '''
-import pymysql
+import sqlalchemy
 import hashlib
 
 
 class Database():
-    def __init__(self, ip, user, password, database):
-        self.IP = ip
-        self.USER = user
-        self.DB_PASS = password
-        self.DATABASE = database
+    def __init__(self, url, pool_size=3):
+        self.URL = url
+        self.engine = sqlalchemy.create_engine(url, pool_size=pool_size)
 
     def credntial_check(self, email, password):
         credentials = False
@@ -25,18 +23,11 @@ class Database():
         self.query('PUSH', sql, arg)
 
     def connect(self):
-        db = pymysql.connect(host=(self.IP), user=self.USER,
-                             password=self.DB_PASS, db=self.DATABASE)
-        cursor = db.cursor()
-        return (db, cursor)
-
-    def commit(self):
-        # TO-DO: we must have a way to commit changes to the DB after data has been inserted
-        return
-
-    def close(self):
-        # TO-DO: we must have a way to close database connections after they have been opened
-        return
+        # The Engine object returned by create_engine() has a QueuePool integrated
+        # See https://docs.sqlalchemy.org/en/latest/core/pooling.html for more
+        # information
+        engine = sqlalchemy.create_engine(self.URL, pool_size=3)
+        return (engine)
 
     def encrypt(self, toEncrypt):
         sha = hashlib.sha256()
@@ -60,11 +51,13 @@ class Database():
     '''
 
     def query(self, qType, statement, *args):
-        database, cursor = self.connect()
-        cursor.execute(statement, *args)
-        row = cursor.fetchall()
+        connection = self.engine.connect()
+        cursor = connection.execute(statement, *args)
+        result = cursor.fetchall()
+        
+        # If the connection comes from a pool, close() will send the connection
+        # back to the pool instead of closing it
+        connection.close()
+
         if(qType == 'PULL'):
-            return(row)
-        else:
-            database.commit()
-        database.close()
+            return(result)

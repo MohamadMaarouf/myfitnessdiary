@@ -1,10 +1,8 @@
-''' Flask server to handle routing for InternREQ.com. '''
+#   Flask server to handle routing for InternREQ.com
 
 # Import's
-import getpass
-from modules import forms, Database, ProfileUser
+from modules import forms, Database
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-import os
 from flask_mail import Mail
 from flask_mail import Message
 # Flask-Login attempt import's
@@ -12,10 +10,13 @@ from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
 from itsdangerous import URLSafeTimedSerializer
+import os
+import sqlalchemy
+from hashlib import md5
 # end Import's
 
 
-# Gloabls
+# Globals
 app = Flask(__name__)
 app.config.update(dict(
     DEBUG=True,
@@ -37,7 +38,7 @@ title = 'InternREQ-'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 
-'''Flask-Login User class'''
+#   Flask-Login User class
 class User(UserMixin):
     # tracks how many times this class has been created 
     # doubles as a unique login id 
@@ -50,19 +51,95 @@ class User(UserMixin):
         self.name = name
         self.last_login = last_login
         self.uniqueID = User.instances
-'''End class'''
+        # avatar by Gravatar
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
+
+#   End class
+
+#   Profile User Class
+class ProfileUser():
+    def __init__(self, user_id):
+        sql = 'SELECT * FROM users WHERE user_id = "%s"' % (user_id)
+        row = db.query('PULL', sql)[0]
+        self.email = row[1]
+        self.role = row[3]
+        sql = 'SELECT * FROM %s WHERE user_id = "%s"' % (self.role, user_id)
+        row = db.query('PULL', sql)[0]
+        self.fname = row[1]
+        self.lname = row[2]
+        self.full_name = row[1]+' '+row[2]
+        self.title = row[3]
+        self.department = row[4]
+        self.major = row[4]
+        self.company = row[4]
+        self.location = row[5]
+        self.about = row[6]
+        self.url = row[7]
+        self.phone = row[9]
+        self.phone_desc = row[10]
+        self.verified = row[11]
+        self.education = row[12]
+        self.additional = row[13]
+        # avatar by Gravatar
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
+
+        # additional datapoints
+        if (self.role == 'student'):
+            self.grad_date = row[14]
+            self.gpa = row[15]
+
+#   End class
 
 
 # Database Access
-# <!> Connection issues troubleshooting </!>
-#     Set Password environment variable in the command line
-#       ie. 'export DB_PASS=ourpassword'
 
-IP = '35.221.39.35'  # InternREQ Official DB | GearGrinders
-PASS = os.environ.get('DB_PASS')
-db = Database.Database(IP, 'root', PASS, 'internreq')
+# <!> Set the environment variable before testing locally
+# In Windows:   $env:DB_PASS = 'ourpassword'
+# In Mac:       export DB_PASS=ourpassword
 
-''' Flask-Login login_manager'''
+db_ip = '35.221.39.35'
+db_password = os.environ.get('DB_PASS')
+db_user = 'root'
+db_name = 'internreq'
+db_connection_name = 'birmingham4test:us-east4:internreq-1'
+
+# When deployed to App Engine, the `GAE_ENV` environment variable will be
+# set to `standard`
+if os.environ.get('GAE_ENV') == 'standard':
+    # If deployed, use the local socket interface for accessing Cloud SQL
+    unix_socket = '/cloudsql/{}'.format(db_connection_name)
+    engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
+        db_user, db_password, db_name, unix_socket)
+else:
+    # If running locally, use the IP address to connect
+    host = db_ip
+    engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
+        db_user, db_password, host, db_name)
+
+db = Database.Database(engine_url)
+engine = sqlalchemy.create_engine(engine_url, pool_size=3)
+
+
+
+#   Flask-Login login_manager
 
 
 @login_manager.user_loader
@@ -80,7 +157,7 @@ def load_user(id):
     return (user)
 
 
-''' End manager '''
+#   End manager
 
 
 @app.route('/')
@@ -90,27 +167,21 @@ def landing():
     return render_template('landingPage.html', title=title+"-Home")
 
 
-'''
-
-
-This is the route for login page, when first opening the page it is opened
-via a GET request and ONLY the last render template executes.
-If the user clicks submit the POST method executes and server recives entered data and verifies
-against the database
-'''
+#   This is the route for login page, when first opening the page it is opened
+#   via a GET request and ONLY the last render template executes.
+#   If the user clicks submit the POST method executes and server recives entered data and verifies
+#   against the database
 
 
 @app.errorhandler(404)
 def page_not_found(a):
     # This route is for handling when an incorrect url is typed
     return render_template('404.html')
-
-
+  
 @app.errorhandler(500)
 def server_error(b):
     # This route is for handling when an internal server error occurs
     return render_template('500.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -145,7 +216,6 @@ def login():
                 return(render_template('login.html', title=(title + 'Login'), form=form))
         else:
             flash('Username or Password Error', 'danger')
-
     return render_template('login.html', title=(title + 'Login'), form=form)
 
 
@@ -156,11 +226,10 @@ def logout():
     return redirect(url_for('login'))
 
 
-'''
-Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
-against our database. If account not in database: create a new user
-                      Else: foward to login page and request user to login
-'''
+
+#   Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
+#   against our database. If account not in database: create a new user
+#                         Else: foward to login page and request user to login
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -249,48 +318,110 @@ def user_confirm():
                 flash('No user with the email address is registered', 'danger')
             return(redirect(url_for('user_confirm', form=form)))
         return(render_template('AddUser.html', form=form))
-'''
-Skeleton code for user profile
-'''
+
+#   Skeleton code for user profile
 
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
-        if (db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id))):  # if user profile exists
+        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):  # if user profile exists
 
             # create profile_user object from class
-            profile_user = ProfileUser.ProfileUser(user_id)
+            profile_user = ProfileUser(user_id)
+
             # Enable Edit Profile (if logged in user's profile by user_id)
-            edit = False
             if(int(user_id) == current_user.id):
                 edit = True
+            else:
+                edit = False
             return render_template('profile.html', profile_user=profile_user, Edit=edit)
         else:
+            # TODO: error page for no user profile
             name = 'User Profile not created yet :('
             return render_template('profile.html', name=name)
     else:
         return redirect('/login')
 
-
+'''
+This is the code for editing profile. The user is presented the data currently
+linked to their account and is able to edit these values and have the changes
+reflected in their profile page
+'''
+@app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile(user_id):
+    x = int(user_id)
+    y = int(current_user.id)
+    if (x != y):
+        flash('You cannot edit profiles other than your own')
+        return redirect(url_for('dashboard'))
+    else:
+        form = forms.EditProfile()
+        if request.method == 'GET':
+            if(current_user.role == 'faculty'):
+                sql =  "SELECT first_name FROM faculty WHERE user_id = %s" % (user_id)
+                first_name = db.query('PULL',sql)[0][0]
+                form.first_name.data = first_name
+                sql =  "SELECT last_name FROM faculty WHERE user_id = %s" % (user_id)
+                last_name = db.query('PULL',sql)[0][0]
+                form.last_name.data = last_name
+                sql =  "SELECT title FROM faculty WHERE user_id = %s" % (user_id)
+                user_title = db.query('PULL',sql)[0][0]
+                form.user_title.data = user_title
+                sql =  "SELECT department FROM faculty WHERE user_id = %s" % (user_id)
+                department = db.query('PULL',sql)[0][0]
+                form.department.data = department
+                sql =  "SELECT location FROM faculty WHERE user_id = %s" % (user_id)
+                location = db.query('PULL',sql)[0][0]
+                form.location.data = location
+                sql =  "SELECT about FROM faculty WHERE user_id = %s" % (user_id)
+                about = db.query('PULL',sql)[0][0]
+                form.about.data = about
+                return render_template('edit_profile.html', title='Edit Profile',
+                           form=form, first_name=first_name, last_name=last_name, user_title=title, department = department,
+                           location = location, about = about)
+        if (request.method == 'POST'):
+            if(current_user.role == 'faculty'):
+                #sql = "UPDATE faculty SET first_name = %s WHERE user_id = %s" % (form.first_name, user_id)
+                #first_name = db.query('PUSH', sql)
+                sql = "UPDATE faculty SET first_name = '%s' WHERE user_id = %s" % (form.first_name.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET last_name = '%s' WHERE user_id = %s" % (form.last_name.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET title = '%s' WHERE user_id = %s" % (form.user_title.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET department = '%s' WHERE user_id = %s" % (form.department.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET location = '%s' WHERE user_id = %s" % (form.location.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
+                db.query('UPDATE', sql)
+                db.commit()
+                return redirect(url_for('profile', user_id=current_user.id))
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
+    
+'''
+Skeleton code for dashboard
+'''
 @app.route('/dashboard')
 @login_required
 def dashboard():
     if(current_user.is_authenticated):
         name = current_user.name
-        postings = db.query('PULL', 'SELECT * from internship')
+        postings = db.query('PULL', 'SELECT * FROM internship')
         applications = []
         user_id = str(current_user.id)
         if(current_user.role == 'student'):
-            posting = db.query('PULL', 'SELECT * from applications WHERE user_id=' + user_id)
+            posting = db.query('PULL', 'SELECT * FROM applications WHERE user_id=' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
-                    'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
+                    'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][1]))[0])
         elif(current_user.role == 'sponsor'):
-            posting = db.query('PULL', 'SELECT * from internship WHERE user_id=' + user_id)
+            posting = db.query('PULL', 'SELECT * FROM internship WHERE user_id=' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
-                    'PULL', 'SELECT * from internship WHERE user_id={}'.format(posting[x][1]))[0])
+                    'PULL', 'SELECT * FROM internship WHERE user_id={}'.format(posting[x][1]))[0])
 
         return render_template('dashboard.html', title=(title+'Dashboard'),applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
@@ -358,4 +489,5 @@ def admin_view():
     return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
 
 if (__name__ == "__main__"):
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    if os.environ.get('GAE_ENV') != 'standard':
+        app.run(host='0.0.0.0', port='8080', debug=True)

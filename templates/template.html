@@ -41,6 +41,9 @@
             background-color: rgba(42, 136, 212, 0.829);
             border-radius: 15%;
         }
+        #welcome{
+            color: white;
+        }
     </style>
 </head>
 
@@ -65,7 +68,13 @@
                     </li>
                     <li id="nav-btns"><a class='nav-link' href="/logout">Logout</a>
                         {% endif %}
-
+                    <li><a class='nav-link' href="/logout">Logout</a>
+                    <li id="nav-btns">
+                        <span id="welcome" class="ml-5">
+                            Welcome, {{ current_user.name }}! <img style="display:inline" src="{{ current_user.avatar_s }}">
+                        </span>
+                    </li>
+                    {% endif %}
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="text" placeholder="Search">
