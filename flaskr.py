@@ -1,4 +1,4 @@
-''' Flask server to handle routing for InternREQ.com. '''
+#   Flask server to handle routing for InternREQ.com
 
 # Import's
 from modules import forms, Database
@@ -37,7 +37,7 @@ title = 'InternREQ-'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 
-'''Flask-Login User class'''
+#   Flask-Login User class
 class User(UserMixin):
     # tracks how many times this class has been created 
     # doubles as a unique login id 
@@ -51,6 +51,9 @@ class User(UserMixin):
         self.last_login = last_login
         self.uniqueID = User.instances
 
+#   End class
+
+#   Profile User Class
 class ProfileUser():
     def __init__(self, user_id):
         sql = 'SELECT * FROM users WHERE user_id = "%s"' % (user_id)
@@ -92,8 +95,7 @@ class ProfileUser():
             self.grad_date = row[14]
             self.gpa = row[15]
 
-        self.uniqueID = User.instances
-'''End class'''
+#   End class
 
 
 # Database Access
@@ -125,7 +127,7 @@ db = Database.Database(engine_url)
 
 
 
-''' Flask-Login login_manager'''
+#   Flask-Login login_manager
 
 
 @login_manager.user_loader
@@ -143,7 +145,7 @@ def load_user(id):
     return (user)
 
 
-''' End manager '''
+#   End manager
 
 
 @app.route('/')
@@ -153,14 +155,10 @@ def landing():
     return render_template('landingPage.html', title=title+"-Home")
 
 
-'''
-
-
-This is the route for login page, when first opening the page it is opened
-via a GET request and ONLY the last render template executes.
-If the user clicks submit the POST method executes and server recives entered data and verifies
-against the database
-'''
+#   This is the route for login page, when first opening the page it is opened
+#   via a GET request and ONLY the last render template executes.
+#   If the user clicks submit the POST method executes and server recives entered data and verifies
+#   against the database
 
 
 @app.errorhandler(404)
@@ -219,11 +217,10 @@ def logout():
     return redirect(url_for('login'))
 
 
-'''
-Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
-against our database. If account not in database: create a new user
-                      Else: foward to login page and request user to login
-'''
+
+#   Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
+#   against our database. If account not in database: create a new user
+#                         Else: foward to login page and request user to login
 
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -312,9 +309,8 @@ def user_confirm():
                 flash('No user with the email address is registered', 'danger')
             return(redirect(url_for('user_confirm', form=form)))
         return(render_template('AddUser.html', form=form))
-'''
-Skeleton code for user profile
-'''
+
+#   Skeleton code for user profile
 
 
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
