@@ -357,7 +357,7 @@ def edit_profile(user_id):
         flash('You cannot edit profiles other than your own')
         return redirect(url_for('dashboard'))
     else:
-        form = forms.EditProfile(obj=ProfileUser)
+        form = forms.EditProfile()
         if request.method == 'GET':
             if(current_user.role == 'faculty'):
                 sql =  "SELECT first_name FROM faculty WHERE user_id = %s" % (user_id)
