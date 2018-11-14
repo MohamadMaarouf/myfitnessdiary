@@ -18,7 +18,7 @@ class Database():
             credentials = True
         return (credentials)
 
-    def register(self, first, last, uType, vKey, email, password):
+    def register(self, first, last, uType, email, password):
         password = self.encrypt(password)
         arg = (0, email, password, uType)
         sql = "INSERT INTO users (user_id, email, password, role) VALUES (%s, %s, %s, %s)"
