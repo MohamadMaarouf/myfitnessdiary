@@ -12,6 +12,9 @@ class ProfileUser():
         sql = 'SELECT * FROM users WHERE user_id = "%s"' % (user_id)
         row = db.query('PULL', sql)[0]
         self.email = row[1]
+        # avatar by Gravatar
+        self.avatar_s, self.avatar_m, self.avatar_l = self.picLoader(
+            self.email)
         self.role = row[3]
         sql = 'SELECT * FROM %s WHERE user_id = "%s"' % (self.role, user_id)
         row = db.query('PULL', sql)[0]
@@ -31,21 +34,21 @@ class ProfileUser():
         self.verified = row[11]
         self.education = row[12]
         self.additional = row[13]
-        '''
-        # avatar by Gravatar
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        # 36px square
-        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, 36)
-        # 80px square
-        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, 80)
-        # 128px square
-        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, 128)
 
         # additional datapoints
         if (self.role == 'student'):
             self.grad_date = row[14]
             self.gpa = row[15]
-            '''
+
+    def picLoader(self, email):
+        digest = md5(email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
+        return(avatar_s, avatar_m, avatar_l)
