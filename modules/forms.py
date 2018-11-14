@@ -15,14 +15,18 @@ class Registration(FlaskForm):
     last_name = StringField('Last Name: ', validators=[DataRequired()])
     user_type = SelectField('Account Type: ', validators=[DataRequired()], choices=[
         ('student', 'Student'), ('faculty', 'Faculty'), ('sponsor', 'Sponsor')])
-
-    v_key = StringField('Verification Key: ', validators=[DataRequired()])
     email = StringField('Email: ', validators=[DataRequired(), Email()])
     password = PasswordField('Password: ', validators=[
         DataRequired(), Length(min=6)])
     confirm = PasswordField('Confirm Password:  ', validators=[
         DataRequired(), EqualTo('password')])
     submit = SubmitField('Register ', validators=[DataRequired()])
+
+
+class AddUser(FlaskForm):
+    email = StringField('Email Address to be Verified',
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField('Validate User', validators=[])
 
 
 class Posting(FlaskForm):
@@ -32,10 +36,10 @@ class Posting(FlaskForm):
     responsibilities = TextAreaField('Responsibilities', validators=[])
     reqs = TextAreaField('Applicant Requirments', validators=[])
     comp = SelectField('Compensation', validators=[DataRequired()], choices=[
-                       ('TRUE', 'Yes'), ('FALSE', "No")])
+        ('1', 'Yes'), ('0', "No")])
     fullPart = SelectField('Internship/Part/Full time',
                            validators=[DataRequired()],
-                           choices=[('intern', 'Internship'), ('part', 'Part-Time'), ('full', 'Full Time')])
+                           choices=[('Internship', 'Internship'), ('Part-Time', 'Part-Time'), ('Full-Time', 'Full Time')])
     hours = TextAreaField('Hours (Day: required hours)',
                           validators=[DataRequired()])
 
