@@ -3,6 +3,7 @@
 # Authors of InternREQ  
   Tom Birmingham    
   Christopher Conlon      
+  Dan Glinski
     ---> Insert your names here <----
 
     
