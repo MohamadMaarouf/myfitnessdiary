@@ -35,6 +35,9 @@
             margin:1%;
             border: 1px solid black;
         }
+        #welcome{
+            color: white;
+        }
     </style>
 </head>
 
@@ -58,7 +61,12 @@
                         <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
                     </li>
                     <li><a class='nav-link' href="/logout">Logout</a>
-                        {% endif %}
+                    <li id="nav-btns">
+                        <span id="welcome" class="ml-5">
+                            Welcome, {{ current_user.name }}! <img style="display:inline" src="{{ current_user.avatar_s }}">
+                        </span>
+                    </li>
+                    {% endif %}
 
                 </ul>
                 <form class="form-inline my-2 my-lg-0">

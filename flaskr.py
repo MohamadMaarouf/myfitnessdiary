@@ -51,6 +51,17 @@ class User(UserMixin):
         self.name = name
         self.last_login = last_login
         self.uniqueID = User.instances
+        # avatar by Gravatar
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
 
 #   End class
 
