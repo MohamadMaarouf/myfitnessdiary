@@ -200,8 +200,8 @@ def registration():
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
             user_id = db.query("PULL", sql)
             sql = "INSERT INTO " + user_type + \
-                " (user_id, first_name, last_name, verified) VALUES(%s,%s,%s,%s)"
-            args = (user_id, first, last, 0)
+                " (user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,'%s', %s)"
+            args = (user_id, first, last, email, 0)
             db.query('PUSH', sql, args)
 
             # Check if it is southern email address
