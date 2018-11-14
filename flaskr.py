@@ -383,8 +383,6 @@ def edit_profile(user_id):
                            location = location, about = about)
         if (request.method == 'POST'):
             if(current_user.role == 'faculty'):
-                #sql = "UPDATE faculty SET first_name = %s WHERE user_id = %s" % (form.first_name, user_id)
-                #first_name = db.query('PUSH', sql)
                 sql = "UPDATE faculty SET first_name = '%s' WHERE user_id = %s" % (form.first_name.data, user_id)
                 db.query('UPDATE', sql)
                 sql = "UPDATE faculty SET last_name = '%s' WHERE user_id = %s" % (form.last_name.data, user_id)
@@ -397,7 +395,6 @@ def edit_profile(user_id):
                 db.query('UPDATE', sql)
                 sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
                 db.query('UPDATE', sql)
-                db.commit()
                 return redirect(url_for('profile', user_id=current_user.id))
     return render_template('edit_profile.html', title='Edit Profile', form=form)
     
