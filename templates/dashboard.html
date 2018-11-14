@@ -174,33 +174,35 @@
             </div>
             <div class="tab-content profile-tab" id='myTabContent'>
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <table class="table table-striped table-hover" id="postings">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Title</th>
-                                <th>Location</th>
-                                <th>Compensation</th>
-                                <th>Type of Job</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for post in postings%}
-                            <tr>
-                                <td><a href="{{ url_for('posting', id=post[0]) }}"> {{post[3]}} </a></td>
-                                <td> {{post[4]}} </td>
-                                {% if post[8] == 0 %}
-                                <td> No </td>
-                                {% else %}
-                                <td> Yes </td>
-                                {% endif %}
-                                <td> {{post[9]}} </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="postings">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Location</th>
+                                    <th>Compensation</th>
+                                    <th>Type of Job</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in postings%}
+                                <tr>
+                                    <td><a href="{{ url_for('posting', id=post[0]) }}"> {{post[3]}} </a></td>
+                                    <td> {{post[4]}} </td>
+                                    {% if post[8] == 0 %}
+                                    <td> No </td>
+                                    {% else %}
+                                    <td> Yes </td>
+                                    {% endif %}
+                                    <td> {{post[9]}} </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <table class="table">
+                    <div class="table-responsive">
                         <table class="table table-sm table-bordered table-hover table-striped" id="postings">
                             <thead class="thead-dark">
                                 <tr>
@@ -225,10 +227,10 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </table>
+                        <div class="table-responsive"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    {% endblock %}
