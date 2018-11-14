@@ -23,6 +23,12 @@ class Registration(FlaskForm):
     submit = SubmitField('Register ', validators=[DataRequired()])
 
 
+class AddUser(FlaskForm):
+    email = StringField('Email Address to be Verified',
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField('Validate User', validators=[])
+
+
 class Posting(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired()])
@@ -30,7 +36,7 @@ class Posting(FlaskForm):
     responsibilities = TextAreaField('Responsibilities', validators=[])
     reqs = TextAreaField('Applicant Requirments', validators=[])
     comp = SelectField('Compensation', validators=[DataRequired()], choices=[
-                       ('1', 'Yes'), ('0', "No")])
+        ('1', 'Yes'), ('0', "No")])
     fullPart = SelectField('Internship/Part/Full time',
                            validators=[DataRequired()],
                            choices=[('Internship', 'Internship'), ('Part-Time', 'Part-Time'), ('Full-Time', 'Full Time')])

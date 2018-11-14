@@ -133,23 +133,24 @@ INSERT INTO users (user_id, email, password, role, name)
 
 
 INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, URL, email,
-    phone, phone_desc, education, additional)
+    phone, phone_desc, verified, education, additional)
     VALUES (1, 'Chris', 'Conlon', 'Software Clown', 'Computer Science Department', 'Wallingford, CT',
     'As a software clown I strive for excellence in comedic value and unbreakable code',
     'https://www.southernct.edu/', 'chris.conlon1993@gmail.com', '(203) 392-7278', 'office phone',
+    'TRUE',
     'undergrad', 'Python, SQL, Flask, Bootstrap, HTML/CSS, Jinja');
-INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, verified)
     VALUES (2, 'Tom', 'Birmingham', 'Software Clown', 'Computer Science Department', 'Brookfield, CT',
-    'As a software clown I strive for excellence in comedic value and unbreakable code');
-INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    'As a software clown I strive for excellence in comedic value and unbreakable code', 'TRUE');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, verified)
     VALUES (3, 'Davis', 'Jaekle', 'Demon of Design', 'Computer Science Department', 'Stratford, CT',
-    'Master of designing advanced systems built on the basis fear and terror');
-INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    'Master of designing advanced systems built on the basis fear and terror','TRUE');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about,verified)
     VALUES (4, 'Mohamad', 'Maarouf', 'Demon of Design', 'Computer Science Department', 'Stratford, CT',
-    'Master of designing advanced systems built on the basis fear and terror');
-INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about)
+    'Master of designing advanced systems built on the basis fear and terror', 'TRUE');
+INSERT INTO faculty (user_id, first_name, last_name, title, department, location, about, verified)
     VALUES (5, 'Dan', 'Glinski', 'Software Clown', 'Computer Science Department', 'Brookfield, CT',
-    'As a software clown I strive for excellence in comedic value and unbreakable code');
+    'As a software clown I strive for excellence in comedic value and unbreakable code', 'TRUE');
 
 
 INSERT INTO sponsor (user_id, first_name, last_name, title, company, location, about, url, email, verified, education)
