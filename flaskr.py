@@ -240,6 +240,7 @@ def email_confirm(token):
         return redirect('/scoobysnacks')
     flash('Account Verified!')
     return(redirect(url_for('login')))
+
     
 @app.route('/user_confirm', methods=['GET', 'POST'])
 def user_confirm():
@@ -359,6 +360,14 @@ def testemail():
     flash('email sent', 'success')
     return(redirect(url_for('dashboard')))
 
+@app.route('/admin_view')
+@login_required
+def admin_view():
+    userTable = db.query('PULL', "Select * from users")
+    studentTable = db.query('PULL', "Select * from student")
+    sponsorTable = db.query('PULL', "Select * from sponsor")
+    facultyTable = db.query('PULL', "Select * from faculty")
+    return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
 
 if (__name__ == "__main__"):
     app.run(host='0.0.0.0', port=8080, debug=True)
