@@ -2,10 +2,10 @@
 
 # Authors of InternREQ  
   Tom Birmingham    
-  Christopher Conlon      
+  Christopher Conlon
+  Davis Jaekle           
   Dan Glinski
   Mohamad Maarouf
-    ---> Insert your names here <----
 
     
   # Flask structure we are working with
