@@ -104,13 +104,11 @@ against the database
 def page_not_found(a):
     # This route is for handling when an incorrect url is typed
     return render_template('404.html')
-
-
+  
 @app.errorhandler(500)
 def server_error(b):
     # This route is for handling when an internal server error occurs
     return render_template('500.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -145,7 +143,6 @@ def login():
                 return(render_template('login.html', title=(title + 'Login'), form=form))
         else:
             flash('Username or Password Error', 'danger')
-
     return render_template('login.html', title=(title + 'Login'), form=form)
 
 
@@ -272,7 +269,67 @@ def profile(user_id):
     else:
         return redirect('/login')
 
-
+'''
+This is the code for editing profile. The user is presented the data currently
+linked to their account and is able to edit these values and have the changes
+reflected in their profile page
+'''
+@app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile(user_id):
+    x = int(user_id)
+    y = int(current_user.id)
+    if (x != y):
+        flash('You cannot edit profiles other than your own')
+        return redirect(url_for('dashboard'))
+    else:
+        form = forms.EditProfile()
+        if request.method == 'GET':
+            if(current_user.role == 'faculty'):
+                sql =  "SELECT first_name FROM faculty WHERE user_id = %s" % (user_id)
+                first_name = db.query('PULL',sql)[0][0]
+                form.first_name.data = first_name
+                sql =  "SELECT last_name FROM faculty WHERE user_id = %s" % (user_id)
+                last_name = db.query('PULL',sql)[0][0]
+                form.last_name.data = last_name
+                sql =  "SELECT title FROM faculty WHERE user_id = %s" % (user_id)
+                user_title = db.query('PULL',sql)[0][0]
+                form.user_title.data = user_title
+                sql =  "SELECT department FROM faculty WHERE user_id = %s" % (user_id)
+                department = db.query('PULL',sql)[0][0]
+                form.department.data = department
+                sql =  "SELECT location FROM faculty WHERE user_id = %s" % (user_id)
+                location = db.query('PULL',sql)[0][0]
+                form.location.data = location
+                sql =  "SELECT about FROM faculty WHERE user_id = %s" % (user_id)
+                about = db.query('PULL',sql)[0][0]
+                form.about.data = about
+                return render_template('edit_profile.html', title='Edit Profile',
+                           form=form, first_name=first_name, last_name=last_name, user_title=title, department = department,
+                           location = location, about = about)
+        if (request.method == 'POST'):
+            if(current_user.role == 'faculty'):
+                #sql = "UPDATE faculty SET first_name = %s WHERE user_id = %s" % (form.first_name, user_id)
+                #first_name = db.query('PUSH', sql)
+                sql = "UPDATE faculty SET first_name = '%s' WHERE user_id = %s" % (form.first_name.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET last_name = '%s' WHERE user_id = %s" % (form.last_name.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET title = '%s' WHERE user_id = %s" % (form.user_title.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET department = '%s' WHERE user_id = %s" % (form.department.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET location = '%s' WHERE user_id = %s" % (form.location.data, user_id)
+                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
+                db.query('UPDATE', sql)
+                db.commit()
+                return redirect(url_for('profile', user_id=current_user.id))
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
+    
+'''
+Skeleton code for dashboard
+'''
 @app.route('/dashboard')
 @login_required
 def dashboard():
