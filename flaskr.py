@@ -27,7 +27,7 @@ app.config.update(dict(
     MAIL_USE_TLS=True,
     MAIL_USE_SSL=False,
     MAIL_USERNAME='chrisddhnt@gmail.com',
-    MAIL_PASSWORD='internreq',
+    MAIL_PASSWORD=os.environ.get('MAIL_PASS')
 ))
 app.secret_key = 'Any String or Number for encryption here'
 title = 'InternREQ-'
