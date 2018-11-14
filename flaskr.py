@@ -12,6 +12,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, \
 from itsdangerous import URLSafeTimedSerializer
 import os
 import sqlalchemy
+from hashlib import md5
 # end Import's
 
 
@@ -72,7 +73,6 @@ class ProfileUser():
         self.location = row[5]
         self.about = row[6]
         self.url = row[7]
-        self.email = row[8]
         self.phone = row[9]
         self.phone_desc = row[10]
         self.verified = row[11]
@@ -119,7 +119,7 @@ else:
     # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
     # so that your application can use 127.0.0.1:3306 to connect to your
     # Cloud SQL instance
-    host = '127.0.0.1'
+    host = db_ip #'127.0.0.1'
     engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
         db_user, db_password, host, db_name)
 
