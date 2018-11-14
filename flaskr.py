@@ -2,18 +2,15 @@
 
 # Import's
 import getpass
-from random import randint
 from modules import forms, Database, ProfileUser
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 import os
 from flask_mail import Mail
 from flask_mail import Message
-from hashlib import md5
 # Flask-Login attempt import's
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
-from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
 # end Import's
 
@@ -41,9 +38,10 @@ sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 
 '''Flask-Login User class'''
-
-
 class User(UserMixin):
+    # tracks how many times this class has been created 
+    # doubles as a unique login id 
+    instances = 0
     def __init__(self, user_id, email, password, role, name, last_login):
         self.id = user_id
         self.email = email
@@ -51,18 +49,7 @@ class User(UserMixin):
         self.role = role
         self.name = name
         self.last_login = last_login
-
-        # Create a uniqueID for each login
-        uniqueID = randint(0, 100000000000000000000000000000)
-        # If the ID is already in our list recreate another one
-        while(uniqueID in sessionID):
-            uniqueID = randint(0, 100000000000000000000000000000)
-        # Once unique id is found append it to the in use ID's and assign it to the user
-        sessionID.append(uniqueID)
-        self.uniqueID = uniqueID
-        ''' Once we reset the server all IDs are droped as well and frees up each number to be re-used'''
-
-
+        self.uniqueID = User.instances
 '''End class'''
 
 
@@ -80,7 +67,7 @@ db = Database.Database(IP, 'root', PASS, 'internreq')
 
 @login_manager.user_loader
 def load_user(id):
-     # get user id, email, password, role and name
+    # get user id, email, password, role and name
     sql = 'SELECT * FROM users WHERE user_id="%s"' % (id)
     row = db.query('PULL', sql)[0]
     user_id = row[0]
@@ -151,6 +138,7 @@ def login():
             if(verified[0][0] == 1): # Block all non-verified users from loggin in
                 user = User(user_id, email, password, role, name, last_login)
                 login_user(user)
+                User.instances += 1
                 return redirect(url_for('dashboard'))
             else:
                 flash('Account Not Verified. Please Check the email you registered with.', 'danger')

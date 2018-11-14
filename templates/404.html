@@ -1,103 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'template.html'%}
+{% block style %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}{{title}}{% endblock %}</title>
-    <!--Favicon Seeting-->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='icon.ico') }}">
+<style>
+    a {
+        text-decoration: none;
+    }
 
-    <!--Link to hosted server for bootstrap 4 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
-    <!-- End Bootstrap 4 links -->
+    .bg-faded {
+        background-color: #103C5F;
+    }
 
-    {% block style %} {{style}} {% endblock %}
+    .collapse .nav-link {
+        color: white;
+        margin: 1%;
+        border: 1px solid black;
+    }
 
-    <style>
-        a{
-            text-decoration: none;
-        }
-        .bg-faded{
-            background-color: #103C5F;
-        }
-        .collapse .nav-link{
-            color: white;
-            margin:1%;
-            border: 1px solid black;
-        }
-        h1{
-            font-size: 1500%;
-        }
-    </style>
-</head>
-
-<body>
-    <div>
-        {% block navbar %}
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="{{url_for('login')}}"><img src="../static/assets/logo.svg"></a>
-
-            <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                <ul class="nav nav-pills mr-auto" id="myTab">
-                    <!-- This block will handle When a user loggs in we can add to the navigation bar diffrent routs-->
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard')}}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.is_anonymous %}
-                    <li><a class='nav-link' href="/login">Login</a></li>
-                    {% else %}
-                    <li><a class='nav-link' href="/logout">Logout</a>
-                        {%endif%}
-
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                    <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
-                </form>
-            </div>
-        </nav>
-        {% endblock %}
-    </div>
-    <div class='content mt-5 pt-5'>
-        <!-- 
-            If there is a one time message to be attached to a page flask uses 'flash'
-            this code checks everytime a page is loaded to see if there is a message.
-            if there is a message: append it to the top of the page.
-            else: skip this block
-        -->
-        {% with messages= get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class=" text-center alert alert-{{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-        <!--End code for flashed messages-->
-        {% block content %}
-        <div style="text-align: center"><h1>404<h1></div><br />
-        <div style="text-align: center"><font size="6">Page Not Found Error</div></font>
-        <div style="text-align: center"><font size="6">Please navigate to the previous page</div></font>
-        {% endblock %}
-    </div>
-</body>
-
-</html>
+    h1 {
+        font-size: 1500%;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div style="text-align: center">
+    <h1>404<h1>
+</div><br />
+<div style="text-align: center">
+    <font size="6">Page Not Found Error</font>
+</div>
+<div style="text-align: center">
+    <font size="6">Please navigate to the previous page</font>
+</div>
+{% endblock %}
