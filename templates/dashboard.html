@@ -69,25 +69,25 @@
 {%block content%}
 <div class="sidebar ml-2">
     <ul class="sidebar navbar-nav" id="side">
+        {% if current_user.role == 'faculty'%}
+        <li class="nav-item">
+            <a href="{{ url_for('admin_view') }}" class="nav-link">Admin Panel</a>
+        </li>
+        <li class="nav-item">
+            <a href="{{url_for('user_confirm')}}" class="nav-link">Validate a New Account</a>
+        </li>
+        {% endif %}
+        {% if current_user.role != 'student'%}
+        <li class="nav-item">
+            <a href="{{url_for('createPosting')}}" class="nav-link">Create new Posting</a>
+        </li>
+        {% endif %}
         <li class="nav-item active">
             <!--Playying with sidebar content-->
             <a class="nav-link" href="/scoobysnacks">
                 <span>Error 404</span>
             </a>
         </li>
-        {% if current_user.role != 'student'%}
-        <li class="nav-item">
-            <a href="{{url_for('createPosting')}}" class="nav-link">Create new Posting</a>
-        </li>
-        {% endif %}
-        {% if current_user.role == 'faculty'%}
-        <li class="nav-item">
-            <a href="{{url_for('user_confirm')}}" class="nav-link">Validate a New Account</a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ url_for('admin_view') }}" class="nav-link">Admin Panel</a>
-        </li>
-        {% endif %}
         <li class="nav-item">
             <a class="nav-link" href="{{url_for('login')}}">
                 <span>Login</span>
