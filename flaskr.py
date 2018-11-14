@@ -99,12 +99,15 @@ class ProfileUser():
 
 
 # Database Access
+
 # <!> Set the environment variable before testing locally
-# (ie. export DB_PASS=ourpassword (mac)   or  $env:DB_PASS = 'ourpassword (win))
-db_user = 'root'
+# In Windows:   $env:DB_PASS = 'ourpassword'
+# In Mac:       export DB_PASS=ourpassword
+
 db_ip = '35.221.39.35'
-db_name = 'internreq'
 db_password = os.environ.get('DB_PASS')
+db_user = 'root'
+db_name = 'internreq'
 db_connection_name = 'birmingham4test:us-east4:internreq-1'
 
 # When deployed to App Engine, the `GAE_ENV` environment variable will be
@@ -115,15 +118,13 @@ if os.environ.get('GAE_ENV') == 'standard':
     engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
         db_user, db_password, db_name, unix_socket)
 else:
-    # If running locally, use the TCP connections instead
-    # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
-    # so that your application can use 127.0.0.1:3306 to connect to your
-    # Cloud SQL instance
-    host = db_ip #'127.0.0.1'
+    # If running locally, use the IP address to connect
+    host = db_ip
     engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
         db_user, db_password, host, db_name)
 
 db = Database.Database(engine_url)
+engine = sqlalchemy.create_engine(engine_url, pool_size=3)
 
 
 
