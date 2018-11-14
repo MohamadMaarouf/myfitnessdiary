@@ -48,3 +48,12 @@ class Posting(FlaskForm):
     '''
 
     submit = SubmitField('Create Posting ', validators=[DataRequired()])
+
+class EditProfile(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    user_title = StringField('Title', validators=[Length(min=0, max=20)])
+    department = StringField('Department', validators=[Length(min=0, max=40)])
+    location = StringField('Location', validators = [Length(min=0, max = 15)])
+    about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')
