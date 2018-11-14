@@ -212,7 +212,7 @@ def registration():
                 msg = Message(sender='chrisddhnt@gmail.com',subject="Email Verification", recipients=[email])
                 link = (url_for('email_confirm', token=token, _external=True))
                 msg.body = (
-                    'Thanks for signing up. Here is your registration key>{}').format(link)
+                    'Thanks for signing up. Here is your registration key \n{}').format(link)
                 mail.send(msg)
             else:
                 msg = Message(sender='chrisddhnt@gmail.com',subject="User Verification", recipients=['chris.conlon1993@gmail.com'])
@@ -235,7 +235,6 @@ def email_confirm(token):
     try:
         email = serial.loads(token, salt='email-confirm', max_age=3600)# token lives for 1 hour
         student = db.query('PULL', "Select user_id FROM users WHERE email='{}'".format(email))
-        print (student)
         db.query('PUSH', "UPDATE student SET verified=TRUE WHERE user_id={}".format(student[0][0]))
     except Exception:
         flash('Your verification link has expired please re-register')
@@ -250,12 +249,13 @@ def user_confirm():
     else:
         form = forms.AddUser()
         if(form.validate_on_submit()):
-            sql = "SELECT * FROM users WHERE email='{}'".format(form.email.data)
+            email = form.email.data
+            sql = "SELECT * FROM users WHERE email='{}'".format(email)
             user = db.query('PULL', sql)
-            print(user)
             if(len(user) != 0):
                 user = user[0]
-                sql = "UPDATE {} SET verified=TRUE WHERE user_id={}".format(user[3], user[0]) # update <role_table> with a true value in verified 
+                sql = "UPDATE {} SET verified=True WHERE user_id={}".format(user[3], user[0]) # update <role_table> with a true value in verified 
+                db.query('PUSH',sql)
                 flash('User has been verified.', 'success')
             else:
                 flash('No user with the email address is registered', 'danger')
@@ -273,19 +273,11 @@ def profile(user_id):
 
             # create profile_user object from class
             profile_user = ProfileUser.ProfileUser(user_id)
-
             # Enable Edit Profile (if logged in user's profile by user_id)
             edit = False
-            applications = []
             if(int(user_id) == current_user.id):
-                posting = db.query(
-                    'PULL', 'SELECT * from applications WHERE user_id=' + user_id)
-                if(current_user.role == 'student'):
-                    for x in range(len(posting)):
-                        applications.append(db.query(
-                            'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
                 edit = True
-            return render_template('profile.html', profile_user=profile_user, Edit=edit, applied=applications)
+            return render_template('profile.html', profile_user=profile_user, Edit=edit)
         else:
             name = 'User Profile not created yet :('
             return render_template('profile.html', name=name)
@@ -299,7 +291,15 @@ def dashboard():
     if(current_user.is_authenticated):
         name = current_user.name
         postings = db.query('PULL', 'SELECT * from internship')
-        return render_template('dashboard.html', title=(title+'Dashboard'), name=name, Daily="Welcome to the Program", postings=postings)
+        applications = []
+        user_id = str(current_user.id)
+        if(int(user_id) == current_user.id):
+            posting = db.query('PULL', 'SELECT * from applications WHERE user_id=' + user_id)
+            if(current_user.role == 'student'):
+                for x in range(len(posting)):
+                    applications.append(db.query(
+                        'PULL', 'SELECT * from internship WHERE internship_id={}'.format(posting[x][1]))[0])
+        return render_template('dashboard.html', title=(title+'Dashboard'),applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
 
