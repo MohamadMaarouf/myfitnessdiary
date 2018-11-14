@@ -27,9 +27,6 @@
         a{
             text-decoration: none;
         }
-        li{
-            margin: .5%;
-        }
         .bg-faded{
             background-color: #103C5F;
         }
@@ -67,10 +64,8 @@
                         <a class="nav-link" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
                     </li>
                     <li id="nav-btns"><a class='nav-link' href="/logout">Logout</a>
-                        {% endif %}
-                    <li><a class='nav-link' href="/logout">Logout</a>
-                    <li id="nav-btns">
-                        <span id="welcome" class="ml-5">
+                    <li>
+                        <span id="welcome" class="ml-5" style="display:inline">
                             Welcome, {{ current_user.name }}! <img style="display:inline" src="{{ current_user.avatar_s }}">
                         </span>
                     </li>
