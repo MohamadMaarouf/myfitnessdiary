@@ -1,4 +1,4 @@
-''' Flask server to handle routing for InternREQ.com '''
+''' Flask server to handle routing for InternREQ.com. '''
 
 # Import's
 from modules import forms, Database
