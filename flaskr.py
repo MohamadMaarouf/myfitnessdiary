@@ -17,7 +17,12 @@ from hashlib import md5
 
 
 # Globals
+app_title = 'InternREQ'
 app = Flask(__name__)
+# Mail Configuration <!> Set the environment variable before testing locally
+    # Windows (powershell):     $env:MAIL_PASS = 'ourpassword'
+    # Winders (CMD):            set MAIL_PASS=ourpassword
+    # Mac (Terminal):           export MAIL_PASS=ourpassword
 app.config.update(dict(
     DEBUG=True,
     MAIL_SERVER='smtp.gmail.com',
@@ -28,15 +33,13 @@ app.config.update(dict(
     MAIL_PASSWORD=os.environ.get('MAIL_PASS')
 ))
 app.secret_key = 'Any String or Number for encryption here'
-title = 'InternREQ-'
 app.config.from_object(__name__)
 mail = Mail(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-app.secret_key = 'Any String or Number for encryption here'
-title = 'InternREQ-'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
+# end Globals
 
 #   Flask-Login User class
 class User(UserMixin):
@@ -62,7 +65,8 @@ class User(UserMixin):
         # 128px square
         self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, 128)
-
+        # TODO: create profile objet for all users in python
+        # self.profile = ProfileUser(self.id)
 #   End class
 
 #   Profile User Class
@@ -164,7 +168,7 @@ def load_user(id):
 def landing():
     if(current_user.is_authenticated):
         return redirect(url_for('dashboard'))
-    return render_template('landingPage.html', title=title+"-Home")
+    return render_template('landingPage.html', title=app_title)
 
 
 #   This is the route for login page, when first opening the page it is opened
@@ -176,12 +180,12 @@ def landing():
 @app.errorhandler(404)
 def page_not_found(a):
     # This route is for handling when an incorrect url is typed
-    return render_template('404.html')
+    return render_template('404.html', title=app_title)
   
 @app.errorhandler(500)
 def server_error(b):
     # This route is for handling when an internal server error occurs
-    return render_template('500.html')
+    return render_template('500.html', title=app_title)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -213,10 +217,10 @@ def login():
                 return redirect(url_for('dashboard'))
             else:
                 flash('Account Not Verified. Please Check the email you registered with.', 'danger')
-                return(render_template('login.html', title=(title + 'Login'), form=form))
+                return(render_template('login.html', title=app_title, form=form))
         else:
             flash('Username or Password Error', 'danger')
-    return render_template('login.html', title=(title + 'Login'), form=form)
+    return render_template('login.html', title='Login | '+app_title, form=form)
 
 
 @app.route('/logout')
@@ -224,7 +228,6 @@ def logout():
     logout_user()
     flash('Logout Successfull', 'success')
     return redirect(url_for('login'))
-
 
 
 #   Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
@@ -283,7 +286,7 @@ def registration():
         flash('Account Creation Successful!', 'success')
         return redirect('/login')
 
-    return render_template('registration.html', title=(title+"-Registration"), form=form)
+    return render_template('registration.html', title='Registration | '+app_title, form=form)
 
 
 @app.route('/email_confirm/<token>')
@@ -335,11 +338,11 @@ def profile(user_id):
                 edit = True
             else:
                 edit = False
-            return render_template('profile.html', profile_user=profile_user, Edit=edit)
+            page_title = profile_user.full_name+' | '
+            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
         else:
-            # TODO: error page for no user profile
-            name = 'User Profile not created yet :('
-            return render_template('profile.html', name=name)
+            # profile does not exist
+            return render_template('404.html', title=app_title)
     else:
         return redirect('/login')
 
@@ -351,9 +354,7 @@ reflected in their profile page
 @app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile(user_id):
-    x = int(user_id)
-    y = int(current_user.id)
-    if (x != y):
+    if int(user_id) != current_user.id:
         flash('You cannot edit profiles other than your own')
         return redirect(url_for('dashboard'))
     else:
@@ -378,8 +379,8 @@ def edit_profile(user_id):
                 sql =  "SELECT about FROM faculty WHERE user_id = %s" % (user_id)
                 about = db.query('PULL',sql)[0][0]
                 form.about.data = about
-                return render_template('edit_profile.html', title='Edit Profile',
-                           form=form, first_name=first_name, last_name=last_name, user_title=title, department = department,
+                return render_template('edit_profile.html', title='Edit Profile | '+app_title,
+                           form=form, first_name=first_name, last_name=last_name, user_title=user_title, department = department,
                            location = location, about = about)
         if (request.method == 'POST'):
             if(current_user.role == 'faculty'):
@@ -396,7 +397,7 @@ def edit_profile(user_id):
                 sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
                 db.query('UPDATE', sql)
                 return redirect(url_for('profile', user_id=current_user.id))
-    return render_template('edit_profile.html', title='Edit Profile', form=form)
+    return render_template('edit_profile.html', title=('Edit Profile | '+app_title), form=form)
     
 '''
 Skeleton code for dashboard
@@ -420,7 +421,7 @@ def dashboard():
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE user_id={}'.format(posting[x][1]))[0])
 
-        return render_template('dashboard.html', title=(title+'Dashboard'),applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
+        return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
 
@@ -435,7 +436,10 @@ def posting(id):
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
     posting = db.query(
         'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
-    return render_template('posting.html', datePosted=1, postingInfo=posting)
+    post_title = posting[0]
+    post_type = posting[6]
+    page_title = post_title+' - '+post_type+' | '
+    return render_template('posting.html', title=page_title+app_title, datePosted=1, postingInfo=posting)
 
 
 @app.route('/create/posting', methods=['GET', 'POST'])
@@ -459,7 +463,7 @@ def createPosting():
                     overview, repsons, reqs, comp, jType, hours)
             db.query('PUSH', sql, args)
             return redirect('/profile/'+str(current_user.id))
-        return(render_template('posting.html', form=form))
+        return(render_template('posting.html', title='Create Posting | '+app_title, form=form))
     return(render_template('unauthorized.html'))
 
 
@@ -483,7 +487,7 @@ def admin_view():
     studentTable = db.query('PULL', "Select * from student")
     sponsorTable = db.query('PULL', "Select * from sponsor")
     facultyTable = db.query('PULL', "Select * from faculty")
-    return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
+    return render_template('adminView.html', title='Administration | '+app_title, users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
 
 if (__name__ == "__main__"):
     if os.environ.get('GAE_ENV') != 'standard':

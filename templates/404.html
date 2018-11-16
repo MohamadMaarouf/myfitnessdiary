@@ -1,6 +1,10 @@
 {% extends 'template.html'%}
-{% block style %}
 
+{% block title %}
+{{title}}
+{% endblock %}
+
+{% block style %}
 <style>
     a {
         text-decoration: none;
@@ -21,6 +25,7 @@
     }
 </style>
 {% endblock %}
+
 {% block content %}
 <div style="text-align: center">
     <h1>404<h1>
