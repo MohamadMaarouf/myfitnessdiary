@@ -1,4 +1,4 @@
-#   Flask server to handle routing for InternREQ.com
+''' Flask server to handle routing for InternREQ.com '''
 
 # Import's
 from modules import forms, Database
@@ -62,6 +62,7 @@ class User(UserMixin):
         # 128px square
         self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, 128)
+        self.profile = ProfileUser(self.id)
 
 #   End class
 
@@ -332,14 +333,11 @@ def profile(user_id):
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             if(int(user_id) == current_user.id):
-                edit = True
-            else:
-                edit = False
-            return render_template('profile.html', profile_user=profile_user, Edit=edit)
+                return render_template('profile.html', profile_user=current_user.profile, Edit=True)
+            return render_template('profile.html', profile_user=profile_user, Edit=False)
         else:
-            # TODO: error page for no user profile
-            name = 'User Profile not created yet :('
-            return render_template('profile.html', name=name)
+            flash('This is not the user you are looking for.', 'danger')
+            return render_template('404.html')
     else:
         return redirect('/login')
 
