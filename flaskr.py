@@ -116,11 +116,12 @@ class ProfileUser():
 # In Windows:   $env:DB_PASS = 'ourpassword'
 # In Mac:       export DB_PASS=ourpassword
 
-db_ip = '35.221.39.35'
+db_ip = '35.221.39.35' #internreq database
 db_password = os.environ.get('DB_PASS')
 db_user = 'root'
 db_name = 'internreq'
 db_connection_name = 'birmingham4test:us-east4:internreq-1'
+
 
 # When deployed to App Engine, the `GAE_ENV` environment variable will be
 # set to `standard`
@@ -482,6 +483,17 @@ def admin_view():
     sponsorTable = db.query('PULL', "Select * from sponsor")
     facultyTable = db.query('PULL', "Select * from faculty")
     return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
+
+@app.route('/results/<user_search>')
+def general_search(user_search):
+    user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
+    student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))
+    sponsor_results = db.query('PULL', "Select * from sponsor WHERE company LIKE '%%{}%%'".format(user_search))
+    faculty_results = db.query('PULL', "Select * from faculty WHERE first_name LIKE '%%{}%%'".format(user_search))
+    internship_results = db.query('PULL', "SELECT * from internship WHERE title LIKE '%%{}%%'".format(user_search))
+    # internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE title LIKE '%%{}%%'".format(user_search))
+    return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
+
 
 if (__name__ == "__main__"):
     if os.environ.get('GAE_ENV') != 'standard':
