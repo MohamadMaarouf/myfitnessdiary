@@ -494,6 +494,13 @@ def general_search(user_search):
     # internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE title LIKE '%%{}%%'".format(user_search))
     return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
 
+@app.route('/search_handler',methods=['POST'])
+def search_handler():
+    search = request.form['searchingFor']
+    if('%20' in search):
+        search.replace('%20', " ")
+    return (redirect( url_for("general_search", user_search=search) ))
+
 
 if (__name__ == "__main__"):
     if os.environ.get('GAE_ENV') != 'standard':

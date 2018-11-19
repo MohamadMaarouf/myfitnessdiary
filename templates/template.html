@@ -71,10 +71,9 @@
                     </li>
                     {% endif %}
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input id="getInput" class="form-control mr-sm-2" type="text" placeholder="Search">
-                    <button class="btn btn-success my-2 my-sm-0" type="button" onclick="getvalue(event)">
-                        <a id="linked" style="text-decoration:none;color:white">Search</a></button>
+                <form class="form-inline my-2 my-lg-0" action="{{ url_for('search_handler') }}" method="POST">
+                    <input name="searchingFor" class="form-control mr-sm-2" type="text" placeholder="Search">
+                    <button class="btn btn-success my-2 my-sm-0" type="submit" value="Search">Search</button>
                 </form>
                 <!-- url_for('general_search',user_search=)-->
             </div>
@@ -101,14 +100,6 @@
         {% block content %}
         {% endblock %}
     </div>
-    <script>
-        function getvalue(key) {
-            var data = document.getElementById('getInput');
-            var link = document.getElementById('linked');
-            link.href = '{{url_for("general_search", user_search=' + data.value + ')}}'
-            console.log(data.value);
-        }
-    </script>
 </body>
 
 </html>
