@@ -59,5 +59,5 @@ class Database():
         # back to the pool instead of closing it
         connection.close()
 
-        if(qType == 'PULL'):
+        if(qType.capitalize() == 'Pull'):
             return(result)
