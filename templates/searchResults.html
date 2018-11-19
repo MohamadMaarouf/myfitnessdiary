@@ -178,7 +178,7 @@
                             <td>{{job[3]}}</td>
                             <td>No company yet</td>
                             <td>{{job[4]}}</td>
-                            <td><a href="{{ url_for('profile',user_id=job[0]) }}">View Page</a></td>
+                            <td><a href="{{ url_for('posting',id=job[0]) }}">View Page</a></td>
                         </tr>
                         {% endfor %}
                         {% endif %}
