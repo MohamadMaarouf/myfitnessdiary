@@ -143,10 +143,36 @@
             </div>
             {%if Edit%}
             <div class="col-md-2">
-                <button name="editProfile"> <a href="{{ url_for('edit_profile', user_id = current_user.id)}}">Edit
+                <button name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile', user_id = current_user.id)}}">Edit
                         Profile</a> </button>
-                <button name="uploadResume"> <a href="{{ url_for('edit_profile', user_id=current_user.id)}}">Upload
-                        Resume</a></button>
+
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload Resume</button>
+
+                <!-- Modal, makitweb.com, Yogesh Singh-->
+                <div id="uploadModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Upload Resume (PDF Only)</h4>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form -->
+                                <form method="POST" enctype="multipart/form-data">
+                                    <input type="file" name="file">
+                                    <br><br>
+                                    <input type="submit" value="Upload">
+                                </form>
+
+                                <!-- Preview-->
+                                <div id='preview'></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             {%endif%}
         </div>

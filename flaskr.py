@@ -7,6 +7,7 @@ from flask_mail import Mail
 from flask_mail import Message
 # Flask-Login attempt import's
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
 from itsdangerous import URLSafeTimedSerializer
@@ -19,10 +20,11 @@ from hashlib import md5
 # Globals
 app_title = 'InternREQ'
 app = Flask(__name__)
-# Mail Configuration <!> Set the environment variable before testing locally
-    # Windows (powershell):     $env:MAIL_PASS = 'ourpassword'
-    # Winders (CMD):            set MAIL_PASS=ourpassword
-    # Mac (Terminal):           export MAIL_PASS=ourpassword
+# Mail Configuration
+#   <!> Set the environment variable before testing locally
+#       Windows (powershell):     $env:MAIL_PASS = 'ourpassword'
+#       Winders (CMD):            set MAIL_PASS=ourpassword
+#       Mac (Terminal):           export MAIL_PASS=ourpassword
 app.config.update(dict(
     DEBUG=True,
     MAIL_SERVER='smtp.gmail.com',
@@ -39,6 +41,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
+ALLOWED_EXTENSIONS = set(['pdf'])
 # end Globals
 
 #   Flask-Login User class
@@ -159,7 +162,6 @@ def load_user(id):
     last_login = row[5]
     user = User(user_id, email, password, role, name, last_login)
     return (user)
-
 
 #   End manager
 
@@ -328,7 +330,8 @@ def user_confirm():
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
-        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):  # if user profile exists
+        # if user profile exists
+        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):
 
             # create profile_user object from class
             profile_user = ProfileUser(user_id)
@@ -338,6 +341,30 @@ def profile(user_id):
                 edit = True
             else:
                 edit = False
+
+            # upload resume
+            if request.method == 'POST':
+                # check if the post request has the file part
+                if 'file' not in request.files:
+                    flash('No file part')
+                    return redirect(request.url)
+                file = request.files['file']
+                # if user does not select file, browser also
+                # submit an empty part without filename
+                if file.filename == '':
+                    flash('No selected file')
+                    return redirect(request.url)
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    data = read_file(filename)
+                    sql = '''UPDATE student
+                            SET resume = %s
+                            WHERE id = %s'''
+                    args = (data, current_user.id)
+                    db.query("PUSH", sql, args)
+                    flash('File uploaded successfully')
+                    return redirect(request.url)
+
             page_title = profile_user.full_name+' | '
             return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
         else:
@@ -345,6 +372,45 @@ def profile(user_id):
             return render_template('404.html', title=app_title)
     else:
         return redirect('/login')
+
+     
+@app.route('/upload_file', methods = ['GET', 'POST'])
+def upload_file():
+    # upload resume
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            data = read_file(filename)
+            sql = '''UPDATE student
+                    SET resume = %s
+                    WHERE id = %s'''
+            args = (data, current_user.id)
+            db.query("PUSH", sql, args)
+            flash('File uploaded successfully')
+            return redirect(request.url)
+
+
+# helper function if file is allowed (Boolean)
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# read file helper function
+def read_file(filename):
+    with open(filename, 'rb') as f:
+        data = f.read()
+    return data
+
 
 '''
 This is the code for editing profile. The user is presented the data currently
