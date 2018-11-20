@@ -368,7 +368,7 @@ def upload_file():
             return redirect(url_for('profile', user_id=current_user.id))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            #data = read_file(filename)
+            data = file.read()
             sql = '''UPDATE student
                     SET resume = %s
                     WHERE id = %s'''
@@ -383,12 +383,6 @@ def upload_file():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# read file helper function
-def read_file(filename):
-    with open(filename, 'rb') as f:
-        data = f.read()
-    return data
 
 
 '''
