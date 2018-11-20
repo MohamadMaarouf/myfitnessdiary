@@ -261,10 +261,10 @@ def registration():
             db.query('PUSH', sql, args)
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
-            user_id = db.query("PULL", sql)
-            sql = "INSERT INTO " + user_type + \
-                "(user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,%s, %s)"
+            user_id = db.query("PULL", sql)[0][0]
+            sql = "INSERT INTO "+user_type+" (user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,%s,%s)"
             args = (user_id, first, last, email, 0)
+            print(sql, args)
             db.query('PUSH', sql, args)
 
             # Check if it is southern email address
@@ -369,11 +369,9 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             data = file.read()
-            sql = '''UPDATE student
-                    SET resume = %s
-                    WHERE id = %s'''
-            #args = (data, current_user.id)
-            #db.query("PUSH", sql, args)
+            sql = "UPDATE student SET resume = %s WHERE user_id = %s"
+            args = (data, current_user.id)
+            db.query("PUSH", sql, args)
             flash('File uploaded successfully', 'success')
             return redirect(url_for('profile', user_id=current_user.id))
     return redirect(url_for('landing'))

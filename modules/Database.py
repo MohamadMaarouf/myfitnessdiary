@@ -53,11 +53,11 @@ class Database():
     def query(self, qType, statement, *args):
         connection = self.engine.connect()
         cursor = connection.execute(statement, *args)
-        result = cursor.fetchall()
 
         # If the connection comes from a pool, close() will send the connection
         # back to the pool instead of closing it
         connection.close()
 
         if(qType.capitalize() == 'Pull'):
+            result = cursor.fetchall()
             return(result)
