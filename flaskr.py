@@ -68,13 +68,8 @@ class User(UserMixin):
         # 128px square
         self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, 128)
-<<<<<<< HEAD
-        self.profile = ProfileUser(self.id)
-
-=======
-        # TODO: create profile objet for all users in python
+        #TODO: create profile objet for all users in python
         # self.profile = ProfileUser(self.id)
->>>>>>> a95f23a81e023bb6bcd270f3f36288391295400b
 #   End class
 
 #   Profile User Class
@@ -344,13 +339,6 @@ def profile(user_id):
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             if(int(user_id) == current_user.id):
-<<<<<<< HEAD
-                return render_template('profile.html', profile_user=current_user.profile, Edit=True)
-            return render_template('profile.html', profile_user=profile_user, Edit=False)
-        else:
-            flash('This is not the user you are looking for.', 'danger')
-            return render_template('404.html')
-=======
                 edit = True
             else:
                 edit = False
@@ -358,6 +346,7 @@ def profile(user_id):
             # upload resume
             if request.method == 'POST':
                 # check if the post request has the file part
+                file = request.files['file']
                 if 'file' not in request.files:
                     flash('No file part')
                     return redirect(request.url)
@@ -383,7 +372,6 @@ def profile(user_id):
         else:
             # profile does not exist
             return render_template('404.html', title=app_title)
->>>>>>> a95f23a81e023bb6bcd270f3f36288391295400b
     else:
         return redirect('/login')
 
