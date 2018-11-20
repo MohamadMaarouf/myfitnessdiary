@@ -342,31 +342,6 @@ def profile(user_id):
                 edit = True
             else:
                 edit = False
-
-            # upload resume
-            if request.method == 'POST':
-                # check if the post request has the file part
-                file = request.files['file']
-                if 'file' not in request.files:
-                    flash('No file part')
-                    return redirect(request.url)
-                file = request.files['file']
-                # if user does not select file, browser also
-                # submit an empty part without filename
-                if file.filename == '':
-                    flash('No selected file')
-                    return redirect(request.url)
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    data = read_file(filename)
-                    sql = '''UPDATE student
-                            SET resume = %s
-                            WHERE id = %s'''
-                    args = (data, current_user.id)
-                    db.query("PUSH", sql, args)
-                    flash('File uploaded successfully')
-                    return redirect(request.url)
-
             page_title = profile_user.full_name+' | '
             return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
         else:
@@ -381,25 +356,27 @@ def upload_file():
     # upload resume
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'inputFile' not in request.files:
             flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
+            return redirect(url_for('profile', user_id=current_user.id))
+        file = request.files['inputFile']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            print('This 1')
+            return redirect(url_for('profile', user_id=current_user.id))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            data = read_file(filename)
+            #data = read_file(filename)
             sql = '''UPDATE student
                     SET resume = %s
                     WHERE id = %s'''
-            args = (data, current_user.id)
-            db.query("PUSH", sql, args)
-            flash('File uploaded successfully')
-            return redirect(request.url)
+            #args = (data, current_user.id)
+            #db.query("PUSH", sql, args)
+            flash('File uploaded successfully', 'success')
+            return redirect(url_for('profile', user_id=current_user.id))
+    return redirect(url_for('landing'))
 
 
 # helper function if file is allowed (Boolean)
