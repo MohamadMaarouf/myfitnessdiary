@@ -1,4 +1,4 @@
-#   Flask server to handle routing for InternREQ.com
+''' Flask server to handle routing for InternREQ.com. '''
 
 # Import's
 from modules import forms, Database
@@ -51,6 +51,18 @@ class User(UserMixin):
         self.name = name
         self.last_login = last_login
         self.uniqueID = User.instances
+        # avatar by Gravatar
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        # 36px square
+        self.avatar_s = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 36)
+        # 80px square
+        self.avatar_m = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 80)
+        # 128px square
+        self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, 128)
+        self.profile = ProfileUser(self.id)
 
 #   End class
 
@@ -99,13 +111,17 @@ class ProfileUser():
 
 
 # Database Access
+
 # <!> Set the environment variable before testing locally
-# (ie. export DB_PASS=ourpassword (mac)   or  $env:DB_PASS = 'ourpassword (win))
-db_user = 'root'
-db_ip = '35.221.39.35'
-db_name = 'internreq'
+# In Windows:   $env:DB_PASS = 'ourpassword'
+# In Mac:       export DB_PASS=ourpassword
+
+db_ip = '35.221.39.35' #internreq database
 db_password = os.environ.get('DB_PASS')
+db_user = 'root'
+db_name = 'internreq'
 db_connection_name = 'birmingham4test:us-east4:internreq-1'
+
 
 # When deployed to App Engine, the `GAE_ENV` environment variable will be
 # set to `standard`
@@ -115,15 +131,13 @@ if os.environ.get('GAE_ENV') == 'standard':
     engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
         db_user, db_password, db_name, unix_socket)
 else:
-    # If running locally, use the TCP connections instead
-    # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
-    # so that your application can use 127.0.0.1:3306 to connect to your
-    # Cloud SQL instance
-    host = db_ip #'127.0.0.1'
+    # If running locally, use the IP address to connect
+    host = db_ip
     engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
         db_user, db_password, host, db_name)
 
 db = Database.Database(engine_url)
+engine = sqlalchemy.create_engine(engine_url, pool_size=3)
 
 
 
@@ -320,14 +334,11 @@ def profile(user_id):
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             if(int(user_id) == current_user.id):
-                edit = True
-            else:
-                edit = False
-            return render_template('profile.html', profile_user=profile_user, Edit=edit)
+                return render_template('profile.html', profile_user=current_user.profile, Edit=True)
+            return render_template('profile.html', profile_user=profile_user, Edit=False)
         else:
-            # TODO: error page for no user profile
-            name = 'User Profile not created yet :('
-            return render_template('profile.html', name=name)
+            flash('This is not the user you are looking for.', 'danger')
+            return render_template('404.html')
     else:
         return redirect('/login')
 
@@ -371,8 +382,6 @@ def edit_profile(user_id):
                            location = location, about = about)
         if (request.method == 'POST'):
             if(current_user.role == 'faculty'):
-                #sql = "UPDATE faculty SET first_name = %s WHERE user_id = %s" % (form.first_name, user_id)
-                #first_name = db.query('PUSH', sql)
                 sql = "UPDATE faculty SET first_name = '%s' WHERE user_id = %s" % (form.first_name.data, user_id)
                 db.query('UPDATE', sql)
                 sql = "UPDATE faculty SET last_name = '%s' WHERE user_id = %s" % (form.last_name.data, user_id)
@@ -385,7 +394,6 @@ def edit_profile(user_id):
                 db.query('UPDATE', sql)
                 sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
                 db.query('UPDATE', sql)
-                db.commit()
                 return redirect(url_for('profile', user_id=current_user.id))
     return render_template('edit_profile.html', title='Edit Profile', form=form)
     
@@ -475,6 +483,24 @@ def admin_view():
     sponsorTable = db.query('PULL', "Select * from sponsor")
     facultyTable = db.query('PULL', "Select * from faculty")
     return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
+
+@app.route('/results/<user_search>')
+def general_search(user_search):
+    user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
+    student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))
+    sponsor_results = db.query('PULL', "Select * from sponsor WHERE company LIKE '%%{}%%'".format(user_search))
+    faculty_results = db.query('PULL', "Select * from faculty WHERE first_name LIKE '%%{}%%'".format(user_search))
+    internship_results = db.query('PULL', "SELECT * from internship WHERE title LIKE '%%{}%%'".format(user_search))
+    # internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE title LIKE '%%{}%%'".format(user_search))
+    return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
+
+@app.route('/search_handler',methods=['POST'])
+def search_handler():
+    search = request.form['searchingFor']
+    if('%20' in search):
+        search.replace('%20', " ")
+    return (redirect( url_for("general_search", user_search=search) ))
+
 
 if (__name__ == "__main__"):
     if os.environ.get('GAE_ENV') != 'standard':
