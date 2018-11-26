@@ -392,6 +392,7 @@ def edit_profile(user_id):
     else:
         form = forms.EditProfile()
         if request.method == 'GET':
+            # TODO Get the current user role
             if(current_user.role == 'faculty'):
                 sql =  "SELECT first_name FROM faculty WHERE user_id = %s" % (user_id)
                 first_name = db.query('PULL',sql)[0][0]
@@ -549,5 +550,5 @@ def search_handler():
 
 
 if (__name__ == "__main__"):
-    if os.environ.get('GAE_ENV') != 'standard':
+    if os.environ.get('GAE_ENV') != 'standard': # if not deployed to the app engine
         app.run(host='0.0.0.0', port='8080', debug=True)
