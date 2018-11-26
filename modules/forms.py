@@ -49,11 +49,33 @@ class Posting(FlaskForm):
 
     submit = SubmitField('Create Posting ', validators=[DataRequired()])
 
-class EditProfile(FlaskForm):
+class EditProfileF(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     user_title = StringField('Title', validators=[Length(min=0, max=20)])
     department = StringField('Department', validators=[Length(min=0, max=40)])
     location = StringField('Location', validators = [Length(min=0, max = 15)])
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')
+
+class EditProfileS(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    user_title = StringField('Title', validators=[Length(min=0, max=20)])
+    major = StringField('Major', validators=[Length(min=0 , max=40)])
+    grad_date = StringField('Graduation Date', validators=[Length(min=0, max=40)])
+    gpa = StringField('GPA', validators=[Length(min=0,max=4)])
+    location = StringField('Location', validators = [Length(min=0, max = 15)])
+    about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
+    education = TextAreaField('Education', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')
+class EditProfileSp(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    user_title = StringField('Title', validators=[Length(min=0, max=20)])
+    company = StringField('Company', validators=[Length(min=0, max=40)])
+    about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    education = TextAreaField('Education', validators=[Length(min=0, max=140)])
+    skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
     submit = SubmitField('Submit')
