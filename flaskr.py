@@ -385,51 +385,56 @@ def allowed_file(filename):
 @app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile(user_id):
-    if int(user_id) != current_user.id:
-        flash('You cannot edit profiles other than your own')
-        return redirect(url_for('dashboard'))
-    else:
-        form = forms.EditProfile()
-        if request.method == 'GET':
-            # TODO Get the current user role
+    if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):    
+        x = int(user_id)
+        y = int(current_user.id)
+        if (x != y):
+            flash('You cannot edit profiles other than your own', 'danger')
+            return redirect(url_for('dashboard'))   
+        if(current_user.role == 'faculty'):
+                form = forms.EditProfileF()
+        elif(current_user.role == 'sponsor'):
+                form = forms.EditProfileSp()
+        else:
+                form = forms.EditProfileS()
+        if (request.method == 'GET'):
             if(current_user.role == 'faculty'):
-                sql =  "SELECT first_name FROM faculty WHERE user_id = %s" % (user_id)
-                first_name = db.query('PULL',sql)[0][0]
-                form.first_name.data = first_name
-                sql =  "SELECT last_name FROM faculty WHERE user_id = %s" % (user_id)
-                last_name = db.query('PULL',sql)[0][0]
-                form.last_name.data = last_name
-                sql =  "SELECT title FROM faculty WHERE user_id = %s" % (user_id)
-                user_title = db.query('PULL',sql)[0][0]
-                form.user_title.data = user_title
-                sql =  "SELECT department FROM faculty WHERE user_id = %s" % (user_id)
-                department = db.query('PULL',sql)[0][0]
-                form.department.data = department
-                sql =  "SELECT location FROM faculty WHERE user_id = %s" % (user_id)
-                location = db.query('PULL',sql)[0][0]
-                form.location.data = location
-                sql =  "SELECT about FROM faculty WHERE user_id = %s" % (user_id)
-                about = db.query('PULL',sql)[0][0]
-                form.about.data = about
-                return render_template('edit_profile.html', title='Edit Profile | '+app_title,
-                           form=form, first_name=first_name, last_name=last_name, user_title=user_title, department = department,
-                           location = location, about = about)
-        if (request.method == 'POST'):
+                sql = "SELECT first_name, last_name, title, department, location, about FROM faculty WHERE user_id = %s" % (user_id)
+                first_name, last_name, user_title, department, location, about = db.query('PULL', sql)[0]
+                form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data = first_name, last_name, user_title, department, location, about
+                return render_template('edit_profilef.html', title='Edit Profile', form=form, first_name=first_name, last_name=last_name, user_title=user_title, department = department, location = location, about = about)
+
+            elif(current_user.role == 'student'):
+                sql = "SELECT first_name, last_name, title, major, location, about, education, additional, graduation_date, GPA FROM student WHERE user_id = %s" % (user_id)
+                first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa = db.query('PULL', sql)[0]
+                form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data = first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa
+                return render_template('edit_profiles.html', title='Edit Profile', form=form, first_name = first_name, user_title=user_title, major = major, location=location, about=about, education=education, skills=skills, grad_date = grad_date, gpa=gpa)
+
+            elif(current_user.role == 'sponsor'):
+                sql = "SELECT first_name, last_name, title, company, about, education, additional FROM sponsor WHERE user_id =  %s" % (user_id)
+                first_name, last_name, user_title, company, about, education, skills = db.query('PULL', sql)[0]
+                form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data = first_name, last_name, user_title, company, about, education, skills
+                return render_template('edit_profilesp.html', title='Edit Profile', form=form, first_name = first_name, last_name = last_name, user_title = user_title, company = company, about=about, education=education, skills=skills)
+        else:
             if(current_user.role == 'faculty'):
-                sql = "UPDATE faculty SET first_name = '%s' WHERE user_id = %s" % (form.first_name.data, user_id)
-                db.query('UPDATE', sql)
-                sql = "UPDATE faculty SET last_name = '%s' WHERE user_id = %s" % (form.last_name.data, user_id)
-                db.query('UPDATE', sql)
-                sql = "UPDATE faculty SET title = '%s' WHERE user_id = %s" % (form.user_title.data, user_id)
-                db.query('UPDATE', sql)
-                sql = "UPDATE faculty SET department = '%s' WHERE user_id = %s" % (form.department.data, user_id)
-                db.query('UPDATE', sql)
-                sql = "UPDATE faculty SET location = '%s' WHERE user_id = %s" % (form.location.data, user_id)
-                db.query('UPDATE', sql)
-                sql = "UPDATE faculty SET about = '%s' WHERE user_id = %s" % (form.about.data, user_id)
-                db.query('UPDATE', sql)
+                sql = "UPDATE faculty SET first_name = '%s', last_name = '%s', title = '%s', department = '%s', location = '%s', about = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, user_id)
+                db.engine.execute(sql)
                 return redirect(url_for('profile', user_id=current_user.id))
-    return render_template('edit_profile.html', title=('Edit Profile | '+app_title), form=form)
+            elif(current_user.role == 'student'):
+                sql = "UPDATE student SET first_name = '%s', last_name= '%s', title = '%s', major = '%s', location = '%s', about = '%s', education = '%s', additional = '%s', graduation_date = '%s', gpa = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, user_id)
+                db.engine.execute(sql)            
+                return redirect(url_for('profile', user_id=current_user.id))
+            elif(current_user.role == 'sponsor'):
+                sql = "UPDATE sponsor SET first_name = '%s', last_name = '%s', title = '%s', company = '%s', about = '%s', education = '%s', additional = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, user_id)
+                db.engine.execute(sql)
+                #args = (form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, user_id)
+                #sql = "UPDATE sponsor SET (first_name, last_name, title, company, about, education, additional) = VALUES (%s, %s, %s, %s, %s, %s, %s) WHERE user_id = (user_id) VALUES (%s)" 
+                #db.query('PUSH', sql, args)
+                return redirect(url_for('profile', user_id=current_user.id))
+            
+            
+        
+        
     
 
 #   Dashboard Page Route
