@@ -56,8 +56,9 @@ class Database():
 
         # If the connection comes from a pool, close() will send the connection
         # back to the pool instead of closing it
-        connection.close()
-
         if(qType.capitalize() == 'Pull'):
             result = cursor.fetchall()
+            connection.close()
             return(result)
+
+        connection.close()
