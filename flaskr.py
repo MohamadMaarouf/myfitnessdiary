@@ -7,6 +7,7 @@ from flask_mail import Mail
 from flask_mail import Message
 # Flask-Login attempt import's
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import LoginManager, UserMixin, login_user, logout_user, \
     current_user, login_required
 from itsdangerous import URLSafeTimedSerializer
@@ -17,7 +18,14 @@ from hashlib import md5
 
 
 # Globals
+app_title = 'InternREQ'
 app = Flask(__name__)
+app.secret_key = 'Any String or Number for encryption here'
+
+# Mail Configuration    <!> Set environment variable before testing locally
+#       Windows (powershell):     $env:MAIL_PASS = 'ourpassword'
+#       Winders (CMD):            set MAIL_PASS=ourpassword
+#       Mac (Terminal):           export MAIL_PASS=ourpassword
 app.config.update(dict(
     DEBUG=True,
     MAIL_SERVER='smtp.gmail.com',
@@ -27,16 +35,17 @@ app.config.update(dict(
     MAIL_USERNAME='chrisddhnt@gmail.com',
     MAIL_PASSWORD=os.environ.get('MAIL_PASS')
 ))
-app.secret_key = 'Any String or Number for encryption here'
-title = 'InternREQ-'
 app.config.from_object(__name__)
 mail = Mail(app)
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-app.secret_key = 'Any String or Number for encryption here'
-title = 'InternREQ-'
+
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
+ALLOWED_EXTENSIONS = set(['pdf'])
+# end Globals
+
 
 #   Flask-Login User class
 class User(UserMixin):
@@ -62,9 +71,10 @@ class User(UserMixin):
         # 128px square
         self.avatar_l = 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, 128)
-        self.profile = ProfileUser(self.id)
-
+        #TODO: create profile objet for all users in python
+        # self.profile = ProfileUser(self.id)
 #   End class
+
 
 #   Profile User Class
 class ProfileUser():
@@ -106,22 +116,18 @@ class ProfileUser():
         if (self.role == 'student'):
             self.grad_date = row[14]
             self.gpa = row[15]
-
 #   End class
 
 
-# Database Access
-
-# <!> Set the environment variable before testing locally
-# In Windows:   $env:DB_PASS = 'ourpassword'
-# In Mac:       export DB_PASS=ourpassword
-
+# Database Access   <!> Set environment variable before testing locally
+#       Windows:   $env:DB_PASS = 'ourpassword'
+#       Windows:   set DB_PASS=ourpassword
+#       Mac:       export DB_PASS=ourpassword
 db_ip = '35.221.39.35' #internreq database
 db_password = os.environ.get('DB_PASS')
 db_user = 'root'
 db_name = 'internreq'
 db_connection_name = 'birmingham4test:us-east4:internreq-1'
-
 
 # When deployed to App Engine, the `GAE_ENV` environment variable will be
 # set to `standard`
@@ -137,13 +143,10 @@ else:
         db_user, db_password, host, db_name)
 
 db = Database.Database(engine_url)
-engine = sqlalchemy.create_engine(engine_url, pool_size=3)
-
+# engine = sqlalchemy.create_engine(engine_url, pool_size=3) # engine creation for future use
 
 
 #   Flask-Login login_manager
-
-
 @login_manager.user_loader
 def load_user(id):
     # get user id, email, password, role and name
@@ -157,34 +160,34 @@ def load_user(id):
     last_login = row[5]
     user = User(user_id, email, password, role, name, last_login)
     return (user)
-
-
 #   End manager
 
 
-@app.route('/')
-def landing():
-    if(current_user.is_authenticated):
-        return redirect(url_for('dashboard'))
-    return render_template('landingPage.html', title=title+"-Home")
-
-
-#   This is the route for login page, when first opening the page it is opened
-#   via a GET request and ONLY the last render template executes.
-#   If the user clicks submit the POST method executes and server recives entered data and verifies
-#   against the database
-
-
+# Error Pages Routes
 @app.errorhandler(404)
 def page_not_found(a):
     # This route is for handling when an incorrect url is typed
-    return render_template('404.html')
+    return render_template('404.html', title=app_title)
   
 @app.errorhandler(500)
 def server_error(b):
     # This route is for handling when an internal server error occurs
-    return render_template('500.html')
+    return render_template('500.html', title=app_title)
 
+
+# Landing Page Route 
+@app.route('/')
+def landing():
+    if(current_user.is_authenticated):
+        return redirect(url_for('dashboard'))
+    return render_template('landingPage.html', title=app_title)
+
+
+#   Login Page Route
+#   This is the route for login page, when first opening the page it is opened
+#   via a GET request and ONLY the last render template executes.
+#   If the user clicks submit the POST method executes and server recives entered data and verifies
+#   against the database
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if(current_user.is_authenticated):
@@ -215,25 +218,23 @@ def login():
                 return redirect(url_for('dashboard'))
             else:
                 flash('Account Not Verified. Please Check the email you registered with.', 'danger')
-                return(render_template('login.html', title=(title + 'Login'), form=form))
+                return(render_template('login.html', title=app_title, form=form))
         else:
             flash('Username or Password Error', 'danger')
-    return render_template('login.html', title=(title + 'Login'), form=form)
+    return render_template('login.html', title='Login | '+app_title, form=form)
 
 
+#   Logout Route
 @app.route('/logout')
 def logout():
     logout_user()
     flash('Logout Successfull', 'success')
     return redirect(url_for('login'))
 
-
-
+#   Registration Page Route
 #   Same as Login: only last line executes at first, upon submit the if statment executes and evaluates
 #   against our database. If account not in database: create a new user
 #                         Else: foward to login page and request user to login
-
-
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
     form = forms.Registration()
@@ -248,7 +249,6 @@ def registration():
         pswrd = db.encrypt(pswrd)
 
         # Pull from Database
-
         sql = "SELECT * FROM users WHERE email LIKE '%s'" % email
 
         if(len(db.query('PULL', sql)) == 0):
@@ -257,10 +257,10 @@ def registration():
             db.query('PUSH', sql, args)
             # add to sudent/faculty/sponsor table
             sql = "SELECT user_id FROM users WHERE email LIKE '%s'" % email
-            user_id = db.query("PULL", sql)
-            sql = "INSERT INTO " + user_type + \
-                "(user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,%s, %s)"
+            user_id = db.query("PULL", sql)[0][0]
+            sql = "INSERT INTO "+user_type+" (user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,%s,%s)"
             args = (user_id, first, last, email, 0)
+            print(sql, args)
             db.query('PUSH', sql, args)
 
             # Check if it is southern email address
@@ -285,9 +285,10 @@ def registration():
         flash('Account Creation Successful!', 'success')
         return redirect('/login')
 
-    return render_template('registration.html', title=(title+"-Registration"), form=form)
+    return render_template('registration.html', title='Registration | '+app_title, form=form)
 
 
+#   Email Confirmation Route 
 @app.route('/email_confirm/<token>')
 def email_confirm(token):
     try:
@@ -300,7 +301,8 @@ def email_confirm(token):
     flash('Account Verified!')
     return(redirect(url_for('login')))
 
-    
+
+#   User Confirmation Route    
 @app.route('/user_confirm', methods=['GET', 'POST'])
 def user_confirm():
     if(not(current_user.is_authenticated) or current_user.role != 'faculty'):
@@ -321,32 +323,65 @@ def user_confirm():
             return(redirect(url_for('user_confirm', form=form)))
         return(render_template('AddUser.html', form=form))
 
-#   Skeleton code for user profile
 
-
+#   Profile Page Route
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
-        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):  # if user profile exists
+        # if user profile exists
+        if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):
 
             # create profile_user object from class
             profile_user = ProfileUser(user_id)
 
             # Enable Edit Profile (if logged in user's profile by user_id)
             if(int(user_id) == current_user.id):
-                return render_template('profile.html', profile_user=current_user.profile, Edit=True)
-            return render_template('profile.html', profile_user=profile_user, Edit=False)
+                edit = True
+            else:
+                edit = False
+            page_title = profile_user.full_name+' | '
+            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
         else:
-            flash('This is not the user you are looking for.', 'danger')
-            return render_template('404.html')
+            # profile does not exist
+            return render_template('404.html', title=app_title)
     else:
         return redirect('/login')
 
-'''
-This is the code for editing profile. The user is presented the data currently
-linked to their account and is able to edit these values and have the changes
-reflected in their profile page
-'''
+
+#   File Upload Route (for uploading resume)
+@app.route('/upload_file', methods = ['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'inputFile' not in request.files:
+            flash('No file part')
+            return redirect(url_for('profile', user_id=current_user.id))
+        file = request.files['inputFile']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            print('This 1')
+            return redirect(url_for('profile', user_id=current_user.id))
+        if file and allowed_file(file.filename):
+            data = file.read()
+            args = (data, current_user.id)
+            sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
+            db.query("PUSH", sql, args)
+            flash('File uploaded successfully', 'success')
+            return redirect(url_for('profile', user_id=current_user.id))
+    return redirect(url_for('landing'))
+
+# helper function if file is allowed (Boolean)
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+#   Edit Profile Route
+#   This is the code for editing profile. The user is presented the data currently
+#   linked to their account and is able to edit these values and have the changes
+#   reflected in their profile page
 @app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile(user_id):
@@ -378,7 +413,7 @@ def edit_profile(user_id):
             elif(current_user.role == 'sponsor'):
                 sql = "SELECT first_name, last_name, title, company, about, education, additional FROM sponsor WHERE user_id =  %s" % (user_id)
                 first_name, last_name, user_title, company, about, education, skills = db.query('PULL', sql)[0]
-                form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data = first_name, last_name, title, company, about, education, skills
+                form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data = first_name, last_name, user_title, company, about, education, skills
                 return render_template('edit_profilesp.html', title='Edit Profile', form=form, first_name = first_name, last_name = last_name, user_title = user_title, company = company, about=about, education=education, skills=skills)
         else:
             if(current_user.role == 'faculty'):
@@ -401,9 +436,8 @@ def edit_profile(user_id):
         
         
     
-'''
-Skeleton code for dashboard
-'''
+
+#   Dashboard Page Route
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -423,10 +457,11 @@ def dashboard():
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE user_id={}'.format(posting[x][1]))[0])
 
-        return render_template('dashboard.html', title=(title+'Dashboard'),applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
+        return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
 
 
+#   Internship Posting Page Route
 @app.route('/posting/<id>', methods=['GET', 'POST'])
 def posting(id):
 
@@ -438,9 +473,13 @@ def posting(id):
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
     posting = db.query(
         'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
-    return render_template('posting.html', datePosted=1, postingInfo=posting)
+    post_title = posting[0]
+    post_type = posting[6]
+    page_title = post_title+' - '+post_type+' | '
+    return render_template('posting.html', title=page_title+app_title, datePosted=1, postingInfo=posting)
 
 
+#   Create Internship Listing/Posting Route
 @app.route('/create/posting', methods=['GET', 'POST'])
 @login_required
 def createPosting():
@@ -462,16 +501,18 @@ def createPosting():
                     overview, repsons, reqs, comp, jType, hours)
             db.query('PUSH', sql, args)
             return redirect('/profile/'+str(current_user.id))
-        return(render_template('posting.html', form=form))
+        return(render_template('posting.html', title='Create Posting | '+app_title, form=form))
     return(render_template('unauthorized.html'))
 
 
+#   Send Mail Route
 def send_email(subject, sender, recipients, body):
     msg = Message(subject, sender=sender, recipients=[recipients])
     msg.html = body
     mail.send(msg)
 
 
+#   Test Send Mail Route
 @app.route('/testemail')
 def testemail():
     send_email("Thank You", 'chrisddhnt@gmail.com',
@@ -479,6 +520,8 @@ def testemail():
     flash('email sent', 'success')
     return(redirect(url_for('dashboard')))
 
+
+#   Admin Tables View Route
 @app.route('/admin_view')
 @login_required
 def admin_view():
@@ -486,8 +529,10 @@ def admin_view():
     studentTable = db.query('PULL', "Select * from student")
     sponsorTable = db.query('PULL', "Select * from sponsor")
     facultyTable = db.query('PULL', "Select * from faculty")
-    return render_template('adminView.html', users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
+    return render_template('adminView.html', title='Administration | '+app_title, users=userTable,students=studentTable,sponsors=sponsorTable, facultyM=facultyTable)
 
+
+#   Users Search Route
 @app.route('/results/<user_search>')
 def general_search(user_search):
     user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
@@ -498,6 +543,8 @@ def general_search(user_search):
     # internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE title LIKE '%%{}%%'".format(user_search))
     return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
 
+
+#   Search Helper Route
 @app.route('/search_handler',methods=['POST'])
 def search_handler():
     search = request.form['searchingFor']
@@ -507,5 +554,5 @@ def search_handler():
 
 
 if (__name__ == "__main__"):
-    if os.environ.get('GAE_ENV') != 'standard':
+    if os.environ.get('GAE_ENV') != 'standard': # if not deployed to the app engine
         app.run(host='0.0.0.0', port='8080', debug=True)
