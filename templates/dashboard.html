@@ -16,9 +16,9 @@
     .main-body {
         position: fixed;
         background-color: white;
-        margin-left: 12%;
+        margin-left: 5%;
         height: 85%;
-        width: 86%;
+        width: 90%;
         padding: 1%;
         border-radius: 2%;
     }
@@ -41,7 +41,7 @@
         width: 84%;
         margin-bottom: 3%;
         margin-right: 1.5%;
-        margin-left: 13%;
+        margin-left: 8%;
 
         padding: 1%;
         overflow-y: scroll;
@@ -63,64 +63,6 @@
 </style>
 {% endblock %}
 {%block content%}
-<div class="sidebar ml-2">
-    <ul class="sidebar navbar-nav" id="side">
-        {% if current_user.role == 'faculty'%}
-        <li class="nav-item">
-            <a href="{{ url_for('admin_view') }}" class="nav-link">Admin Panel</a>
-        </li>
-        <li class="nav-item">
-            <a href="{{url_for('user_confirm')}}" class="nav-link">Validate a New Account</a>
-        </li>
-        {% endif %}
-        {% if current_user.role != 'student'%}
-        <li class="nav-item">
-            <a href="{{url_for('createPosting')}}" class="nav-link">Create new Posting</a>
-        </li>
-        {% endif %}
-        <li class="nav-item active">
-            <!--Playying with sidebar content-->
-            <a class="nav-link" href="/scoobysnacks">
-                <span>Error 404</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('login')}}">
-                <span>Login</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('logout')}}">
-                <span>Logout</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('registration')}}">
-                <span>Registration</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('profile', user_id = current_user.id)}}">
-                <span>Profile</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('posting',id=current_user.id)}}">
-                <span>View Posting</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('testemail')}}">
-                <span>Send Test Email</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('landing')}}">
-                <span>Landing Page</span>
-            </a>
-        </li>
-    </ul>
-</div>
 <div class="main-body mt-3" style="overflow:hidden">
     <legend>{{current_user.name}}'s Dashboard</legend>
     <div class="card-columns">
