@@ -512,15 +512,6 @@ def send_email(subject, sender, recipients, body):
     mail.send(msg)
 
 
-#   Test Send Mail Route
-@app.route('/testemail')
-def testemail():
-    send_email("Thank You", 'chrisddhnt@gmail.com',
-               current_user.email, "<h1>Test Email recived</h1>")
-    flash('email sent', 'success')
-    return(redirect(url_for('dashboard')))
-
-
 #   Admin Tables View Route
 @app.route('/admin_view')
 @login_required
