@@ -5,22 +5,103 @@
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="../static/landingPage.css">
+<!-- <link rel="stylesheet" href="../static/landingPage.css"> -->
+<style>
+    body {
+        background-color: #103C5F;
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: rgb(150, 142, 142);
+        cursor: pointer;
+    }
+
+    #bg-img {
+        margin-top: 0;
+        background-image: url('../static/assets/Students.jpg');
+        background-repeat: no-repeat;
+        min-height: 700px;
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+    }
+
+    #foot {
+        background-color: #103C5F;
+        width: 100%;
+        height: 100%;
+        min-height: 55px;
+        position: relative;
+        text-align: center;
+    }
+
+    #foot a {
+        padding: .5%;
+        margin-left: 10%;
+    }
+
+    #test {
+        background-color: darkgray;
+        width: 15%;
+        position: absolute;
+        right: 0;
+        margin-top: 10%;
+        padding-left: 4%;
+    }
+
+    .regi {
+        border-radius: 5%;
+        background-color: rgba(255, 255, 255, 0.7);
+        width: 15%;
+        text-align: center;
+        position: absolute;
+        left: 80%;
+        top: 15%;
+        margin-right: 50px;
+        padding-top: .9%;
+        padding-bottom: .9%;
+        font-size: 30px;
+        color: white;
+    }
+
+    .regi div {
+        border-radius: 25px;
+        margin-top: 10%;
+        margin-right: 5%;
+        margin-left: 5%;
+        margin-bottom: 15px;
+        text-align: center;
+        background-color: #103C5F;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="backing"></div>
-<div class="regi">
-    <div class="login"><a href="{{ url_for('login') }}">Login</a></div>
-    <span>Registration</span>
-    <div class="faculty"><a href="{{url_for('registration')}}?id=1">Faculty</a></div>
-    <div class="student"><a href="{{url_for('registration')}}?id=2">Student</a></div>
-    <div class="employer"><a href="{{url_for('registration')}}?id=3">Employer</a></div>
+<div class="content" id="bg-img">
+
+    <div class="regi">
+
+        <div class="login"><a href="{{ url_for('login') }}">Login</a></div>
+        <span>Registration</span>
+        <div class="faculty"><a href="{{url_for('registration')}}?id=1">Faculty</a></div>
+        <div class="student"><a href="{{url_for('registration')}}?id=2">Student</a></div>
+        <div class="employer"><a href="{{url_for('registration')}}?id=3">Sponsor</a></div>
+
+    </div>
+
 </div>
-<div class="bottomBar">
+<footer id="foot">
     <a href="#">About Us</a>
     <a href="#">Help</a>
     <a href="#" onclick="alert('There are none!')">Terms of Use</a>
-    <a href="mailto:chris.conlon1993@gmail.com">Contact Us</a>
-</div>
+    <a href="mailto:chrisddhnt@gmail.com">Contact Us</a>
+</footer>
 {% endblock %}
