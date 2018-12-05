@@ -330,6 +330,10 @@ def profile(user_id):
         if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):
             role = db.query("PULL", "SELECT role FROM users WHERE user_id = {}".format(user_id))[0][0]
             private = db.query("PULL", "SELECT private FROM {} WHERE user_id = {}".format(role,user_id))
+            if(private[0][0]):
+                privacy = 'Private'
+            else:
+                privacy = 'Public'
 
             if(private[0][0] and current_user.id != int(user_id)):
                 flash("User's profile is private", 'danger')
@@ -344,7 +348,7 @@ def profile(user_id):
             else:
                 edit = False
             page_title = profile_user.full_name+' | '
-            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
+            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit, Privacy = privacy)
         else:
             # profile does not exist
             return render_template('404.html', title=app_title)
