@@ -328,6 +328,12 @@ def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
         # if user profile exists
         if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):
+            role = db.query("PULL", "SELECT role FROM users WHERE user_id = {}".format(user_id))[0][0]
+            private = db.query("PULL", "SELECT private FROM {} WHERE user_id = {}".format(role,user_id))
+
+            if(private[0][0] and current_user.id != int(user_id)):
+                flash("User's profile is private", 'danger')
+                return redirect('/scoobysnacks')
 
             # create profile_user object from class
             profile_user = ProfileUser(user_id)
