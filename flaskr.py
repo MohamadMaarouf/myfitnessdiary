@@ -260,7 +260,6 @@ def registration():
             user_id = db.query("PULL", sql)[0][0]
             sql = "INSERT INTO "+user_type+" (user_id, first_name, last_name, email, verified) VALUES(%s,%s,%s,%s,%s)"
             args = (user_id, first, last, email, 0)
-            print(sql, args)
             db.query('PUSH', sql, args)
 
             # Check if it is southern email address
@@ -361,7 +360,6 @@ def upload_file():
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            print('This 1')
             return redirect(url_for('profile', user_id=current_user.id))
         if file and allowed_file(file.filename):
             data = file.read()
@@ -447,10 +445,10 @@ def dashboard():
         applications = []
         user_id = str(current_user.id)
         if(current_user.role == 'student'):
-            posting = db.query('PULL', 'SELECT * FROM applications WHERE user_id=' + user_id)
+            posting = db.query('PULL', 'SELECT * FROM applications WHERE student_id =' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
-                    'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][1]))[0])
+                    'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][2]))[0])
         elif(current_user.role == 'sponsor'):
             posting = db.query('PULL', 'SELECT * FROM internship WHERE user_id=' + user_id)
             for x in range(len(posting)):
@@ -465,11 +463,21 @@ def dashboard():
 @app.route('/posting/<id>', methods=['GET', 'POST'])
 def posting(id):
 
+    # Apply Now button -- add a case if the user has already applied, flash success you have already applied
     if request.method == 'POST':
-        sql = 'INSERT INTO applications(user_id, internship_id) VALUES(%s,%s)'
-        args = (current_user.id, id)
-        db.query('PUSH', sql, args)
-        flash('Application Submited', 'success')
+        # check if user already has an application
+        sql = 'SELECT * FROM applications WHERE student_id = %s AND internship_id = %s' % (current_user.id, id)
+        result = db.query('PULL', sql)
+        if result:
+            flash('Application Already Submitted', 'success')
+        # else add and entry to the applications table
+        else:
+            sql = 'SELECT sponsor_id FROM internship WHERE internship_id = %s' % (id)
+            sponsor_id = db.query('PULL', sql)[0][0]
+            sql = 'INSERT INTO applications (student_id, internship_id, sponsor_id) VALUES(%s,%s,%s)'
+            args = (current_user.id, id, sponsor_id)
+            db.query('PUSH', sql, args)
+            flash('Application Submited', 'success')
     # when loading posting we do not need the ID or user ID so start at title and go from there ([0][3:])
     posting = db.query(
         'PULL', "SELECT * FROM internship WHERE internship_id="+id)[0][3:]
@@ -532,7 +540,6 @@ def general_search(user_search):
     faculty_results = db.query('PULL', "Select * from faculty WHERE first_name LIKE '%%{}%%'".format(user_search))
     #internship_results = db.query('PULL', "SELECT * from internship WHERE title LIKE '%%{}%%'".format(user_search))
     internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE t1.title LIKE '%%{}%%'".format(user_search))
-    print(internship_results)
     return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
 
 
