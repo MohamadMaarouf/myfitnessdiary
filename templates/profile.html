@@ -120,6 +120,11 @@
                     </div>
                     {% endif %}
                 </div>
+                {% if Edit and Privacy == 'Private'%}
+                <p style="margin-left:14%">Profile Privacy: <span style="color:red">{{Privacy}}</span></p>
+                {% elif Edit and Privacy == 'Public' %}
+                <p style="margin-left:14%">Profile Privacy: <span style="color:green">{{Privacy}}</span></p>
+                {% endif %}
             </div>
     </form>
     <div class="col-md-6">
