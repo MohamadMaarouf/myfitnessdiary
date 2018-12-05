@@ -364,6 +364,7 @@ def upload_file():
             return redirect(url_for('profile', user_id=current_user.id))
         if file and allowed_file(file.filename):
             data = file.read()
+            print(data)
             args = (data, current_user.id)
             sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
             db.query("PUSH", sql, args)
