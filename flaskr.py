@@ -435,7 +435,10 @@ def edit_profile(user_id):
             
         
         
-    
+# Route for Help Page
+@app.route('/help')
+def help():
+    return render_template('help.html', title='Help| InternREQ')
 
 #   Dashboard Page Route
 @app.route('/dashboard')

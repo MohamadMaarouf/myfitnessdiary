@@ -18,9 +18,32 @@
     <div class="employer"><a href="{{url_for('registration')}}?id=3">Employer</a></div>
 </div>
 <div class="bottomBar">
-    <a href="#">About Us</a>
-    <a href="#">Help</a>
+    <a data-toggle='modal' data-target='#myModal'>About Us</a>
+    <a href="{{url_for('help')}}">Help</a>
     <a href="#" onclick="alert('There are none!')">Terms of Use</a>
     <a href="mailto:chris.conlon1993@gmail.com">Contact Us</a>
 </div>
+
+<!-- Here are the blocks for the modals -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">About Us</h4>
+        </div>
+        <div class="modal-body">
+          <p>At InternREQ we aim to provide a platform that connects applicants and employers. Sponsors post internship opportunities to a communal
+              job board where qualified applicants can apply.  Applicants can search for internships matching their interests, gain valuable experience for their résumé
+              and possibly start a career. Simply put, our goal is to efficiently enable sponsors to post their unfilled internships and allow applicants to find and apply for them. 
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
 {% endblock %}
