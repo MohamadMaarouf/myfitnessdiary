@@ -44,7 +44,34 @@ login_manager.login_view = 'login'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 ALLOWED_EXTENSIONS = set(['pdf'])
-# end Globals
+
+# Database Access   <!> Set environment variable before testing locally
+#       Windows:   $env:DB_PASS = 'ourpassword'
+#       Windows:   set DB_PASS=ourpassword
+#       Mac:       export DB_PASS=ourpassword
+db_ip = '35.221.39.35' #internreq database
+db_password = os.environ.get('DB_PASS')
+db_user = 'root'
+db_name = 'internreq'
+db_connection_name = 'birmingham4test:us-east4:internreq-1'
+
+# When deployed to App Engine, the `GAE_ENV` environment variable will be
+# set to `standard`
+if os.environ.get('GAE_ENV') == 'standard':
+    # If deployed, use the local socket interface for accessing Cloud SQL
+    unix_socket = '/cloudsql/{}'.format(db_connection_name)
+    engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
+        db_user, db_password, db_name, unix_socket)
+else:
+    # If running locally, use the IP address to connect
+    host = db_ip
+    engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
+        db_user, db_password, host, db_name)
+
+db = Database.Database(engine_url)
+
+
+# End Globals
 
 
 #   Flask-Login User class
@@ -117,34 +144,6 @@ class ProfileUser():
             self.grad_date = row[14]
             self.gpa = row[15]
 #   End class
-
-
-# Database Access   <!> Set environment variable before testing locally
-#       Windows:   $env:DB_PASS = 'ourpassword'
-#       Windows:   set DB_PASS=ourpassword
-#       Mac:       export DB_PASS=ourpassword
-db_ip = '35.221.39.35' #internreq database
-db_password = os.environ.get('DB_PASS')
-db_user = 'root'
-db_name = 'internreq'
-db_connection_name = 'birmingham4test:us-east4:internreq-1'
-
-# When deployed to App Engine, the `GAE_ENV` environment variable will be
-# set to `standard`
-if os.environ.get('GAE_ENV') == 'standard':
-    # If deployed, use the local socket interface for accessing Cloud SQL
-    unix_socket = '/cloudsql/{}'.format(db_connection_name)
-    engine_url = 'mysql+pymysql://{}:{}@/{}?unix_socket={}'.format(
-        db_user, db_password, db_name, unix_socket)
-else:
-    # If running locally, use the IP address to connect
-    host = db_ip
-    engine_url = 'mysql+pymysql://{}:{}@{}/{}'.format(
-        db_user, db_password, host, db_name)
-
-db = Database.Database(engine_url)
-# engine = sqlalchemy.create_engine(engine_url, pool_size=3) # engine creation for future use
-
 
 #   Flask-Login login_manager
 @login_manager.user_loader
@@ -329,6 +328,16 @@ def profile(user_id):
     if (current_user.is_authenticated):  # if user is authenticated
         # if user profile exists
         if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):
+            role = db.query("PULL", "SELECT role FROM users WHERE user_id = {}".format(user_id))[0][0]
+            private = db.query("PULL", "SELECT private FROM {} WHERE user_id = {}".format(role,user_id))
+            if(private[0][0]):
+                privacy = 'Private'
+            else:
+                privacy = 'Public'
+
+            if(private[0][0] and current_user.id != int(user_id)):
+                flash("User's profile is private", 'danger')
+                return redirect('/scoobysnacks')
 
             # create profile_user object from class
             profile_user = ProfileUser(user_id)
@@ -339,7 +348,7 @@ def profile(user_id):
             else:
                 edit = False
             page_title = profile_user.full_name+' | '
-            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit)
+            return render_template('profile.html', title=page_title+app_title, profile_user=profile_user, Edit=edit, Privacy = privacy)
         else:
             # profile does not exist
             return render_template('404.html', title=app_title)
@@ -430,6 +439,7 @@ def edit_profile(user_id):
                 #db.query('PUSH', sql, args)
                 return redirect(url_for('profile', user_id=current_user.id))
             
+<<<<<<< HEAD
             
         
         
@@ -437,6 +447,8 @@ def edit_profile(user_id):
 @app.route('/help')
 def help():
     return render_template('help.html', title='Help| InternREQ')
+=======
+>>>>>>> 07a33423216adc3c54cb1ae8a594286f97599aaf
 
 #   Dashboard Page Route
 @app.route('/dashboard')
@@ -521,15 +533,6 @@ def send_email(subject, sender, recipients, body):
     msg = Message(subject, sender=sender, recipients=[recipients])
     msg.html = body
     mail.send(msg)
-
-
-#   Test Send Mail Route
-@app.route('/testemail')
-def testemail():
-    send_email("Thank You", 'chrisddhnt@gmail.com',
-               current_user.email, "<h1>Test Email recived</h1>")
-    flash('email sent', 'success')
-    return(redirect(url_for('dashboard')))
 
 
 #   Admin Tables View Route
