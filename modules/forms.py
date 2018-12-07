@@ -56,6 +56,7 @@ class EditProfileF(FlaskForm):
     department = StringField('Department', validators=[Length(min=0, max=40)])
     location = StringField('Location', validators = [Length(min=0, max = 15)])
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    private = BooleanField('Private')
     submit = SubmitField('Submit')
 
 class EditProfileS(FlaskForm):
@@ -69,7 +70,9 @@ class EditProfileS(FlaskForm):
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
     skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
     education = TextAreaField('Education', validators=[Length(min=0, max=140)])
+    private = BooleanField('Private')
     submit = SubmitField('Submit')
+
 class EditProfileSp(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
@@ -78,4 +81,5 @@ class EditProfileSp(FlaskForm):
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
     education = TextAreaField('Education', validators=[Length(min=0, max=140)])
     skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
+    private = BooleanField('Private')
     submit = SubmitField('Submit')
