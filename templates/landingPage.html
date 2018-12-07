@@ -89,14 +89,16 @@
     </div>
 
 </div>
+<footer id="foot">
 <div class="bottomBar">
-    <a data-toggle='modal' data-target='#myModal'>About Us</a>
+    <a data-toggle='modal' data-target='#about'>About Us</a>
     <a href="{{url_for('help')}}">Help</a>
-    <a href="#" onclick="alert('There are none!')">Terms of Use</a>
-    <a href="mailto:chris.conlon1993@gmail.com">Contact Us</a>
+    <a data-toggle='modal' data-target='#terms'>Terms of Use</a>
+    <a data-toggle='modal' data-target='#contact'>Contact Us</a>
 </div>
+</footer>
 <!-- Modals for Footer Links Below -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="about" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content -->
       <div class="modal-content">
@@ -109,6 +111,97 @@
               job board where qualified applicants can apply.  Applicants can search for internships matching their interests, gain valuable experience for their résumé
               and possibly start a career. Simply put, our goal is to efficiently enable sponsors to post their unfilled internships and allow applicants to find and apply for them. 
           </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+
+  <div id="terms" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Terms of Use</h4>
+        </div>
+        <div class="modal-body">
+            <p>InternREQ Terms Of Use</p>
+
+            <p>By registering for InternREQ, accessing and using our services, you are agreeing to all our terms of use.</p>
+            
+            <h5>1. Members and Visitors</h5>
+            When you register and join the InternREQ Service, you become a Member. If you have chosen not to register for our Services, you may access certain features as a “Visitor”.
+            
+            <h5>2. Change</h5>
+            We may modify this Contract, our Privacy Policy and our Cookies Policies from time to time. If we make material changes to it, we will provide you notice through our Services, or by other means, to provide you the opportunity to review the changes before they become effective. We agree that changes cannot be retroactive. If you object to any changes, you may close your account. Your continued use of our Services after we publish or send a notice about our changes to these terms means that you are consenting to the updated terms.
+            
+            <h5>3. Service Eligibility</h5>
+            The Services are not for use by anyone that is not a Southern Student or no longer a student at Southern Connecticut State University.
+            To use the Services, you agree that: (1) you must be an “SCSU Student”, (2) you will only have one InternREQ account, which must be in your real name; and (3) you are not already restricted by InternREQ from using the Services. Creating an account with false information is a violation of our terms, including accounts registered on behalf of others.
+
+            <h5>4. Your Account</h5>
+            Members are account holders. You agree to: (1) try to choose a strong and secure password; (2) keep your password secure and confidential; (3) not transfer any part of your account (e.g., connections). You are responsible for anything that happens through your account unless you close it or report misuse.
+            
+            <h5>5. Notices and Messages</h5>
+            
+            You agree that we will provide notices and messages to you in the following ways: (1) within the Service, or (2) sent to the contact information you provided us (e.g., email, mobile number, physical address). You agree to keep your contact information up to date.
+            
+            <h5>6. Limits</h5>
+            
+            InternREQ reserves the right to limit your use of the Services, including the number of your connections and your ability to contact other Members. InternREQ reserves the right to restrict, suspend, or terminate your account if InternREQ believes that you may be in breach of this Contract or law or are misusing the Services.
+            
+            <h5>7. Automated Processing</h5>
+            
+            We will use the information and data that you provide and that we have about Members to make recommendations for connections, content and features that may be useful to you. For example, we use data and information about you to recommend jobs to you and you to recruiters. Keeping your profile accurate and up-to-date helps us to make these recommendations more accurate and relevant.
+            
+           <h5>8. Dos</h5>
+            InternREQ is a community of professionals. This list of “Dos and Don’ts” limit what you can and cannot do on our Services.
+            <p>You agree that you will:</p>
+            <p>a.) Comply with all applicable laws, including, without limitation, privacy laws, intellectual property laws, anti-spam laws, export control laws, tax laws, and regulatory requirements;
+            <p>b.) Provide accurate information to us and keep it updated;
+            <p>c.) Use your real name on your profile; and
+            <p>d.) Use the Services in a professional manner.
+            Don’ts
+            <p>You agree that you will not:</p>
+            <p>a.) Create a false identity on InternREQ, misrepresent your identity, create a Member profile for anyone other than yourself (a real person), or use or attempt to use another’s account;
+            <p>b.) Develop, support or use software, devices, scripts, robots, or any other means or processes (including crawlers, browser plugins and add-ons, or any other technology) to scrape the Services or otherwise copy profiles and other data from the Services;
+            <p>c.) Override any security feature or bypass or circumvent any access controls or use limits of the Service (such as caps on keyword searches or profile views);
+            <p>d.) Copy, use, disclose or distribute any information obtained from the Services, whether directly or through third parties (such as search engines), without the consent of InternREQ;
+            <p>e.) Disclose information that you do not have the consent to disclose (such as confidential information of others (including your employer)
+            <p>f.) Violate the intellectual property rights of others, including copyrights, patents, trademarks, trade secrets, or other proprietary rights.
+            <p>g.) Violate the intellectual property or other rights of InternREQ, including using the word “InternREQ” or our logos in any business name, email, or URL.
+            <p>h.) Reverse engineer, decompile, disassemble, decipher or otherwise attempt to derive the source code for the Services or any related technology that is not open source;
+            <p>i.) Imply or state that you are affiliated with or endorsed by InternREQ without our express consent 
+            <p>j.) Rent, lease, loan, trade, sell/re-sell or otherwise monetize the Services or related data or access to the same, without InternREQ’s consent;
+            <p>k.) Use bots or other automated methods to access the Services, add or download contacts, send or redirect messages;
+            <p>l.) Monitor the Services’ availability, performance or functionality for any competitive purpose;
+            <p>m.) Engage in “framing,” “mirroring,” or otherwise simulating the appearance or function of the Services;
+            <p>n.) Overlay or otherwise modify the Services or their appearance (such as by inserting elements into the Services or removing, covering, or obscuring an advertisement included on the Services);
+            <p>o.) Interfere with the operation of, or place an unreasonable load on, the Services (e.g., spam, denial of service attack, viruses, gaming algorithms);
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  <div id="contact" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Contact</h4>
+        </div>
+        <div class="modal-body">
+          <p> If you're having any issues with the site, please check out our help page for various site-related tutorials (Link here: <a style="color:blue" href="{{ url_for('help') }}">Help</a>)</p>
+          <p> If the problem still persists, feel free to contact us directly <a style="color:blue" href="mailto:chris.conlon1993@gmail.com">Contact</a> </p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
