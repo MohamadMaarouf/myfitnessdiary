@@ -559,8 +559,7 @@ def general_search(user_search):
     student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))
     sponsor_results = db.query('PULL', "Select * from sponsor WHERE company LIKE '%%{}%%'".format(user_search))
     faculty_results = db.query('PULL', "Select * from faculty WHERE first_name LIKE '%%{}%%'".format(user_search))
-    #internship_results = db.query('PULL', "SELECT * from internship WHERE title LIKE '%%{}%%'".format(user_search))
-    internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE t1.title LIKE '%%{}%%'".format(user_search))
+    internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.sponsor_id=t2.user_id WHERE t1.title LIKE '%%{}%%'".format(user_search))
     return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
 
 
