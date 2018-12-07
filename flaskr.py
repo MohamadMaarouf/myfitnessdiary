@@ -476,10 +476,10 @@ def dashboard():
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][2]))[0])
         elif(current_user.role == 'sponsor'):
-            posting = db.query('PULL', 'SELECT * FROM internship WHERE user_id=' + user_id)
+            posting = db.query('PULL', 'SELECT * FROM internship WHERE sponsor_id=' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
-                    'PULL', 'SELECT * FROM internship WHERE user_id={}'.format(posting[x][1]))[0])
+                    'PULL', 'SELECT * FROM internship WHERE sponsor_id={}'.format(posting[x][1]))[0])
 
         return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
@@ -528,7 +528,7 @@ def createPosting():
             comp = form.comp.data
             jType = form.fullPart.data
             hours = form.hours.data
-            sql = "INSERT INTO internship(internship_id, user_id, title," \
+            sql = "INSERT INTO internship(internship_id, sponsor_id, title," \
                 " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
                 "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             args = (0, current_user.id, title, location,
@@ -564,8 +564,7 @@ def general_search(user_search):
     student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))
     sponsor_results = db.query('PULL', "Select * from sponsor WHERE company LIKE '%%{}%%'".format(user_search))
     faculty_results = db.query('PULL', "Select * from faculty WHERE first_name LIKE '%%{}%%'".format(user_search))
-    #internship_results = db.query('PULL', "SELECT * from internship WHERE title LIKE '%%{}%%'".format(user_search))
-    internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.user_id=t2.user_id WHERE t1.title LIKE '%%{}%%'".format(user_search))
+    internship_results = db.query('PULL', "Select * from internship t1 INNER JOIN sponsor t2 ON t1.sponsor_id=t2.user_id WHERE t1.title LIKE '%%{}%%'".format(user_search))
     return render_template('searchResults.html', users=user_results, students=student_results, sponsors=sponsor_results, faculty=faculty_results, internships=internship_results, title='Results For "'+user_search+'"')
 
 
