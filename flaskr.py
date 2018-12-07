@@ -471,10 +471,10 @@ def dashboard():
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][2]))[0])
         elif(current_user.role == 'sponsor'):
-            posting = db.query('PULL', 'SELECT * FROM internship WHERE user_id=' + user_id)
+            posting = db.query('PULL', 'SELECT * FROM internship WHERE sponsor_id=' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
-                    'PULL', 'SELECT * FROM internship WHERE user_id={}'.format(posting[x][1]))[0])
+                    'PULL', 'SELECT * FROM internship WHERE sponsor_id={}'.format(posting[x][1]))[0])
 
         return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
     return redirect('/login')
@@ -523,7 +523,7 @@ def createPosting():
             comp = form.comp.data
             jType = form.fullPart.data
             hours = form.hours.data
-            sql = "INSERT INTO internship(internship_id, user_id, title," \
+            sql = "INSERT INTO internship(internship_id, sponsor_id, title," \
                 " location, overview, responsibilities, requirements, compensation, type, availability)VALUES"\
                 "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             args = (0, current_user.id, title, location,
