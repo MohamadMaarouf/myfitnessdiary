@@ -60,6 +60,10 @@
     .nav-tabs>li>a {
         color: #575757;
     }
+
+    #pLink {
+        color: black;
+    }
 </style>
 {% endblock %}
 {%block content%}
@@ -106,6 +110,10 @@
                     <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
                             aria-selected="false">Your Postings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#applicants" role="tab"
+                            aria-controls="profile" aria-selected="false">Applicants</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -165,7 +173,31 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="table-responsive"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="applicants" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover table-striped" id="applicants">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Major</th>
+                                    <th>Graduation Date</th>
+                                    <th>Profile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for applicant in applicants%}
+                                <tr>
+                                    <td>{{applicant[0]}}, {{applicant[1]}}</td>
+                                    <td>{{applicant[2]}}</td>
+                                    <td>{{applicant[3]}}</td>
+                                    <td><a id="pLink" href="{{ url_for('profile', user_id=applicant[4]) }}">View
+                                            Profile</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
