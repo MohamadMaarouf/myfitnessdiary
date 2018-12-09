@@ -84,8 +84,6 @@
                         </span>
                     </li>
                     {% endif %}
-                    {% if not current_user.is_authenticated %}
-                    {% endif %}
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{{ url_for('search_handler') }}" method="POST">
                     <input name="searchingFor" class="form-control mr-sm-2" type="text" placeholder="Search">
