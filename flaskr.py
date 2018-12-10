@@ -143,6 +143,12 @@ class ProfileUser():
         if (self.role == 'student'):
             self.grad_date = row[14]
             self.gpa = row[15]
+            self.alias = row[18]
+        elif (self.role == 'sponsor'):
+            self.alias = row[15]
+        elif (self.role == 'faculty'):
+            self.alias = row[15]
+
 #   End class
 
 #   Flask-Login login_manager
@@ -407,21 +413,18 @@ def edit_profile():
                 form = forms.EditProfileS()
         if (request.method == 'GET'):
             if(current_user.role == 'faculty'):
-                sql = "SELECT first_name, last_name, title, department, location, about, private FROM faculty WHERE user_id = %s" % (user_id)
-                first_name, last_name, user_title, department, location, about, private = db.query('PULL', sql)[0]
-                form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, form.private.data = first_name, last_name, user_title, department, location, about, private
+                sql = "SELECT first_name, last_name, title, department, location, about, private, url, alias FROM faculty WHERE user_id = %s" % (user_id)
+                form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, form.private.data, form.url.data, form.alias.data = db.query('PULL', sql)[0]
                 return render_template('edit_profilef.html', title='Edit Profile', form=form)
 
             elif(current_user.role == 'student'):
-                sql = "SELECT first_name, last_name, title, major, location, about, education, additional, graduation_date, GPA, private FROM student WHERE user_id = %s" % (user_id)
-                first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private = db.query('PULL', sql)[0]
-                form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, form.private.data = first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private
+                sql = "SELECT first_name, last_name, title, major, location, about, education, additional, graduation_date, GPA, private, url, alias FROM student WHERE user_id = %s" % (user_id)
+                form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, form.private.data, form.url.data, form.alias.data = db.query('PULL', sql)[0]
                 return render_template('edit_profiles.html', title='Edit Profile', form=form)
 
             elif(current_user.role == 'sponsor'):
-                sql = "SELECT first_name, last_name, title, company, about, education, additional, private FROM sponsor WHERE user_id =  %s" % (user_id)
-                first_name, last_name, user_title, company, about, education, skills, private = db.query('PULL', sql)[0]
-                form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, form.private.data = first_name, last_name, user_title, company, about, education, skills, private
+                sql = "SELECT first_name, last_name, title, company, about, education, additional, private, url, alias FROM sponsor WHERE user_id =  %s" % (user_id)
+                form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, form.private.data, form.url.data, form.alias.data = db.query('PULL', sql)[0]
                 return render_template('edit_profilesp.html', title='Edit Profile', form=form)
         else:
             if(current_user.role == 'faculty'):
@@ -430,7 +433,7 @@ def edit_profile():
                     flag = True
                 else:
                     flag = False
-                sql = "UPDATE faculty SET first_name = '%s', last_name = '%s', title = '%s', department = '%s', location = '%s', about = '%s', private = %s WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, flag, user_id)
+                sql = "UPDATE faculty SET first_name = '%s', last_name = '%s', title = '%s', department = '%s', location = '%s', about = '%s', private = %s, url = '%s', alias = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, flag, form.url.data, form.alias.data, user_id)
                 db.engine.execute(sql)
                 return redirect(url_for('profile', user_id=current_user.id))
             elif(current_user.role == 'student'):
@@ -439,7 +442,7 @@ def edit_profile():
                     flag = True
                 else:
                     flag = False
-                sql = "UPDATE student SET first_name = '%s', last_name= '%s', title = '%s', major = '%s', location = '%s', about = '%s', education = '%s', additional = '%s', graduation_date = '%s', gpa = '%s', private = %s WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, flag, user_id)
+                sql = "UPDATE student SET first_name = '%s', last_name= '%s', title = '%s', major = '%s', location = '%s', about = '%s', education = '%s', additional = '%s', graduation_date = '%s', gpa = '%s', private = %s, url = '%s', alias = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, flag, form.url.data, form.alias.data,  user_id)
                 db.engine.execute(sql)            
                 return redirect(url_for('profile', user_id=current_user.id))
             elif(current_user.role == 'sponsor'):
@@ -448,7 +451,7 @@ def edit_profile():
                     flag = True
                 else:
                     flag = False
-                sql = "UPDATE sponsor SET first_name = '%s', last_name = '%s', title = '%s', company = '%s', about = '%s', education = '%s', additional = '%s', private = %s WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, flag, user_id)
+                sql = "UPDATE sponsor SET first_name = '%s', last_name = '%s', title = '%s', company = '%s', about = '%s', education = '%s', additional = '%s', private = %s, url = '%s', alias = '%s' WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, flag, form.url.data, form.alias.data, user_id)
                 db.engine.execute(sql)
                 return redirect(url_for('profile', user_id=current_user.id))
 
