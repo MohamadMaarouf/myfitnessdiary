@@ -5,11 +5,12 @@
 {% block content %}
 
 
+<div class="content-section text-center jumbotron"> 
 <form action="" method="POST">
-<div class="content-section text-center jumbotron">   
+  
         {{ form.hidden_tag() }}
 <legend class="border-bottom mb-4 text-center">Edit Profile</legend>
-<fieldset class="form-group">
+<div class="form-group">
     <b>{{ form.first_name.label(class="form-control-label mr-4") }}</b>
     {% if form.first_name.errors %}
     <b>{{ form.first_name(class="form-control-sm is-invalid") }}</b>
@@ -162,7 +163,6 @@
     <b>{{ form.private(class="form-control-sm") }}</b>
     {% endif %}
 </div>
-</fieldset>
 <div class="form-group">
     {{ form.submit(class='btn btn-outline-info')}}
 </div>
