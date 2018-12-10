@@ -149,7 +149,7 @@
     </div>
     {%if Edit%}
     <div class="col-md-2">
-        <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile', user_id = current_user.id)}}">Edit
+        <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile')}}">Edit
                 Profile</a> </button>
 
         <button type="button" id="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload

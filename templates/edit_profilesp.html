@@ -1,17 +1,12 @@
 {% extends 'template.html'%}
-{% block style %}
-<style>
-    h1 {
-        text-align: center;
-        font-color: white;
-         }
-</style>
-{% endblock %}
+
+{% block title %}{{title}}{% endblock %}
 {% block content %}
 
 
 <form action="" method="POST">
-<div class="content-section text-center jumbotron">   
+<div class="content-section text-center jumbotron">
+        {{ form.hidden_tag() }}
 <legend class="border-bottom mb-4 text-center">Edit Profile</legend>
 <div class="form-group">
     <b>{{ form.first_name.label(class="form-control-label mr-4") }}</b>

@@ -394,15 +394,11 @@ def allowed_file(filename):
 #   This is the code for editing profile. The user is presented the data currently
 #   linked to their account and is able to edit these values and have the changes
 #   reflected in their profile page
-@app.route('/profile/<user_id>/edit_profile', methods=['GET', 'POST'])
+@app.route('/profile/edit_profile', methods=['GET', 'POST'])
 @login_required
-def edit_profile(user_id):
-    if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)):    
-        u_id = int(user_id)
-        cu_id = int(current_user.id)
-        if (u_id != cu_id):
-            flash('You cannot edit profiles other than your own', 'danger')
-            return redirect(url_for('dashboard'))   
+def edit_profile():
+    user_id = current_user.id
+    if db.query("PULL", "SELECT role FROM users WHERE user_id = %s" % (user_id)): 
         if(current_user.role == 'faculty'):
                 form = forms.EditProfileF()
         elif(current_user.role == 'sponsor'):
@@ -414,19 +410,19 @@ def edit_profile(user_id):
                 sql = "SELECT first_name, last_name, title, department, location, about, private FROM faculty WHERE user_id = %s" % (user_id)
                 first_name, last_name, user_title, department, location, about, private = db.query('PULL', sql)[0]
                 form.first_name.data, form.last_name.data, form.user_title.data, form.department.data, form.location.data, form.about.data, form.private.data = first_name, last_name, user_title, department, location, about, private
-                return render_template('edit_profilef.html', title='Edit Profile', form=form, first_name=first_name, last_name=last_name, user_title=user_title, department = department, location = location, about = about, private=private)
+                return render_template('edit_profilef.html', title='Edit Profile', form=form)
 
             elif(current_user.role == 'student'):
                 sql = "SELECT first_name, last_name, title, major, location, about, education, additional, graduation_date, GPA, private FROM student WHERE user_id = %s" % (user_id)
                 first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private = db.query('PULL', sql)[0]
                 form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, form.private.data = first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private
-                return render_template('edit_profiles.html', title='Edit Profile', form=form, first_name = first_name, user_title=user_title, major = major, location=location, about=about, education=education, skills=skills, grad_date = grad_date, gpa=gpa, private=private)
+                return render_template('edit_profiles.html', title='Edit Profile', form=form)
 
             elif(current_user.role == 'sponsor'):
                 sql = "SELECT first_name, last_name, title, company, about, education, additional, private FROM sponsor WHERE user_id =  %s" % (user_id)
                 first_name, last_name, user_title, company, about, education, skills, private = db.query('PULL', sql)[0]
                 form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, form.private.data = first_name, last_name, user_title, company, about, education, skills, private
-                return render_template('edit_profilesp.html', title='Edit Profile', form=form, first_name = first_name, last_name = last_name, user_title = user_title, company = company, about=about, education=education, skills=skills, private=private)
+                return render_template('edit_profilesp.html', title='Edit Profile', form=form)
         else:
             if(current_user.role == 'faculty'):
                 new_private = str(form.private.data)
@@ -455,7 +451,7 @@ def edit_profile(user_id):
                 sql = "UPDATE sponsor SET first_name = '%s', last_name = '%s', title = '%s', company = '%s', about = '%s', education = '%s', additional = '%s', private = %s WHERE user_id = %s" % (form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, flag, user_id)
                 db.engine.execute(sql)
                 return redirect(url_for('profile', user_id=current_user.id))
-                  
+
 # Route for Help Page
 @app.route('/help')
 def help():
