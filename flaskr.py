@@ -15,6 +15,7 @@ import os
 import sqlalchemy
 from hashlib import md5
 from google.cloud import storage
+from google.cloud.storage import Blob
 # end Import's
 
 
@@ -45,7 +46,6 @@ login_manager.login_view = 'login'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 ALLOWED_EXTENSIONS = set(['pdf'])
-bucket_name = 'birmingham4test.appspot.com'
 
 # Database Access   <!> Set environment variable before testing locally
 #       Windows:   $env:DB_PASS = 'ourpassword'
@@ -71,8 +71,6 @@ else:
         db_user, db_password, host, db_name)
 
 db = Database.Database(engine_url)
-
-
 # End Globals
 
 
@@ -163,7 +161,7 @@ def load_user(id):
     return (user)
 #   End manager
 
-
+"""
 # Error Pages Routes
 @app.errorhandler(404)
 def page_not_found(a):
@@ -179,7 +177,7 @@ def server_error(b):
 def all_other_errors(c):
     # This route is for catching all non 404 or 500 errors
     return render_template('Exception.html', title=app_title)
-
+"""
 
 # Landing Page Route 
 @app.route('/')
@@ -378,10 +376,21 @@ def upload_file():
             flash('No selected file')
             return redirect(url_for('profile', user_id=current_user.id))
         if file and allowed_file(file.filename):
-            data = file.read()
+            # upload file to bucket
+            client = storage.Client()
+            bucket = client.get_bucket("birmingham4test.appspot.com")
+            encryption_key = "aa426195405adee2c8081bb9e7e74b19"
+            blob = Blob("secure-data", bucket, encryption_key=encryption_key)
+            with open(file, "rb") as my_file:
+                blob.upload_from_file(my_file)
+            
+            #upload_blob('birmingham4test.appspot.com', file.filename, 'resume/'+file.filename)
+            '''data = file.read()
             args = (data, current_user.id)
             sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
-            db.query("PUSH", sql, args)
+            db.query("PUSH", sql, args)'''
+            # get link to the file in the bucket
+            # update the datbase with the url for the link
             flash('File uploaded successfully', 'success')
             return redirect(url_for('profile', user_id=current_user.id))
     return redirect(url_for('landing'))
