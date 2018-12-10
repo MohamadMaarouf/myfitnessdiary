@@ -173,6 +173,11 @@ def server_error(b):
     # This route is for handling when an internal server error occurs
     return render_template('500.html', title=app_title)
 
+@app.errorhandler(Exception)
+def all_other_errors(c):
+    # This route is for catching all non 404 or 500 errors
+    return render_template('Exception.html', title=app_title)
+
 
 # Landing Page Route 
 @app.route('/')
