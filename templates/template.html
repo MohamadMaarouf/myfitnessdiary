@@ -85,12 +85,13 @@
                             Welcome, {{ current_user.name }}! <img style="display:inline" src="{{ current_user.avatar_s }}">
                         </span>
                     </li>
-                    {% endif %}
+
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{{ url_for('search_handler') }}" method="POST">
                     <input name="searchingFor" class="form-control mr-sm-2" type="text" placeholder="Search">
                     <button class="btn btn-success my-2 my-sm-0" type="submit" value="Search">Search</button>
                 </form>
+                {% endif %}
             </div>
         </nav>
         {% endblock %}
