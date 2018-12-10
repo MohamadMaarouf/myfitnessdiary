@@ -56,6 +56,8 @@ class EditProfileF(FlaskForm):
     department = StringField('Department', validators=[Length(min=0, max=40)])
     location = StringField('Location', validators = [Length(min=0, max = 15)])
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
+    url = StringField('URL', validators=[Length(min=0, max=100)])
+    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
     private = BooleanField('Private')
     submit = SubmitField('Submit')
 
@@ -70,6 +72,8 @@ class EditProfileS(FlaskForm):
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
     skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
     education = TextAreaField('Education', validators=[Length(min=0, max=140)])
+    url = StringField('URL', validators=[Length(min=0, max=100)])
+    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
     private = BooleanField('Private')
     submit = SubmitField('Submit')
 
@@ -81,5 +85,7 @@ class EditProfileSp(FlaskForm):
     about = TextAreaField('About', validators=[Length(min=0, max=140)])
     education = TextAreaField('Education', validators=[Length(min=0, max=140)])
     skills = TextAreaField('Skills', validators=[Length(min=0, max=140)])
+    url = StringField('URL', validators=[Length(min=0, max=100)])
+    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
     private = BooleanField('Private')
     submit = SubmitField('Submit')

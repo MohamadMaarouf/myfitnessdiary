@@ -85,7 +85,7 @@
     }
     .profile-work a{
         text-decoration: none;
-        color: #495057;
+        color: blue;
         font-weight: 600;
         font-size: 14px;
     }
@@ -101,6 +101,9 @@
     }
     #button{
         margin: 8px;
+    }
+    #profile-website {
+        color: #00f;
     }
 </style>
 
@@ -149,7 +152,7 @@
     </div>
     {%if Edit%}
     <div class="col-md-2">
-        <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile', user_id = current_user.id)}}">Edit
+        <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile')}}">Edit
                 Profile</a> </button>
 
         <button type="button" id="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload
@@ -185,15 +188,15 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <div class="profile-work">
-            <p>Work</p>
-            <a href="">Github Link Here</a><br />
+            <div class="profile-work">
+            <p>Website</p>
+            <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
             <p>SKILLS</p>
-            <a href="">Web Designer</a><br />
-            <a href="">Web Developer</a><br />
-            <a href="">WordPress</a><br />
-            <a href="">WooCommerce</a><br />
-            <a href="">PHP, .Net</a><br />
+            <p>Web Designer</p>
+            <p>Web Developer</p>
+            <p>WordPress</p>
+            <p>WooCommerce</p>
+            <p>PHP, .Net</p>
         </div>
     </div>
     <div class="col-md-8">
