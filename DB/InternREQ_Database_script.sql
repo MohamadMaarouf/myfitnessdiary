@@ -10,17 +10,12 @@ CREATE TABLE users
 (
     user_id INT
     AUTO_INCREMENT,
-    email VARCHAR
-    (255),
-    password VARCHAR
-    (255),
-    role VARCHAR
-    (25),
-    name VARCHAR
-    (255),
+    email VARCHAR (255),
+    password VARCHAR (255),
+    role VARCHAR (25),
+    name VARCHAR (255),
     last_login DATETIME,
-    PRIMARY KEY
-    (user_id)
+    PRIMARY KEY (user_id)
 );
 
 
