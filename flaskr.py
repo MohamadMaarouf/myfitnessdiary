@@ -563,6 +563,7 @@ def admin_view():
 
 #   Users Search Route
 @app.route('/results/<user_search>')
+@login_required
 def general_search(user_search):
     user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
     student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))
