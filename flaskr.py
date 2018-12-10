@@ -455,11 +455,6 @@ def edit_profile():
                 db.engine.execute(sql)
                 return redirect(url_for('profile', user_id=current_user.id))
 
-
-@app.route('/testinghtml')
-def testing():
-    return render_template('testing.html')
-
 # Route for Help Page
 @app.route('/help')
 def help():
