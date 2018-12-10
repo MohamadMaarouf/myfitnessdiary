@@ -416,13 +416,13 @@ def edit_profile():
                 sql = "SELECT first_name, last_name, title, major, location, about, education, additional, graduation_date, GPA, private FROM student WHERE user_id = %s" % (user_id)
                 first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private = db.query('PULL', sql)[0]
                 form.first_name.data, form.last_name.data, form.user_title.data, form.major.data, form.location.data, form.about.data, form.education.data, form.skills.data, form.grad_date.data, form.gpa.data, form.private.data = first_name, last_name, user_title, major, location, about, education, skills, grad_date, gpa, private
-                return render_template('edit_profiles.html', title='Edit Profile', form=form, first_name = first_name, user_title=user_title, major = major, location=location, about=about, education=education, skills=skills, grad_date = grad_date, gpa=gpa, private=private)
+                return render_template('edit_profiles.html', title='Edit Profile', form=form)
 
             elif(current_user.role == 'sponsor'):
                 sql = "SELECT first_name, last_name, title, company, about, education, additional, private FROM sponsor WHERE user_id =  %s" % (user_id)
                 first_name, last_name, user_title, company, about, education, skills, private = db.query('PULL', sql)[0]
                 form.first_name.data, form.last_name.data, form.user_title.data, form.company.data, form.about.data, form.education.data, form.skills.data, form.private.data = first_name, last_name, user_title, company, about, education, skills, private
-                return render_template('edit_profilesp.html', title='Edit Profile', form=form, first_name = first_name, last_name = last_name, user_title = user_title, company = company, about=about, education=education, skills=skills, private=private)
+                return render_template('edit_profilesp.html', title='Edit Profile', form=form)
         else:
             if(current_user.role == 'faculty'):
                 new_private = str(form.private.data)
