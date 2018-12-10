@@ -14,6 +14,7 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 import sqlalchemy
 from hashlib import md5
+from google.cloud import storage
 # end Import's
 
 
@@ -44,7 +45,7 @@ login_manager.login_view = 'login'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 ALLOWED_EXTENSIONS = set(['pdf'])
-bucket = 'birmingham4test.appspot.com'
+bucket_name = 'birmingham4test.appspot.com'
 
 # Database Access   <!> Set environment variable before testing locally
 #       Windows:   $env:DB_PASS = 'ourpassword'
