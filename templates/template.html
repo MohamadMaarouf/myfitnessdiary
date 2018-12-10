@@ -48,7 +48,8 @@
     <div>
         {% block navbar %}
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"
+                style="background-color:rgb(148, 195, 233);">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <a class="navbar-brand" href="{{url_for('landing')}}"><img src="../static/assets/logo.svg"></a>
@@ -84,14 +85,11 @@
                         </span>
                     </li>
                     {% endif %}
-                    {% if not current_user.is_authenticated %}
-                    {% endif %}
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{{ url_for('search_handler') }}" method="POST">
                     <input name="searchingFor" class="form-control mr-sm-2" type="text" placeholder="Search">
                     <button class="btn btn-success my-2 my-sm-0" type="submit" value="Search">Search</button>
                 </form>
-                <!-- url_for('general_search',user_search=)-->
             </div>
         </nav>
         {% endblock %}
