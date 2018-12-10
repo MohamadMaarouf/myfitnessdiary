@@ -173,6 +173,11 @@ def server_error(b):
     # This route is for handling when an internal server error occurs
     return render_template('500.html', title=app_title)
 
+@app.errorhandler(Exception)
+def all_other_errors(c):
+    # This route is for catching all non 404 or 500 errors
+    return render_template('Exception.html', title=app_title)
+
 
 # Landing Page Route 
 @app.route('/')
@@ -465,6 +470,7 @@ def dashboard():
         name = current_user.name
         postings = db.query('PULL', 'SELECT * FROM internship')
         applications = []
+        applicants=""
         user_id = str(current_user.id)
         if(current_user.role == 'student'):
             posting = db.query('PULL', 'SELECT * FROM applications WHERE student_id =' + user_id)
@@ -472,12 +478,15 @@ def dashboard():
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE internship_id={}'.format(posting[x][2]))[0])
         elif(current_user.role == 'sponsor'):
+            applicants = db.query('PULL', "SELECT last_name, first_name, major, graduation_date,user_id FROM student s INNER JOIN applications a ON s.user_id = a.student_id WHERE a.sponsor_id = {}".format(current_user.id))
             posting = db.query('PULL', 'SELECT * FROM internship WHERE sponsor_id=' + user_id)
             for x in range(len(posting)):
                 applications.append(db.query(
                     'PULL', 'SELECT * FROM internship WHERE sponsor_id={}'.format(posting[x][1]))[0])
 
-        return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings)
+
+
+        return render_template('dashboard.html', title=('Dashboard | '+app_title), applied=applications, name=name, Daily="Welcome to the Program", postings=postings ,applicants = applicants)
     return redirect('/login')
 
 
