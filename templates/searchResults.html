@@ -65,7 +65,7 @@
                         <td><a href="{{ url_for('profile',user_id=student[0]) }}">View Profile</a></td>
                     </tr>
                     {% endfor %}
-                     {% for teacher in faculty%}
+                    {% for teacher in faculty%}
                     <tr>
                         <td>{{teacher[2]}}, {{teacher[1]}}</td>
                         <td>Faculty</td>
@@ -99,7 +99,7 @@
                         <tr>
                             <td>{{student[2]}}, {{student[1]}}</td>
                             <td>{{student[4]}}</td>
-                            <td>{{student[14]}}</td>
+                            <td>{{student[15]}}</td>
                             <td><a href="{{ url_for('profile',user_id=student[0]) }}">View Profile</a></td>
                         </tr>
                         {% endfor %}
