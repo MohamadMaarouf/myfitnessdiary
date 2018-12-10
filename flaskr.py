@@ -44,6 +44,7 @@ login_manager.login_view = 'login'
 sessionID = []
 serial = URLSafeTimedSerializer(app.secret_key)
 ALLOWED_EXTENSIONS = set(['pdf'])
+bucket = 'birmingham4test.appspot.com'
 
 # Database Access   <!> Set environment variable before testing locally
 #       Windows:   $env:DB_PASS = 'ourpassword'
@@ -384,10 +385,25 @@ def upload_file():
             return redirect(url_for('profile', user_id=current_user.id))
     return redirect(url_for('landing'))
 
+
 # helper function if file is allowed (Boolean)
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# helper function to upload a file to Google Storage
+def upload_blob(bucket_name, source_file_name, destination_blob_name):
+    """Uploads a file to the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_filename(source_file_name)
+
+    print('File {} uploaded to {}.'.format(
+        source_file_name,
+        destination_blob_name))
 
 
 #   Edit Profile Route
