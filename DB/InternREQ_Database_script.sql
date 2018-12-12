@@ -62,7 +62,7 @@ CREATE TABLE users
         additional VARCHAR(1024),
         graduation_date VARCHAR(10),
         GPA VARCHAR(4),
-        resume MEDIUMBLOB,
+        resume VARCHAR(255),
         PRIMARY KEY(user_id),
         FOREIGN KEY(user_id) REFERENCES users(user_id)
     );
