@@ -147,6 +147,10 @@
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
                         aria-selected="true">About</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="home"
+                        aria-selected="true">Skills</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -207,6 +211,9 @@
         <div class="tab-content profile-tab" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 {{profile_user.about}}
+            </div>
+            <div class="tab-pane fade show" id="skills" role="tabpanel" aria-labelledby="home-tab">
+                {{profile_user.additional}}
             </div>
         </div>
     </div>
