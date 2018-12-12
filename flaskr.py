@@ -141,8 +141,9 @@ class ProfileUser():
 
         # additional datapoints
         if (self.role == 'student'):
-            self.grad_date = row[14]
-            self.gpa = row[15]
+            self.grad_date = row[15]
+            self.gpa = row[16]
+            self.resume = row[17]
             self.alias = row[18]
         elif (self.role == 'sponsor'):
             self.alias = row[15]
@@ -397,21 +398,14 @@ def upload_file():
                 file.read(),
                 content_type=file.content_type
             )
+            blob.make_public
 
+            # The public URL can be used to directly access the uploaded file via HTTP.
             # update databse with link to the public blob
             url = blob.public_url
             sql = "UPDATE student SET resume = '%s' WHERE user_id = %s" % (url, current_user.id)
             db.query("PUSH", sql)
 
-            # The public URL can be used to directly access the uploaded file via HTTP.
-            #return blob.public_url
-
-            '''data = file.read()
-            args = (data, current_user.id)
-            sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
-            db.query("PUSH", sql, args)'''
-            # get link to the file in the bucket
-            # update the datbase with the url for the link
             flash('File uploaded successfully', 'success')
             return redirect(url_for('profile', user_id=current_user.id))
     return redirect(url_for('landing'))
