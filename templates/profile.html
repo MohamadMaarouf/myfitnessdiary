@@ -116,12 +116,6 @@
             <div class="col-md-4">
                 <div class="profile-img">
                     <img src="{{ profile_user.avatar_l }}">
-                    {% if Edit %}
-                    <div class="file btn btn-lg btn-primary">
-                        Change Photo
-                        <input type="file" name="file" />
-                    </div>
-                    {% endif %}
                 </div>
                 {% if Edit and Privacy == 'Private'%}
                 <p style="margin-left:14%">Profile Privacy: <span style="color:red">{{Privacy}}</span></p>
@@ -137,20 +131,22 @@
             </h5>
             <h6>
                 {{profile_user.title}},
-                {{profile_user.department}}
+                {{profile_user.department}} <br />
+                Southern Connecticut State University
             </h6>
-            <h6>
-                {{profile_user.location}}
-            </h6>
+            <br />
+
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
                         aria-selected="true">About</a>
                 </li>
+                {% if profile_user.role == 'student' %}
                 <li class="nav-item">
                     <a class="nav-link" id="home-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="home"
                         aria-selected="true">Skills</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -158,9 +154,10 @@
     <div class="col-md-2">
         <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile')}}">Edit
                 Profile</a> </button>
-
+        {% if profile_user.role == 'student' %}
         <button type="button" id="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload
             Resume</button>
+        {%endif%}
 
         <!-- Modal, makitweb.com, Yogesh Singh-->
         <div id="uploadModal" class="modal fade" role="dialog">
@@ -170,7 +167,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button id="button" type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Upload Resume (PDF Only)</h4>
+                        <h4 class="modal-title">Upload Resume (PDF)</h4>
                     </div>
                     <div class="modal-body">
                         <!-- Form -->
@@ -193,10 +190,23 @@
 <div class="row">
     <div class="col-md-4">
         <div class="profile-work">
+            {% if profile_user.location %}
+            <p>Location</p>
+            {{ profile_user.location }}
+            {% endif %}
+
+            {% if profile_user.resume %}
+            <p>Resume</p>
+            <a href="{{ profile_user.resume }}" target="_blank">(PDF)</a>
+            {%endif%}
+
+            {% if profile_user.url %}
+
             <p>Email</p>
             <a href="mailto:{{profile_user.email}}">Send Email</a><br />
             <p>Website</p>
             <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
+            {%endif%}
         </div>
     </div>
     <div class="col-md-8">

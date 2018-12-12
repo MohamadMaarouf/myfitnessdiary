@@ -10,17 +10,12 @@ CREATE TABLE users
 (
     user_id INT
     AUTO_INCREMENT,
-    email VARCHAR
-    (255),
-    password VARCHAR
-    (255),
-    role VARCHAR
-    (25),
-    name VARCHAR
-    (255),
+    email VARCHAR (255),
+    password VARCHAR (255),
+    role VARCHAR (25),
+    name VARCHAR (255),
     last_login DATETIME,
-    PRIMARY KEY
-    (user_id)
+    PRIMARY KEY (user_id)
 );
 
 
@@ -34,6 +29,7 @@ CREATE TABLE users
         location VARCHAR(50),
         about VARCHAR(1024),
         url VARCHAR(255),
+        alias VARCHAR(255),
         email VARCHAR(255),
         phone VARCHAR(14),
         phone_desc VARCHAR(50),
@@ -56,6 +52,7 @@ CREATE TABLE users
         location VARCHAR(50),
         about VARCHAR(1024),
         url VARCHAR(255),
+        alias VARCHAR(255),
         email VARCHAR(255),
         phone VARCHAR(13),
         phone_desc VARCHAR(50),
@@ -65,7 +62,7 @@ CREATE TABLE users
         additional VARCHAR(1024),
         graduation_date VARCHAR(10),
         GPA VARCHAR(4),
-        resume MEDIUMBLOB,
+        resume VARCHAR(255),
         PRIMARY KEY(user_id),
         FOREIGN KEY(user_id) REFERENCES users(user_id)
     );
@@ -81,6 +78,7 @@ CREATE TABLE users
         location VARCHAR(50),
         about VARCHAR(1024),
         url VARCHAR(255),
+        alias VARCHAR(255),
         email VARCHAR(255),
         phone VARCHAR(13),
         phone_desc VARCHAR(50),
