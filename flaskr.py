@@ -14,6 +14,8 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 import sqlalchemy
 from hashlib import md5
+from google.cloud import storage
+from google.cloud.storage import Blob
 # end Import's
 
 
@@ -69,8 +71,6 @@ else:
         db_user, db_password, host, db_name)
 
 db = Database.Database(engine_url)
-
-
 # End Globals
 
 
@@ -141,8 +141,9 @@ class ProfileUser():
 
         # additional datapoints
         if (self.role == 'student'):
-            self.grad_date = row[14]
-            self.gpa = row[15]
+            self.grad_date = row[15]
+            self.gpa = row[16]
+            self.resume = row[17]
             self.alias = row[18]
         elif (self.role == 'sponsor'):
             self.alias = row[15]
@@ -167,7 +168,7 @@ def load_user(id):
     return (user)
 #   End manager
 
-
+"""
 # Error Pages Routes
 @app.errorhandler(404)
 def page_not_found(a):
@@ -183,7 +184,7 @@ def server_error(b):
 def all_other_errors(c):
     # This route is for catching all non 404 or 500 errors
     return render_template('Exception.html', title=app_title)
-
+"""
 
 # Landing Page Route 
 @app.route('/')
@@ -381,14 +382,34 @@ def upload_file():
         if file.filename == '':
             flash('No selected file')
             return redirect(url_for('profile', user_id=current_user.id))
+        
         if file and allowed_file(file.filename):
-            data = file.read()
-            args = (data, current_user.id)
-            sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
-            db.query("PUSH", sql, args)
+            """Process the uploaded file and upload it to Google Cloud Storage."""
+            #uploaded_file = request.files.get('file')
+
+            gcs = storage.Client() # Create a Cloud Storage client.
+
+            # Get the bucket that the file will be uploaded to.
+            bucket = gcs.get_bucket("birmingham4test.appspot.com")
+
+            # Create a new blob and upload the file's content.
+            blob = bucket.blob(file.filename)
+            blob.upload_from_string(
+                file.read(),
+                content_type=file.content_type
+            )
+            blob.make_public
+
+            # The public URL can be used to directly access the uploaded file via HTTP.
+            # update databse with link to the public blob
+            url = blob.public_url
+            sql = "UPDATE student SET resume = '%s' WHERE user_id = %s" % (url, current_user.id)
+            db.query("PUSH", sql)
+
             flash('File uploaded successfully', 'success')
             return redirect(url_for('profile', user_id=current_user.id))
     return redirect(url_for('landing'))
+
 
 # helper function if file is allowed (Boolean)
 def allowed_file(filename):
@@ -562,6 +583,7 @@ def admin_view():
 
 #   Users Search Route
 @app.route('/results/<user_search>')
+@login_required
 def general_search(user_search):
     user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
     student_results = db.query('PULL', "SELECT * from student WHERE first_name LIKE '%%{}%%'".format(user_search))

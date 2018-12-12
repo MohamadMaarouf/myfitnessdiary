@@ -193,6 +193,10 @@
 <div class="row">
     <div class="col-md-4">
         <div class="profile-work">
+            {% if profile_user.resume %}
+            <p>Resume</p>
+            <a href="{{ profile_user.resume }}" target="_blank">(PDF)</a>
+            {%endif%}
             <p>Website</p>
             <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
         </div>
