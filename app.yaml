@@ -20,3 +20,4 @@ env_variables:
   MAIL_PASS: internreq
   DB_PASS: GearGrinders1!
   DB_CONNECTION: birmingham4test:us-east4:internreq-1
+  CLOUD_STORAGE_BUCKET: birmingham4test.appspot.com
