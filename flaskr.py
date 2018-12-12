@@ -125,8 +125,9 @@ class ProfileUser():
         self.phone = row[9]
         self.phone_desc = row[10]
         self.verified = row[11]
-        self.education = row[12]
-        self.additional = row[13]
+        self.private = row[12]
+        self.education = row[13]
+        self.additional = row[14]
         # avatar by Gravatar
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         # 36px square
