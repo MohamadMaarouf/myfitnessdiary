@@ -393,11 +393,15 @@ def upload_file():
 
             # Create a new blob and upload the file's content.
             blob = bucket.blob(file.filename)
-
             blob.upload_from_string(
                 file.read(),
                 content_type=file.content_type
             )
+
+            # update databse with link to the public blob
+            url = blob.public_url
+            sql = "UPDATE student SET resume = '%s' WHERE user_id = %s" % (url, current_user.id)
+            db.query("PUSH", sql)
 
             # The public URL can be used to directly access the uploaded file via HTTP.
             #return blob.public_url
@@ -417,20 +421,6 @@ def upload_file():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-# helper function to upload a file to Google Storage
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
-    """Uploads a file to the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.get_bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_filename(source_file_name)
-
-    print('File {} uploaded to {}.'.format(
-        source_file_name,
-        destination_blob_name))
 
 
 #   Edit Profile Route
