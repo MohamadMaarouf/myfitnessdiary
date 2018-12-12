@@ -381,16 +381,27 @@ def upload_file():
         if file.filename == '':
             flash('No selected file')
             return redirect(url_for('profile', user_id=current_user.id))
+        
         if file and allowed_file(file.filename):
-            # upload file to bucket
-            client = storage.Client()
-            bucket = client.get_bucket("birmingham4test.appspot.com")
-            encryption_key = "aa426195405adee2c8081bb9e7e74b19"
-            blob = Blob("secure-data", bucket, encryption_key=encryption_key)
-            with open(file, "rb") as my_file:
-                blob.upload_from_file(my_file)
-            
-            #upload_blob('birmingham4test.appspot.com', file.filename, 'resume/'+file.filename)
+            """Process the uploaded file and upload it to Google Cloud Storage."""
+            #uploaded_file = request.files.get('file')
+
+            gcs = storage.Client() # Create a Cloud Storage client.
+
+            # Get the bucket that the file will be uploaded to.
+            bucket = gcs.get_bucket("birmingham4test.appspot.com")
+
+            # Create a new blob and upload the file's content.
+            blob = bucket.blob(file.filename)
+
+            blob.upload_from_string(
+                file.read(),
+                content_type=file.content_type
+            )
+
+            # The public URL can be used to directly access the uploaded file via HTTP.
+            #return blob.public_url
+
             '''data = file.read()
             args = (data, current_user.id)
             sql = 'UPDATE student SET resume = %s WHERE user_id = %s'
