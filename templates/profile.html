@@ -201,6 +201,9 @@
             {%endif%}
 
             {% if profile_user.url %}
+
+            <p>Email</p>
+            <a href="mailto:{{profile_user.email}}">Send Email</a><br />
             <p>Website</p>
             <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
             {%endif%}
