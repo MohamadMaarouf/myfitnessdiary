@@ -194,10 +194,12 @@
             <p>Location</p>
             {{ profile_user.location }}
             {% endif %}
+
             {% if profile_user.resume %}
             <p>Resume</p>
             <a href="{{ profile_user.resume }}" target="_blank">(PDF)</a>
             {%endif%}
+
             {% if profile_user.url %}
             <p>Website</p>
             <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
