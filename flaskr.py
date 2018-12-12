@@ -168,7 +168,6 @@ def load_user(id):
     return (user)
 #   End manager
 
-"""
 # Error Pages Routes
 @app.errorhandler(404)
 def page_not_found(a):
@@ -184,7 +183,6 @@ def server_error(b):
 def all_other_errors(c):
     # This route is for catching all non 404 or 500 errors
     return render_template('Exception.html', title=app_title)
-"""
 
 # Landing Page Route 
 @app.route('/')
