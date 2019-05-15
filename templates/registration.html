@@ -7,7 +7,7 @@
 {% block style %}
 <style>
     span {
-        background-color: rgba(247, 97, 97, 0.555);
+        background-color:lightgray;
         border-radius: 15px;
         padding: .3%;
     }
@@ -50,19 +50,6 @@
                 </div>
                 {% else %}
                 <b>{{ form.last_name(class="form-control-sm") }}</b>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <b>{{ form.user_type.label(class="form-control-label mr-5") }}</b>
-                {% if form.user_type.errors %}
-                <b>{{ form.user_type(class="form-control-sm is-invalid") }}</b>
-                <div class="invalid-feedback">
-                    {% for error in form.user_type.errors%}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <b>{{ form.user_type(class="form-control-sm ml-5") }}</b>
                 {% endif %}
             </div>
             <div class="form-group">
@@ -113,58 +100,5 @@
         Already Registered? <a calss="ml-2" href="{{ url_for('login') }}">Login Here</a>
     </small>
 </div>
-
-<!--Scripts here-->
-<script>
-    const key = document.getElementById('vKey')
-    const intial = document.getElementById('start');
-
-    key.style.display = 'none';
-    intial.focus();
-
-    function getSelected() {
-        let user = document.getElementById("user_type").value
-
-        switch (user) {
-            case 'Student':
-                key.style.display = 'none';
-                key.required = false;
-                break;
-            case 'Faculty':
-                key.style.display = 'block';
-                key.required = true;
-                break;
-            case 'Sponsor':
-                key.style.display = 'block';
-                key.required = true;
-                break;
-            default:
-                return;
-        }
-    }
-
-    function escapeRegExp(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    }
-
-    window.onload = () => {
-        const user = document.getElementById('user_type');
-        let id = window.location.search[4];
-        switch (id) {
-            case ('1'):
-                user.value = 'Faculty';
-                break;
-            case ('2'):
-                user.value = 'Student';
-                break;
-            case ('3'):
-                user.value = 'Sponsor';
-                break;
-
-        }
-        getSelected();
-
-    }
-</script>
 
 {% endblock %}

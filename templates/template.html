@@ -29,18 +29,20 @@
             text-decoration: none;
         }
         .bg-faded{
-            background-color: #103C5F;
+            background-color: lightgray;
+            border-style: solid;;
         }
         .collapse .nav-link{
-            color: white;
+            color: black;
             margin:1%;
         }
         #nav-btns{
-            background-color: rgba(42, 136, 212, 0.829);
+            background-color: white;
             border-radius: 15%;
+            border-style: solid;
         }
         #welcome{
-            color: white;
+            color: black;
         }
     </style>
 </head>
@@ -50,10 +52,10 @@
         {% block navbar %}
         <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"
-                style="background-color:rgb(148, 195, 233);">
+                style="background-color: lightgray;">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{url_for('landing')}}"><img src="../static/assets/logo.svg"></a>
+            <a class="navbar-brand" href="{{url_for('landing')}}"><img src="../static/assets/logo5.png"></a>
 
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="nav nav-pills mr-auto" id="myTab">
@@ -64,25 +66,21 @@
                     </li>
                     <li id="nav-btns" class='nav-item ml-1'>
                         <div class="dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" style="background-color:white class="btn btn-primary dropdown-toggle" data-toggle="dropdown";>
                                 Links
                             </button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="{{ url_for('profile', user_id = current_user.id)}}">Profile</a>
-                                {% if current_user.role == 'faculty'%}
-                                <a class="dropdown-item" href="{{ url_for('admin_view') }}">Admin Panel</a>
-                                <a class="dropdown-item" href="{{url_for('user_confirm')}}">Confirm User</a>
-                                {% endif %}
-                                {% if current_user.role != 'student'%}
-                                <a class="dropdown-item" href="{{url_for('createPosting')}}">Create Job Posting</a>
-                                {% endif %}
+                                <a class="dropdown-item" href="{{ url_for('members_panel') }}">Members Panel</a>
+                                <a class="dropdown-item" href="{{url_for('createPosting')}}">Create Diary Posting</a>
+                                <a class="dropdown-item" href="{{url_for('graph')}}">Graph</a>
                             </div>
                         </div>
                     </li>
                     <li id="nav-btns" class='nav-item ml-1'><a class='nav-link' href="/logout">Logout</a>
                     <li>
-                        <span id="welcome" class="ml-5" style="display:inline">
-                            Welcome, <a style="color:white" href="{{ url_for('profile', user_id = current_user.id)}}">
+                        <span id="welcome" class="ml-5" style="display:inline" a style:"color: black">
+                            Welcome, <a style="color:black" href="{{ url_for('profile', user_id = current_user.id)}}">
                                 {{ current_user.name }}</a>! <img style="display:inline" src="{{ current_user.avatar_s }}">
                         </span>
                     </li>

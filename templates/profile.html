@@ -5,7 +5,7 @@
 {% block style %}
 <style>
     body{
-        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+        background: lightgray;
     }
     .emp-profile{
         padding: 3%;
@@ -29,7 +29,7 @@
         border: none;
         border-radius: 0;
         font-size: 15px;
-        background: #212529b8;
+        background: lightgray;
     }
     .profile-img .file input {
         position: absolute;
@@ -38,10 +38,10 @@
         top: 0;
     }
     .profile-head h5{
-        color: #333;
+        color: black;
     }
     .profile-head h6{
-        color: #0062cc;
+        color: darkgray;
     }
     .profile-edit-btn{
         border: none;
@@ -49,16 +49,16 @@
         width: 70%;
         padding: 2%;
         font-weight: 600;
-        color: #6c757d;
+        color: lightgray;
         cursor: pointer;
     }
     .proile-rating{
         font-size: 12px;
-        color: #818182;
+        color: lightgray;
         margin-top: 5%;
     }
     .proile-rating span{
-        color: #495057;
+        color: lightgray;
         font-size: 15px;
         font-weight: 600;
     }
@@ -71,7 +71,7 @@
     }
     .profile-head .nav-tabs .nav-link.active{
         border: none;
-        border-bottom:2px solid #0062cc;
+        border-bottom:2px solid #000000;
     }
     .profile-work{
         padding: 14%;
@@ -79,7 +79,7 @@
     }
     .profile-work p{
         font-size: 12px;
-        color: #818182;
+        color: black;
         font-weight: 600;
         margin-top: 10%;
     }
@@ -97,13 +97,13 @@
     }
     .profile-tab p{
         font-weight: 600;
-        color: #0062cc;
+        color: lightgray;
     }
     #button{
         margin: 8px;
     }
     #profile-website {
-        color: #00f;
+        color: lightgray;
     }
 </style>
 
@@ -130,23 +130,19 @@
                 {{profile_user.full_name}}
             </h5>
             <h6>
-                {{profile_user.title}},
-                {{profile_user.department}} <br />
-                Southern Connecticut State University
+                {{profile_user.title}}
             </h6>
             <br />
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                        aria-selected="true">About</a>
+                        aria-selected="false">About</a>
                 </li>
-                {% if profile_user.role == 'student' %}
                 <li class="nav-item">
-                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#skills" role="tab" aria-controls="home"
-                        aria-selected="true">Skills</a>
+                    <a class="nav-link" id="workoutPlan-tab" data-toggle="tab" href="#workoutPlan" role="tab" aria-controls="workoutPlan"
+                        aria-selected="false">Workout Plan</a>
                 </li>
-                {% endif %}
             </ul>
         </div>
     </div>
@@ -154,36 +150,6 @@
     <div class="col-md-2">
         <button id="button" name="editProfile" class="btn btn-info"> <a href="{{ url_for('edit_profile')}}">Edit
                 Profile</a> </button>
-        {% if profile_user.role == 'student' %}
-        <button type="button" id="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload
-            Resume</button>
-        {%endif%}
-
-        <!-- Modal, makitweb.com, Yogesh Singh-->
-        <div id="uploadModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button id="button" type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Upload Resume (PDF)</h4>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Form -->
-                        <form method="POST" action='/upload_file' enctype="multipart/form-data">
-                            <input type="file" name="inputFile">
-                            <br><br>
-                            <input type="submit" value="Upload">
-                        </form>
-
-                        <!-- Preview-->
-                        <div id='preview'></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
     </div>
     {%endif%}
 </div>
@@ -191,21 +157,15 @@
     <div class="col-md-4">
         <div class="profile-work">
             {% if profile_user.location %}
-            <p>Location</p>
+            <p>Gym Location</p>
             {{ profile_user.location }}
             {% endif %}
 
-            {% if profile_user.resume %}
-            <p>Resume</p>
-            <a href="{{ profile_user.resume }}" target="_blank">(PDF)</a>
-            {%endif%}
 
             {% if profile_user.url %}
 
             <p>Email</p>
-            <a href="mailto:{{profile_user.email}}">Send Email</a><br />
-            <p>Website</p>
-            <a href="{{ profile_user.url }}">{{profile_user.alias}}</a><br />
+            <a href="mailto:{{profile_user.url}}">{{ profile_user.url }}</a><br />
             {%endif%}
         </div>
     </div>
@@ -214,8 +174,13 @@
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 {{profile_user.about}}
             </div>
-            <div class="tab-pane fade show" id="skills" role="tabpanel" aria-labelledby="home-tab">
-                {{profile_user.additional}}
+            <div class="tab-pane fade" id="workoutPlan" role="tabpanel" aria-labelledby="workoutPlan-tab">
+                    My goal is to increase: {{profile_user.mainExercise}} <br>
+                    Goal Weight: {{profile_user.goalWeight}} <br>
+                    Workout One: {{profile_user.workoutOne}} <br>
+                    Workout Two: {{profile_user.workoutTwo}} <br>
+                    Workout Three: {{profile_user.workoutThree}}
+                
             </div>
         </div>
     </div>

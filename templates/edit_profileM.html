@@ -50,47 +50,7 @@
     {% endif %}
 </div>
 
-<div class="form-group">
-    <b>{{ form.major.label(class="form-control-label mr-2 ml-5") }}</b>
-    {% if form.major.errors %}
-    <b>{{ form.major(class="form-control-sm is-invalid") }}</b>
-    <div class="invalid-feedback">
-        {% for error in form.major.errors%}
-        <span>{{ error }}</span>
-        {% endfor %}
-    </div>
-    {% else %}
-    <b>{{ form.major(class="form-control-sm") }}</b>
-    {% endif %}
-</div>
 
-<div class="form-group">
-    <b>{{ form.grad_date.label(class="form-control-label mr--5 ml--5") }}</b>
-    {% if form.grad_date.errors %}
-    <b>{{ form.grad_date(class="form-control-sm is-invalid") }}</b>
-    <div class="invalid-feedback">
-        {% for error in form.grad_date.errors%}
-        <span>{{ error }}</span>
-        {% endfor %}
-    </div>
-    {% else %}
-    <b>{{ form.grad_date(class="form-control-sm mr-4") }}</b>
-    {% endif %}
-</div>
-
-<div class="form-group">
-    <b>{{ form.gpa.label(class="form-control-label mr-5 ml-4") }}</b>
-    {% if form.gpa.errors %}
-    <b>{{ form.gpa(class="form-control-sm is-invalid") }}</b>
-    <div class="invalid-feedback">
-        {% for error in form.gpa.errors%}
-        <span>{{ error }}</span>
-        {% endfor %}
-    </div>
-    {% else %}
-    <b>{{ form.gpa(class="form-control-sm") }}</b>
-    {% endif %}
-</div>
 
 <div class="form-group">
     <b>{{ form.location.label(class="form-control-label mr-4 ml-3") }}</b>
@@ -119,35 +79,72 @@
     <b>{{ form.about(class="form-control-sm") }}</b>
     {% endif %}
 </div>
+<div class="form-group">
+        <b>{{ form.mainExercise.label(class="form-control-label mr-4 ml-3") }}</b>
+        {% if form.mainExercise.errors %}
+        <b>{{ form.mainExercise(class="form-control-sm is-invalid") }}</b>
+        <div class="invalid-feedback">
+            {% for error in form.mainExercise.errors%}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        <b>{{ form.mainExercise(class="form-control-sm") }}</b>
+        {% endif %}
+</div>
+<div class="form-group">
+        <b>{{ form.goalWeight.label(class="form-control-label mr-4 ml-3") }}</b>
+        {% if form.goalWeight.errors %}
+        <b>{{ form.goalWeight(class="form-control-sm is-invalid") }}</b>
+        <div class="invalid-feedback">
+            {% for error in form.goalWeight.errors%}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        <b>{{ form.goalWeight(class="form-control-sm") }}</b>
+        {% endif %}
+</div>
 
 <div class="form-group">
-    <b>{{ form.skills.label(class="form-control-label mr-1 ml-5") }}</b>
-    {% if form.skills.errors %}
-    <b>{{ form.skills(class="form-control-sm is-invalid") }}</b>
+    <b>{{ form.workoutOne.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.workoutOne.errors %}
+    <b>{{ form.workoutOne(class="form-control-sm is-invalid") }}</b>
     <div class="invalid-feedback">
-        {% for error in form.skills.errors%}
+        {% for error in form.workoutOne.errors%}
         <span>{{ error }}</span>
         {% endfor %}
     </div>
     {% else %}
-    <b>{{ form.skills(class="form-control-sm") }}</b>
+    <b>{{ form.workoutOne(class="form-control-sm") }}</b>
     {% endif %}
 </div>
-
 <div class="form-group">
-    <b>{{ form.education.label(class="form-control-label mr-3 ml--2") }}</b>
-    {% if form.education.errors %}
-    <b>{{ form.education(class="form-control-sm is-invalid") }}</b>
+    <b>{{ form.workoutTwo.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.workoutTwo.errors %}
+    <b>{{ form.workoutTwo(class="form-control-sm is-invalid") }}</b>
     <div class="invalid-feedback">
-        {% for error in form.education.errors%}
+        {% for error in form.workoutTwo.errors%}
         <span>{{ error }}</span>
         {% endfor %}
     </div>
     {% else %}
-    <b>{{ form.education(class="form-control-sm") }}</b>
+    <b>{{ form.workoutTwo(class="form-control-sm") }}</b>
     {% endif %}
 </div>
-
+<div class="form-group">
+    <b>{{ form.workoutThree.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.workoutThree.errors %}
+    <b>{{ form.workoutThree(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.workoutThree.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.workoutThree(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
 <div class="form-group">
         <b>{{ form.url.label(class="form-control-label mr-5 ml-4") }}</b>
         {% if form.url.errors %}
@@ -159,20 +156,6 @@
         </div>
         {% else %}
         <b>{{ form.url(class="form-control-sm") }}</b>
-        {% endif %}
-</div>
-
-<div class="form-group">
-        <b>{{ form.alias.label(class="form-control-label mr-3 ml-3") }}</b>
-        {% if form.alias.errors %}
-        <b>{{ form.alias(class="form-control-sm is-invalid") }}</b>
-        <div class="invalid-feedback">
-            {% for error in form.alias.errors%}
-            <span>{{ error }}</span>
-            {% endfor %}
-        </div>
-        {% else %}
-        <b>{{ form.alias(class="form-control-sm") }}</b>
         {% endif %}
 </div>
 

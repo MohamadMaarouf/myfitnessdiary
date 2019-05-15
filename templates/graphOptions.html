@@ -1,0 +1,44 @@
+{% extends 'template.html'%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+
+<div class="content-section text-center jumbotron">
+<form action="" method="POST">
+        {{ form.hidden_tag() }}
+<legend class="border-bottom mb-4 text-center">Edit Profile</legend>
+
+<div class="form-group">
+        <b>{{ form.exercise.label(class="form-control-label mr-4 ml-3") }}</b>
+        {% if form.exercise.errors %}
+        <b>{{ form.exercise(class="form-control-sm is-invalid") }}</b>
+        <div class="invalid-feedback">
+            {% for error in form.exercise.errors%}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        <b>{{ form.exercise(class="form-control-sm") }}</b>
+        {% endif %}
+</div>
+
+<div class="form-group">
+    <b>{{ form.timeScale.label(class="form-control-label mr-4 ml-3") }}</b>
+    {% if form.timeScale.errors %}
+    <b>{{ form.timeScale(class="form-control-sm is-invalid") }}</b>
+    <div class="invalid-feedback">
+        {% for error in form.timeScale.errors%}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <b>{{ form.timeScale(class="form-control-sm") }}</b>
+    {% endif %}
+</div>
+<div class="form-group">
+    {{ form.submit(class='btn btn-outline-info')}}
+</div>
+</div>
+</form>
+{% endblock %}

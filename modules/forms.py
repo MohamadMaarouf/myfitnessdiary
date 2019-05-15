@@ -1,7 +1,11 @@
+from flask import Flask
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, BooleanField, DateField, IntegerField
+from datetime import date
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
+application_title = 'MyFitnessDiary'
+application = Flask(__name__)
 
 class Login(FlaskForm):
     email = StringField('Email: ', validators=[DataRequired(), Email()])
@@ -13,8 +17,6 @@ class Login(FlaskForm):
 class Registration(FlaskForm):
     first_name = StringField('First Name: ', validators=[DataRequired()])
     last_name = StringField('Last Name: ', validators=[DataRequired()])
-    user_type = SelectField('Account Type: ', validators=[DataRequired()], choices=[
-        ('student', 'Student'), ('faculty', 'Faculty'), ('sponsor', 'Sponsor')])
     email = StringField('Email: ', validators=[DataRequired(), Email()])
     password = PasswordField('Password: ', validators=[
         DataRequired(), Length(min=6)])
@@ -22,26 +24,30 @@ class Registration(FlaskForm):
         DataRequired(), EqualTo('password')])
     submit = SubmitField('Register ', validators=[DataRequired()])
 
-
-class AddUser(FlaskForm):
-    email = StringField('Email Address to be Verified',
-                        validators=[DataRequired(), Email()])
-    submit = SubmitField('Validate User', validators=[])
-
+class EditProfileM(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    user_title = StringField('Caption', validators=[Length(min=0, max=50)])   
+    location = StringField('Gym Location', validators = [Length(min=0, max = 50)])
+    about = TextAreaField('About', validators=[Length(min=0, max=255)])
+    goalWeight = StringField('Goal Weight:', validators=[DataRequired()])    
+    mainExercise = SelectField('Exercise',
+                           validators=[DataRequired()],
+                           choices=[('Benchpress', 'Benchpress'), ('Deadlift', 'Deadlift'), ('Squat', 'Squat')])
+    workoutOne = SelectField('Exercise One', validators=[DataRequired()], choices = [('Incline Dumbbell Press', 'Incline Dumbbell Press'), ('Incline Benchpress', 'Incline Benchpress'),('Flat Dumbbell Press', 'Flat Dumbbell Press'), ('Chest flies', 'Chest flies'), ('Pushups', 'Pushups'), ('Chest Dips', 'Chest Dips'), ('Leg Extensions', 'Leg Extensions'), ('Hamstring Curls', 'Hamstring Curls'), ('Leg Press', 'Leg Press'), ('Lat Pulldowns', 'Lat Pulldowns'), ('Barbell Rows','Barbell Rows'), ('Back Pull Machine', 'Back Pull Machine')])
+    workoutTwo = SelectField('Exercise Two', validators=[DataRequired()], choices = [('Incline Dumbbell Press', 'Incline Dumbbell Press'), ('Incline Benchpress', 'Incline Benchpress'),('Flat Dumbbell Press', 'Flat Dumbbell Press'), ('Chest flies', 'Chest flies'), ('Pushups', 'Pushups'), ('Chest Dips', 'Chest Dips'), ('Leg Extensions', 'Leg Extensions'), ('Hamstring Curls', 'Hamstring Curls'), ('Leg Press', 'Leg Press'), ('Lat Pulldowns', 'Lat Pulldowns'), ('Barbell Rows','Barbell Rows'), ('Back Pull Machine', 'Back Pull Machine')])
+    workoutThree = SelectField('Exercise Three', validators=[DataRequired()], choices = [('Incline Dumbbell Press', 'Incline Dumbbell Press'), ('Incline Benchpress', 'Incline Benchpress'),('Flat Dumbbell Press', 'Flat Dumbbell Press'), ('Chest flies', 'Chest flies'), ('Pushups', 'Pushups'), ('Chest Dips', 'Chest Dips'), ('Leg Extensions', 'Leg Extensions'), ('Hamstring Curls', 'Hamstring Curls'), ('Leg Press', 'Leg Press'), ('Lat Pulldowns', 'Lat Pulldowns'), ('Barbell Rows','Barbell Rows'), ('Back Pull Machine', 'Back Pull Machine')])
+    url = StringField('Email', validators=[Length(min=0, max=100)])
+    private = BooleanField('Private')
+    submit = SubmitField('Submit')
 
 class Posting(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    location = StringField('Location', validators=[DataRequired()])
+    dateOfPost = DateField('Date (yyyy-mm-dd)', validators=[DataRequired()], format='%Y-%m-%d')
+    exercise = SelectField('Exercise',
+                           validators=[DataRequired()], choices=[('Benchpress', 'Benchpress'), ('Deadlift', 'Deadlift'), ('Squat', 'Squat')])
     overview = TextAreaField('Overview', validators=[])
-    responsibilities = TextAreaField('Responsibilities', validators=[])
-    reqs = TextAreaField('Applicant Requirments', validators=[])
-    comp = SelectField('Compensation', validators=[DataRequired()], choices=[
-        ('1', 'Yes'), ('0', "No")])
-    fullPart = SelectField('Internship/Part/Full time',
-                           validators=[DataRequired()],
-                           choices=[('Internship', 'Internship'), ('Part-Time', 'Part-Time'), ('Full-Time', 'Full Time')])
-    hours = TextAreaField('Hours (Day: required hours)',
-                          validators=[DataRequired()])
+    current = TextAreaField('Current Weight Max', validators=[])
+    goal = TextAreaField('Goal Weight Max', validators=[])
 
     '''
     Put more fields here
@@ -49,43 +55,7 @@ class Posting(FlaskForm):
 
     submit = SubmitField('Create Posting ', validators=[DataRequired()])
 
-class EditProfileF(FlaskForm):
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    user_title = StringField('Title', validators=[Length(min=0, max=20)])
-    department = StringField('Department', validators=[Length(min=0, max=40)])
-    location = StringField('Location', validators = [Length(min=0, max = 15)])
-    about = TextAreaField('About', validators=[Length(min=0, max=255)])
-    url = StringField('URL', validators=[Length(min=0, max=100)])
-    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
-    private = BooleanField('Private')
-    submit = SubmitField('Submit')
-
-class EditProfileS(FlaskForm):
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    user_title = StringField('Title', validators=[Length(min=0, max=20)])
-    major = StringField('Major', validators=[Length(min=0 , max=40)])
-    grad_date = StringField('Graduation Date', validators=[Length(min=0, max=40)])
-    gpa = StringField('GPA', validators=[Length(min=0,max=4)])
-    location = StringField('Location', validators = [Length(min=0, max = 15)])
-    about = TextAreaField('About', validators=[Length(min=0, max=255)])
-    skills = TextAreaField('Skills', validators=[Length(min=0, max=255)])
-    education = TextAreaField('Education', validators=[Length(min=0, max=255)])
-    url = StringField('URL', validators=[Length(min=0, max=100)])
-    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
-    private = BooleanField('Private')
-    submit = SubmitField('Submit')
-
-class EditProfileSp(FlaskForm):
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    user_title = StringField('Title', validators=[Length(min=0, max=20)])
-    company = StringField('Company', validators=[Length(min=0, max=40)])
-    about = TextAreaField('About', validators=[Length(min=0, max=255)])
-    education = TextAreaField('Education', validators=[Length(min=0, max=255)])
-    skills = TextAreaField('Skills', validators=[Length(min=0, max=255)])
-    url = StringField('URL', validators=[Length(min=0, max=100)])
-    alias = StringField('URL Alias', validators=[Length(min=0, max=100)])
-    private = BooleanField('Private')
-    submit = SubmitField('Submit')
+class graphOptions(FlaskForm):
+    exercise = SelectField('Exercise', validators=[DataRequired()], choices=[('Benchpress', 'Benchpress'), ('Deadlift', 'Deadlift'), ('Squat', 'Squat')])
+    timeScale = SelectField('Time Scale', validators=[DataRequired()], choices=[('Year', 'Year'), ('Month', 'Month'), ('Day', 'Day')])
+    submit = SubmitField('Generate Graph', validators=[DataRequired()])
