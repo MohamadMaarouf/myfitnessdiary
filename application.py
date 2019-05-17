@@ -34,8 +34,8 @@ application.config.update(dict(
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
     MAIL_USE_SSL=False,
-    MAIL_USERNAME='mmaarouf95@gmail.com',
-    MAIL_PASSWORD='Rema123123!'
+    MAIL_USERNAME='',
+    MAIL_PASSWORD=''
 ))
 application.config.from_object(__name__)
 mail = Mail(application)
@@ -53,7 +53,7 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 #       Mac:       export DB_PASS=ourpassword
 db_ip = '35.196.253.182' #MyFitnessDiary database
 #db_ip = 'localhost'
-db_password = 'Rema123123!'
+db_password = ''
 db_user = 'root'
 db_name = 'MyFitnessDiary'
 db_connection_name = 'myfitnessdiary:us-east1:myfitnessdiary'
