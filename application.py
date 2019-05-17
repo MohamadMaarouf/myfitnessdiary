@@ -51,10 +51,12 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 #       Windows:   $env:DB_PASS = 'ourpassword'
 #       Windows:   set DB_PASS=ourpassword
 #       Mac:       export DB_PASS=ourpassword
-db_ip = 'localhost' #MyFitnessDiary database
+db_ip = '35.196.253.182' #MyFitnessDiary database
+#db_ip = 'localhost'
 db_password = 'Rema123123!'
 db_user = 'root'
 db_name = 'MyFitnessDiary'
+db_connection_name = 'myfitnessdiary:us-east1:myfitnessdiary'
 
 # When deployed to App Engine, the `GAE_ENV` environment variable will be
 # set to `standard`
@@ -463,9 +465,10 @@ def members_panel():
 @application.route('/results/<user_search>')
 @login_required
 def general_search(user_search):
+    user_id = str(current_user.id)
     user_results = db.query('PULL', "SELECT * from users WHERE name LIKE '%%{}%%'".format(user_search))
-    member_results = db.query('PULL', "Select * from member WHERE first_name LIKE '%%{}%%'".format(user_search))
-    diaryPosting_results = db.query('PULL', "Select * from diaryPosting t1 INNER JOIN member t2 ON t1.member_id=t2.user_id WHERE t1.exercise LIKE '%%{}%%'".format(user_search))
+    member_results = db.query('PULL', "Select * from member WHERE first_name LIKE '%%{}%%'".format(user_search) + " OR last_name LIKE '%%{}%%'".format(user_search))
+    diaryPosting_results = db.query('PULL', "Select * from diaryPosting WHERE member_id=" +user_id+ " AND exercise LIKE '%%{}%%'".format(user_search) + " OR member_id=" +user_id + " AND dateOfPost LIKE '%%{}%%'".format(user_search))
     return render_template('searchResults.html', users=user_results, members=member_results, diaries=diaryPosting_results, title='Results For "'+user_search+'"')
 
 

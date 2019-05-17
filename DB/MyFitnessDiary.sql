@@ -17,7 +17,6 @@ CREATE TABLE users
     last_login DATETIME,
     PRIMARY KEY (user_id)
 );
-
     CREATE TABLE member
     (
         user_id INT NOT NULL,
@@ -37,8 +36,6 @@ CREATE TABLE users
         PRIMARY KEY(user_id),
         FOREIGN KEY(user_id) REFERENCES users(user_id)    
     );
-
-
     CREATE TABLE diaryPosting
     (
         diary_id INT AUTO_INCREMENT,
