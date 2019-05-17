@@ -17,6 +17,6 @@ handlers:
   secure: always
 
 env_variables:
-  MAIL_PASS: Rema123123!
-  DB_PASS: Rema123123!
+  MAIL_PASS: 
+  DB_PASS: 
   DB_CONNECTION: myfitnessdiary:us-east1:myfitnessdiary
